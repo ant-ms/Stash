@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { Spring } from "svelte/motion"
+
     import { page } from "$app/state"
     import TagsController from "$lib/controllers/TagsController.svelte"
     import { controller } from "$lib/stores.svelte"
@@ -6,77 +8,81 @@
     import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
     import Button from "./elements/Button.svelte"
 
+    // Svelte 5 runes for state management
+    let windowHeight = $state(0)
+    let innerHeight = $derived(windowHeight - 96)
+
+    // Spring store for smooth height animation
+    const contentHeight = new Spring(0, {
+        stiffness: 0.2,
+        damping: 0.8
+    })
+
     let isDragging = $state(false)
     let startY = $state(0)
     let startHeight = $state(0)
-    let contentHeight = $state(0)
-    let contentElement: HTMLElement
-    let windowHeight = $state(0)
-    let innerHeight = $derived(windowHeight - 96)
     let startedAtTop = $state(false)
 
     function startDrag(event: MouseEvent | TouchEvent) {
         const target = event.target as HTMLElement
         if (target.closest("a")) return
 
-        event.preventDefault()
         isDragging = true
 
-        // Get initial Y position based on input type
-        if (event instanceof TouchEvent) {
-            startY = event.touches[0].clientY
-        } else {
-            startY = event.clientY
-        }
+        const y =
+            event instanceof TouchEvent
+                ? event.touches[0].clientY
+                : event.clientY
+        startY = y
+        startHeight = contentHeight.current // Get current value of the spring
+        startedAtTop = startHeight === innerHeight
 
-        startHeight = contentHeight
-        startedAtTop = contentHeight === innerHeight
-
-        // Add appropriate event listeners
-        if (event instanceof TouchEvent) {
-            window.addEventListener("touchmove", handleDrag, { passive: false })
-            window.addEventListener("touchend", stopDrag)
-        } else {
-            window.addEventListener("mousemove", handleDrag)
-            window.addEventListener("mouseup", stopDrag)
-        }
+        // Add window event listeners for move and end events
+        window.addEventListener("mousemove", handleDrag, { passive: false })
+        window.addEventListener("mouseup", stopDrag)
+        window.addEventListener("touchmove", handleDrag, { passive: false })
+        window.addEventListener("touchend", stopDrag)
     }
 
     function handleDrag(event: MouseEvent | TouchEvent) {
         if (!isDragging) return
 
-        // Prevent default touch behavior
         if (event instanceof TouchEvent) {
             event.preventDefault()
         }
 
-        // Get current Y position based on input type
         const currentY =
             event instanceof TouchEvent
                 ? event.touches[0].clientY
                 : event.clientY
-
         const deltaY = startY - currentY // Inverted for natural dragging
         let newHeight = startHeight + deltaY
 
-        // Keep height within bounds
-        newHeight = Math.max(0, Math.min(innerHeight, newHeight))
-        contentHeight = newHeight
+        // Update spring value directly, it won't "jump" because it's a spring
+        contentHeight.set(Math.max(0, Math.min(innerHeight, newHeight)), {
+            hard: true
+        })
     }
 
     function stopDrag() {
         isDragging = false
 
-        // Snap to nearest position
+        // Snap to the nearest position using the spring's animation
         if (startedAtTop) {
-            contentHeight =
-                contentHeight > window.innerHeight * 0.8 ? innerHeight : 0
+            contentHeight.set(
+                contentHeight.current > window.innerHeight * 0.8
+                    ? innerHeight
+                    : 0
+            )
         } else {
-            contentHeight =
-                contentHeight > window.innerHeight * 0.2 ? innerHeight : 0
+            contentHeight.set(
+                contentHeight.current > window.innerHeight * 0.2
+                    ? innerHeight
+                    : 0
+            )
         }
 
-        // Clean up all event listeners
+        // Clean up window event listeners
         window.removeEventListener("mousemove", handleDrag)
         window.removeEventListener("mouseup", stopDrag)
         window.removeEventListener("touchmove", handleDrag)
@@ -122,21 +128,22 @@
             />
         </div>
     </div>
-    <div
-        class="content-out-of-view"
-        bind:this={contentElement}
-        style="height: {contentHeight}px"
-    >
+    <div class="content-out-of-view" style="height: {contentHeight.current}px">
+        <!-- {#if contentHeight.current > 0} content can be conditionally rendered based on height -->
         {#each Object.values(TagsController.tagMap)
             .filter(t => !t.parentId)
             .sort( (a, b) => (page.params.cluster == "Camp Buddy" ? b.tag.localeCompare(a.tag) : b.count + b.indirectCount - (a.count + a.indirectCount)) ) as tag}
             <SidebarHierarchyEntry tagId={tag.id} />
         {/each}
+        <!-- {/if} -->
     </div>
 </main>
 
 <style lang="scss">
     main {
+        touch-action: none; // Prevents default touch behaviors like scrolling
+
+        overscroll-behavior-y: contain; // Prevents page reload when dragging down
         display: grid;
         gap: 0.5rem;
 
@@ -145,42 +152,44 @@
         border-top-right-radius: 1rem;
 
         background-color: var(--accent-background);
+    }
 
-        .always-visible {
-            display: grid;
-            gap: 0.5rem;
+    .always-visible {
+        display: grid;
+        gap: 0.5rem;
+    }
 
-            .drag-region {
-                cursor: ns-resize;
+    .drag-region {
+        cursor: ns-resize;
 
-                display: flex;
-                align-items: center;
-                justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-                width: 100%;
-                height: 10px;
+        width: 100%;
+        height: 10px;
 
-                -webkit-app-region: drag;
+        -webkit-app-region: drag;
 
-                .dragger {
-                    width: 30px;
-                    height: 4px;
-                    border-radius: 2px;
-                    background: #777;
-                }
-            }
-
-            .buttons {
-                display: flex;
-
-                .spacer {
-                    flex-grow: 1;
-                }
-            }
+        .dragger {
+            width: 30px;
+            height: 4px;
+            border-radius: 2px;
+            background: #777;
         }
+    }
 
-        .content-out-of-view {
-            overflow: scroll;
+    .buttons {
+        display: flex;
+
+        .spacer {
+            flex-grow: 1;
         }
+    }
+
+    .content-out-of-view {
+        overflow: scroll;
+        // Added transition for smoother visual updates when not dragging
+        transition: height 0.1s ease-out;
     }
 </style>

@@ -26,6 +26,6 @@ export const executeSearch = (query: string) => {
 
     return searcher
         .search(query)
-        .slice(0, 7)
+        .slice(0, 10)
         .map(i => i.item) as ResultsType
 }

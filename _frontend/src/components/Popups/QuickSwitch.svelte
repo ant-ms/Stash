@@ -8,7 +8,7 @@
         type ResultsType
     } from "$lib/client/QuickSwitchHelpers/search.svelte"
     import { isMobile } from "$lib/context"
-    import { controller, settings } from "$lib/stores.svelte"
+    import { controller } from "$lib/stores.svelte"
     import Popup from "$reusables/Popup.svelte"
 
     let value = $state("")
@@ -104,7 +104,6 @@
     main {
         display: grid;
         gap: 1rem;
-        min-width: 450px;
 
         input {
             margin: -0.5rem;

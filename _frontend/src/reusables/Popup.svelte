@@ -223,22 +223,25 @@
         &.mobile {
 
             section {
-                display: grid;
-                align-content: start;
-                align-self: flex-start;
-
                 width: 100vw;
                 max-width: 100vw;
-                height: calc(100vh - 56px - 2rem);
+                height: 100vh;
                 max-height: 100vh;
-                padding: 1rem;
                 border: none;
                 border-radius: 0;
 
                 box-shadow: none;
 
-                #content {
-                    border: none;
+                .not-sidebar {
+                    display: flex;
+                    flex-direction: column-reverse;
+                    height: 100vh;
+
+                    #content {
+                        flex: 1;
+                        padding: 1rem;
+                        border: none;
+                    }
                 }
             }
         }

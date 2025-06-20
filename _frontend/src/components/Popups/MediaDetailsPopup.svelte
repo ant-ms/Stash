@@ -146,7 +146,7 @@
                 </div>
 
                 <div>
-                    <Icon name="mdiSvg" />
+                    <Icon name="mdiBarcode" />
                     <span>
                         {mediaController.visibleMedium.type}
                     </span>
