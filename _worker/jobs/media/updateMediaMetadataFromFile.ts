@@ -2,11 +2,13 @@ import { Job } from "@prisma/client";
 import prisma from "../../prisma";
 import getMetadataFromFile from "../../lib/getMetadataFromFile";
 import type { MetadataType } from "../../lib/getMetadataFromFile.types";
+import fs from "fs/promises";
 
 export const execute = async (job: Job) => {
   const { id, initial } = await parse(job.data, job);
 
   const metadata = await getMetadataFromFile(`./media/${id}`);
+  const fileSize = await fs.stat(`./media/${id}`).then((stats) => stats.size);
 
   if (initial)
     await prisma.media.update({
@@ -14,6 +16,7 @@ export const execute = async (job: Job) => {
       data: {
         width: metadata.width,
         height: metadata.height,
+        sizeBytes: fileSize,
         createdDate: await getCreatedDate(id, metadata),
       },
     });
@@ -23,13 +26,14 @@ export const execute = async (job: Job) => {
       data: {
         width: metadata.width,
         height: metadata.height,
+        sizeBytes: fileSize,
       },
     });
 };
 
 const parse = async (
   data: any,
-  job: Job
+  job: Job,
 ): Promise<{ id: string; initial: boolean | undefined }> => {
   const json = JSON.parse(data);
 
@@ -62,14 +66,14 @@ const getCreatedDate = async (id: string, metadata: MetadataType) => {
   const { name } = await prisma.media.findUniqueOrThrow({ where: { id } });
 
   const createdDateMatchFromFilename = name.match(
-    /(20\d\d)-?([01]\d)-?([0123]\d)/
+    /(20\d\d)-?([01]\d)-?([0123]\d)/,
   );
 
   return (
     convertToDate(metadata.CreateDate) ||
     (createdDateMatchFromFilename
       ? new Date(
-          `${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`
+          `${createdDateMatchFromFilename[1]}-${createdDateMatchFromFilename[2]}-${createdDateMatchFromFilename[3]}`,
         )
       : convertToDate(metadata.FileModifyDate) || new Date(0))
   );
