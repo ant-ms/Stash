@@ -28,13 +28,13 @@ export const createPostUploadJobs = async (mediaId: string, type: string) => {
         })
     }
 
-    if (type.startsWith("image")) {
-        await prisma.job.create({
-            data: {
-                name: "attemptManualTagging",
-                data: JSON.stringify({ id: mediaId }),
-                waitFor: "updateMediaMetadataFromFile"
-            }
-        })
-    }
+    // if (type.startsWith("image")) {
+    //     await prisma.job.create({
+    //         data: {
+    //             name: "attemptManualTagging",
+    //             data: JSON.stringify({ id: mediaId }),
+    //             waitFor: "updateMediaMetadataFromFile"
+    //         }
+    //     })
+    // }
 }
