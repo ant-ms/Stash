@@ -1,4 +1,5 @@
 <script lang="ts">
+    import prettyBytes from "pretty-bytes"
     import { mount, unmount } from "svelte"
 
     import { invalidateAll } from "$app/navigation"
@@ -85,20 +86,22 @@
         </Button>
     {/snippet}
 
-    <Table headers={["Id", "Icon", "Name", "Type"]} data={data.clusters}>
+    <Table
+        headers={["Id", "Icon", "Name", "Type", "Media Count", "Storage Usage"]}
+        data={data.clusters}
+    >
         {#snippet children({ entry })}
             <td>
                 {entry.id}
             </td>
             <td>
                 <Icon nameAlt={entry.icon} />
-                {entry.icon}
                 <div class="floating">
                     <Button
                         icon="mdiPencil"
                         onclick={async () => {
                             // TODO: Icon Picker
-                            const newIcon = await prompts.text(
+                            const newIcon = await prompts.icon(
                                 "New icon",
                                 entry.icon
                             )
@@ -141,6 +144,18 @@
                         }}
                     />
                 </div>
+            </td>
+            <td>
+                {data.mediaCountByCluster.find(
+                    c => c.clustersId === entry.id
+                )?._count.id || 0}
+            </td>
+            <td>
+                {prettyBytes(
+                    data.clusterStorageUsage.find(
+                        c => c.clustersId === entry.id
+                    )?._sum.sizeBytes || 0
+                )}
             </td>
         {/snippet}
     </Table>

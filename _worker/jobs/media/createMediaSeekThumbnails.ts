@@ -53,7 +53,7 @@ export const execute = async (job: Job) => {
 
 const parse = async (
   data: any,
-  job: Job
+  job: Job,
 ): Promise<{
   id: string;
 }> => {

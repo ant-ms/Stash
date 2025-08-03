@@ -3,7 +3,7 @@ import prisma from "../../prisma";
 import { updateMediaMetadataOfFile } from "./updateMediaMetadataFromFile";
 
 export const execute = async (job: Job) => {
-  const CONCURRENCY_LIMIT = 100;
+  const CONCURRENCY_LIMIT = 200;
   const allMedia = await prisma.media.findMany();
   const total = allMedia.length;
 
