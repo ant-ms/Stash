@@ -35,7 +35,20 @@ export const media_query_from_database = async (
     return (await prisma.$queryRawUnsafe(/*sql*/ `
         ${tagsFilterParts.cte}
         SELECT
-            "Media".*,
+            "Media"."id",
+            "Media"."type",
+            "Media"."name",
+            "Media"."date",
+            "Media"."createdDate",
+            "Media"."height",
+            "Media"."width",
+            "Media"."source",
+            "Media"."content_hash",
+            "Media"."favourited",
+            "Media"."specialFilterAttribute",
+            "Media"."specialFilterAttributeGuess",
+            "Media"."tagsGuess",
+            "Media"."deleted",
             STRING_AGG ("Tags"."id"::text, ',') as tags
         FROM
             "Media"
