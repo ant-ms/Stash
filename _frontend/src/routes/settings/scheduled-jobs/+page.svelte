@@ -36,6 +36,23 @@
                         </Button>
                     </td>
                 {/await}
+                <td>Regenerate all media Data</td>
+                <td>
+                    <Button
+                        card
+                        noMargin
+                        icon="mdiPlay"
+                        onclick={async () => {
+                            await query("regenerateAllMediaData", {
+                                name: "regenerateAllMediaData",
+                                data: JSON.stringify({}),
+                                priority: -10
+                            })
+                        }}
+                    >
+                        Process remaining
+                    </Button>
+                </td>
             </tr>
         </tbody>
     </table>

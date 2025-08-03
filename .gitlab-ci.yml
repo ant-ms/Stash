@@ -1,6 +1,5 @@
 stages:
   - build
-  - deploy
 
 build-frontend:
   stage: build
@@ -30,7 +29,6 @@ build-frontend:
     changes:
       - _frontend/**/*
       - schema.prisma
-
 
 build-worker:
   stage: build
@@ -113,9 +111,3 @@ build-symlinker:
   only:
     changes:
       - _symlinker/**/*
-
-deploy:
-  stage: deploy
-  image: busybox:latest
-  script:
-    - wget --post-data="" $HOOK_URL > /dev/null 2>&1

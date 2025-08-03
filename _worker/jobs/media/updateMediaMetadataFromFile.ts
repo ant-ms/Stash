@@ -4,9 +4,10 @@ import getMetadataFromFile from "../../lib/getMetadataFromFile";
 import type { MetadataType } from "../../lib/getMetadataFromFile.types";
 import fs from "fs/promises";
 
-export const execute = async (job: Job) => {
-  const { id, initial } = await parse(job.data, job);
-
+export const updateMediaMetadataOfFile = async (
+  id: string,
+  initial = false,
+) => {
   const metadata = await getMetadataFromFile(`./media/${id}`);
   const fileSize = await fs.stat(`./media/${id}`).then((stats) => stats.size);
 
@@ -29,6 +30,11 @@ export const execute = async (job: Job) => {
         sizeBytes: fileSize,
       },
     });
+};
+
+export const execute = async (job: Job) => {
+  const { id, initial } = await parse(job.data, job);
+  await updateMediaMetadataOfFile(id, initial);
 };
 
 const parse = async (
