@@ -69,7 +69,7 @@ model Media {
   tags_old     String[]
   source       String? // TODO
   content_hash String?
-  sizeBytes    Int?
+  sizeBytes    BigInt?
 
   favourited             Boolean   @default(false)
   specialFilterAttribute String?

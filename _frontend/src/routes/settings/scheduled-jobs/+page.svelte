@@ -43,7 +43,7 @@
                         noMargin
                         icon="mdiPlay"
                         onclick={async () => {
-                            await query("regenerateAllMediaData", {
+                            await query("createJob", {
                                 name: "regenerateAllMediaData",
                                 data: JSON.stringify({}),
                                 priority: -10
