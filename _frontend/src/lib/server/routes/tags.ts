@@ -180,3 +180,25 @@ export const createTagToTagReference = async (d: {
             }
         }
     })
+
+export const changeClustersOfTag = async (d: {
+    tagId: number
+    clusterIds: number[]
+}) => {
+    await prisma.tags.update({
+        where: {
+            id: d.tagId
+        },
+        data: {
+            clusters: {
+                set: await prisma.clusters.findMany({
+                    where: {
+                        id: {
+                            in: d.clusterIds
+                        }
+                    }
+                })
+            }
+        }
+    })
+}

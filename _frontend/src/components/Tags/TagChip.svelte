@@ -20,6 +20,8 @@
 </script>
 
 {#key _tag}
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <span
         class:compact
         onclick={e => {
@@ -37,7 +39,7 @@
         {#if _tag?.icon && show != "name-only"}
             <Icon name={_tag?.icon} size={compact ? 0.9 : 1} />
         {/if}
-        {#if show != "icon-prefered" || !_tag?.icon}
+        {#if show != "icon-prefered" || !_tag?.icon || _tag?.parentId}
             {_tag?.tag}
         {/if}
     </span>
