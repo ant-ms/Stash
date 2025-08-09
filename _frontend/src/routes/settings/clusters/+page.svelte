@@ -146,16 +146,24 @@
                 </div>
             </td>
             <td>
-                {data.mediaCountByCluster.find(
+                {data.mediaCountByClusterImages.find(
                     c => c.clustersId === entry.id
-                )?._count.id || 0}
+                )?._count.id || 0} Images,
+                {data.mediaCountByClusterVideos.find(
+                    c => c.clustersId === entry.id
+                )?._count.id || 0} Videos
             </td>
             <td>
                 {prettyBytes(
-                    data.clusterStorageUsage.find(
+                    data.clusterStorageUsageImages.find(
                         c => c.clustersId === entry.id
                     )?._sum.sizeBytes || 0
-                )}
+                )} Images,
+                {prettyBytes(
+                    data.clusterStorageUsageVideos.find(
+                        c => c.clustersId === entry.id
+                    )?._sum.sizeBytes || 0
+                )} Videos
             </td>
         {/snippet}
     </Table>
