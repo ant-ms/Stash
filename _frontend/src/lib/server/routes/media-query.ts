@@ -45,6 +45,7 @@ export const media_query_from_database = async (
             "Media"."source",
             "Media"."content_hash",
             "Media"."favourited",
+            "Media"."groupedIntoNamesId",
             "Media"."specialFilterAttribute",
             "Media"."specialFilterAttributeGuess",
             "Media"."tagsGuess",
