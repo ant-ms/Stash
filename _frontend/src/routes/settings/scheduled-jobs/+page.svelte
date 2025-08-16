@@ -18,8 +18,8 @@
             countProcessed={data.aiTagMatching.countProcessed}
             countScheduled={data.aiTagMatching.countScheduled}
             countApplicable={data.aiTagMatching.countApplicable}
-            onCreate={async idsToProcess => {
-                for (const id of idsToProcess) {
+            onCreate={async itemsToProcess => {
+                for (const { id } of itemsToProcess) {
                     await query("createJob", {
                         name: "attemptManualTagging",
                         data: JSON.stringify({ id }),
@@ -32,7 +32,8 @@
         <JobCard
             title="Gather Perceived Loudness"
             icon="mdiVolumeHigh"
-            itemsAwaitingProcessing={data.gatherPerceivedLoudness.idsStillUnprocessed}
+            itemsAwaitingProcessing={data.gatherPerceivedLoudness
+                .idsStillUnprocessed}
             countProcessed={data.gatherPerceivedLoudness.countProcessed}
             countScheduled={data.gatherPerceivedLoudness.countScheduled}
             countApplicable={data.gatherPerceivedLoudness.countApplicable}

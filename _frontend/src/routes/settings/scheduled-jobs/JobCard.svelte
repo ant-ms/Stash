@@ -26,7 +26,8 @@
         countApplicable: Promise<number>
     } = $props()
 
-    let _itemsAwaitingProcessing: Awaited<typeof itemsAwaitingProcessing> = $state([])
+    let _itemsAwaitingProcessing: Awaited<typeof itemsAwaitingProcessing> =
+        $state([])
 
     onMount(async () => {
         _itemsAwaitingProcessing = await itemsAwaitingProcessing
@@ -40,29 +41,29 @@
     </div>
 
     {#await Promise.all([countProcessed, countScheduled, countApplicable])}
-    <ProgressBar/>
-
+        <ProgressBar />
     {:then [awaitedCountProcessed, awaitedCountScheduled, awaitedCountApplicable]}
-    <ProgressBar
-        sections={[
-            {
-                count: awaitedCountProcessed,
-                color: "var(--accent-foreground)"
-            },
-            {
-                count: awaitedCountScheduled,
-                color: "var(--accent-background)"
-            }
-        ]}
-        total={awaitedCountApplicable}
-    />
+        <ProgressBar
+            sections={[
+                {
+                    count: awaitedCountProcessed,
+                    color: "var(--accent-foreground)"
+                },
+                {
+                    count: awaitedCountScheduled,
+                    color: "var(--accent-background)"
+                }
+            ]}
+            total={awaitedCountApplicable}
+        />
     {/await}
 
     <div class="footer">
         <Button
             noMargin
             icon="mdiPlayOutline"
-            onclick={async () => await onCreate(_itemsAwaitingProcessing.slice(0, 10))}
+            onclick={async () =>
+                await onCreate(_itemsAwaitingProcessing.slice(0, 10))}
             disabled={!_itemsAwaitingProcessing.length}>Process 10</Button
         >
         <Button

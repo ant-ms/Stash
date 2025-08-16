@@ -9,7 +9,7 @@ export const load: PageServerLoad = async () => {
                 startsWith: "image"
             }
         }
-    });
+    })
 
     const countTotalVideos = prisma.media.count({
         where: {
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async () => {
                 startsWith: "video"
             }
         }
-    });
+    })
 
     return {
         aiTagMatching: {

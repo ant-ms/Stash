@@ -38,7 +38,7 @@
     let loading = $state(false)
     const handleClick = async (e: MouseEvent) => {
         try {
-              loading = true
+            loading = true
             await onclick?.(e)
         } catch (e) {
             console.error(e)
@@ -64,7 +64,7 @@
     onclick={handleClick}
     {onmouseenter}
     class:card
-    class:disabled={disabled}
+    class:disabled
     {title}
     class:large={size == "large"}
     class:small={size == "small"}
@@ -158,40 +158,48 @@
         }
 
         &.loading {
-            position: relative;
             pointer-events: none;
+            position: relative;
         }
 
         &.loading::after {
             content: "";
+
             position: absolute;
+            z-index: 1;
             inset: 0;
-            background: rgba(0,0,0,0.25);
+
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1;
+
+            background: rgba(0, 0, 0, 0.25);
         }
 
         &.loading::before {
             content: "";
+
             position: absolute;
+            z-index: 2;
             top: calc(50% - 2px);
             left: 50%;
+
             width: 1em;
             height: 1em;
             margin: -0.5em 0 0 -0.5em;
             border: 3px solid transparent;
             border-top-color: white;
             border-radius: 50%;
+
             animation: spin 0.7s linear infinite;
-            z-index: 2;
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
 
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         &.highlighted {
             background: var(--color-dark-level-3);

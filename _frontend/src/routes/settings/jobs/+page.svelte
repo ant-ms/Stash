@@ -57,7 +57,14 @@
         title="Job details for {jobDetails.id}"
         onclose={() => (jobDetails = null)}
     >
-        <pre>{JSON.stringify(jobDetails, null, 2)}</pre>
+        <pre>{JSON.stringify(jobDetails, null, 2)
+                .split("\n")
+                .map(line =>
+                    line.length > 120
+                        ? line.replace(/(.{1,120})/g, "$1\n") // break into chunks
+                        : line
+                )
+                .join("\n")}</pre>
 
         {#snippet actionsRight()}
             <Button
