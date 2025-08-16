@@ -158,35 +158,49 @@
                                 )?.name
                         )
                         .join(", ")}
-                    <div class="floating">
-                        <Button
-                            noMargin
-                            icon="mdiPencil"
-                            onclick={async () => {
-                                const selectedClusterIds = await prompts.selectMultiple(
+                <div class="floating">
+                    <Button
+                        noMargin
+                        icon="mdiPencil"
+                        onclick={async () => {
+                            const selectedClusterIds =
+                                await prompts.selectMultiple(
                                     "Permitted Clusters",
                                     data.clusters.map(c => ({
                                         value: c.id.toString(),
                                         name: c.name
                                     })),
-                                    [...new Set(data.tagClusterMappings[entry.id]
-                                        .map(
-                                            cluster =>
-                                                ($page.data as PageData).clusters.find(
-                                                    c => c.id == cluster
-                                                )?.id.toString()
-                                        ).filter(cluster => cluster !== undefined))]
+                                    [
+                                        ...new Set(
+                                            data.tagClusterMappings[entry.id]
+                                                .map(cluster =>
+                                                    (
+                                                        $page.data as PageData
+                                                    ).clusters
+                                                        .find(
+                                                            c => c.id == cluster
+                                                        )
+                                                        ?.id.toString()
+                                                )
+                                                .filter(
+                                                    cluster =>
+                                                        cluster !== undefined
+                                                )
+                                        )
+                                    ]
                                 )
-                                if (selectedClusterIds) {
-                                    await query("changeClustersOfTag", {
-                                        tagId: entry.id,
-                                        clusterIds: selectedClusterIds.map(id => parseInt(id))
-                                    })
-                                    invalidateAll()
-                                }
-                            }}
-                        />
-                    </div>
+                            if (selectedClusterIds) {
+                                await query("changeClustersOfTag", {
+                                    tagId: entry.id,
+                                    clusterIds: selectedClusterIds.map(id =>
+                                        parseInt(id)
+                                    )
+                                })
+                                invalidateAll()
+                            }
+                        }}
+                    />
+                </div>
             </td>
         {/snippet}
     </Table>

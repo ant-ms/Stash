@@ -1,13 +1,11 @@
 <script lang="ts">
-    import type { ComponentProps, Snippet } from "svelte"
+    import type { Snippet } from "svelte"
 
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Icon from "$components/elements/Icon.svelte"
     import Key from "$components/elements/Key.svelte"
     import type { possibleIcons } from "$lib/possibleIcons"
     import Shortcut from "$reusables/Shortcut.svelte"
-
-    let isDraggingOver = false
 
     let {
         icon = null as keyof typeof possibleIcons | null,
@@ -31,66 +29,17 @@
         transparentButton = false,
         title = null as null | string,
         oncontextmenu = (() => {}) as (e: MouseEvent) => void,
-        onclick = (() => {}) as (e: MouseEvent) => void,
+        onclick = (() => {}) as (e: MouseEvent) => void | Promise<void>,
         onmouseenter = (() => {}) as (e: MouseEvent) => void,
         children = null,
         size = "medium" as "small" | "medium" | "large"
     } = $props()
 
-    //#region Handle Drag (for moving media)
-
-    const isFileTransfer = (e: DragEvent) =>
-        e.dataTransfer?.types.includes("Files")
-
-    // TODO
-    // const handleDrop = (e: DragEvent) => {
-    //     const items = e.dataTransfer?.items
-    //     if (!items) return
-
-    //     for (const i in items) {
-    //         const item = items[i]
-    //         if (item.type == "text/plain") item.getAsString(async mediaId => {
-
-    //             if (mediaId.startsWith("mediaId_")) {
-
-    //                 mediaId = mediaId.replace("mediaId_", "")
-
-    //                 const response = await fetch(`/api/media/${mediaId}/group`, {
-    //                     method: 'PUT',
-    //                     body: JSON.stringify({
-    //                         groupId: target?.id
-    //                     })
-    //                 })
-
-    //                 // TODO ?
-    //                 if (response.ok)
-    //                     invalidateAll()
-    //                 else
-    //                     window.alert("Something wen't wrong moving media")
-
-    //             }
-
-    //         })
-    //     }
-
-    //     isDraggingOver = false
-    // }
-    // const handleEnter = (e: DragEvent) => {
-    //     if (isFileTransfer(e)) return
-
-    //     isDraggingOver = true
-    // }
-    // const handleLeave = (e: DragEvent) => {
-    //     isDraggingOver = false
-    // }
-
-    //#endregion
-
     let loading = $state(false)
-    const handleClick = (e: MouseEvent) => {
+    const handleClick = async (e: MouseEvent) => {
         try {
-            //   loading = true
-            onclick?.(e)
+              loading = true
+            await onclick?.(e)
         } catch (e) {
             console.error(e)
         } finally {
@@ -105,7 +54,7 @@
     {download}
     {href}
     style={styleOverride}
-    class:active={active || (href && href == $page.url.pathname)}
+    class:active={active || (href && href == page.url.pathname)}
     class:hidden={hidden || !children}
     class:right
     class:highlighted
@@ -114,9 +63,8 @@
     {oncontextmenu}
     onclick={handleClick}
     {onmouseenter}
-    class:isDraggingOver
     class:card
-    class:disabled={disabled || loading}
+    class:disabled={disabled}
     {title}
     class:large={size == "large"}
     class:small={size == "small"}
@@ -209,6 +157,42 @@
             opacity: 75%;
         }
 
+        &.loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        &.loading::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        &.loading::before {
+            content: "";
+            position: absolute;
+            top: calc(50% - 2px);
+            left: 50%;
+            width: 1em;
+            height: 1em;
+            margin: -0.5em 0 0 -0.5em;
+            border: 3px solid transparent;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            z-index: 2;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+
         &.highlighted {
             background: var(--color-dark-level-3);
             outline: 1px solid var(--border-color-1);
@@ -222,12 +206,6 @@
                     outline-offset: calc(var(--outline-size) * -1);
                 }
             }
-        }
-
-        &.isDraggingOver {
-            background: var(--color-dark-level-2-hover);
-            outline: 1px solid var(--border-color-1-hover);
-            outline-offset: calc(var(--outline-size) * -1);
         }
 
         .section {

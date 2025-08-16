@@ -85,6 +85,7 @@ model Media {
   visualAiMatchingVersion     Int      @default(0) @db.SmallInt
   specialFilterAttributeGuess String?
   tagsGuess                   String[]
+  suggestedVolumePercent Int?
 
   deleted Boolean @default(false)
 
