@@ -147,3 +147,8 @@ model Job {
   debugMessages        String[]
   waitFor              String?
 }
+
+model SettingsKeyValuePairs {
+  key String @id
+  value String
+}

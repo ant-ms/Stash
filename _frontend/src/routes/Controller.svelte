@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { PressedKeys } from "runed"
     import { onMount } from "svelte"
 
     import { browser } from "$app/environment"
@@ -9,7 +10,6 @@
     import ImportPopup from "$components/Popups/ImportPopup/ImportPopup.svelte"
     import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
     import QuickSwitch from "$components/Popups/QuickSwitch.svelte"
-    import ShortcutPopup from "$components/Popups/ShortcutPopup.svelte"
     import MasonaryView from "$components/Popups/views/MasonaryView.svelte"
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
@@ -21,7 +21,6 @@
         windowControlsSpacerVisible
     } from "$lib/stores.svelte"
     import varsSvelte from "$lib/vars.svelte"
-    import Shortcut from "$reusables/Shortcut.svelte"
 
     import type { PageData } from "./[cluster]/$types"
 
@@ -49,39 +48,8 @@
         }
     })
 
-    // TODO: Move to controller
-    export const goToPreviousMedia = async () => {
-        if (!mediaController.visibleMedium) return
-
-        const mediaIndex = mediaController.media.findIndex(
-            m => m.id == mediaController.visibleMedium?.id
-        )
-
-        if (mediaIndex > 0)
-            mediaController.visibleMedium =
-                mediaController.media[mediaIndex - 1]
-    }
-
-    export const goToNextMedia = async () => {
-        if (!mediaController.visibleMedium) return
-
-        const mediaIndex = mediaController.media.findIndex(
-            m => m.id == mediaController.visibleMedium?.id
-        )
-
-        if (mediaIndex < mediaController.media.length - 1)
-            mediaController.visibleMedium =
-                mediaController.media[mediaIndex + 1]
-        else
-            mediaController.loadMoreMedia().then(() => {
-                mediaController.visibleMedium =
-                    mediaController.media[mediaIndex + 1]
-            })
-    }
-
     const popups = {
         "Quick Switch": QuickSwitch,
-        Shortcuts: ShortcutPopup,
         "Create Story": CreateStoryPopup,
         "Media Viewer Mobile": MediaViewerMobile,
         "Media Details": MediaDetailsPopup,
@@ -108,63 +76,39 @@
         }
         // @ts-ignore
         window.getSelectedMediaIds = () => $selectedMediaIds
+
+        const keys = new PressedKeys()
+        keys.onKeys(["meta", "o"], () => {
+            popup = "Quick Switch"
+        })
+        keys.onKeys(["meta", "k"], () => {
+            popup = "Quick Switch"
+        })
+        keys.onKeys(["meta", ","], () => goto("/settings/general"))
+
+        // TODO: These don't seem to work all that well
+        keys.onKeys(["shift", "ArrowUp"], () => {
+            const currentClusterIndex = pageData.clusters.findIndex(
+                c => c.id == pageData.cluster.id
+            )
+            if (currentClusterIndex == 0) return
+            const newCluster = pageData.clusters[currentClusterIndex - 1]
+            goto(`/${newCluster.name}`)
+        })
+        keys.onKeys(["shift", "ArrowDown"], () => {
+            const currentClusterIndex = pageData.clusters.findIndex(
+                c => c.id == pageData.cluster.id
+            )
+            if (currentClusterIndex >= pageData.clusters.length - 1) return
+            const cluster = pageData.clusters[currentClusterIndex + 1]
+            goto(`/${cluster.name}`)
+        })
     })
 </script>
 
 {#if Popup}
     <Popup />
 {/if}
-
-<Shortcut
-    meta
-    key="o"
-    action={() => {
-        popup = "Quick Switch"
-    }}
-/>
-<Shortcut
-    meta
-    key="k"
-    action={() => {
-        popup = "Quick Switch"
-    }}
-/>
-<Shortcut meta key="/" action={() => (popup = "Shortcuts")} />
-<Shortcut meta key="," action={() => goto("/settings/general")} />
-
-<!-- Media Navigation -->
-<Shortcut key="," action={goToPreviousMedia} />
-<Shortcut key="." action={goToNextMedia} />
-
-<!-- Go up by a cluster -->
-<Shortcut
-    shift
-    opt
-    key="ArrowUp"
-    action={() => {
-        const currentClusterIndex = pageData.clusters.findIndex(
-            c => c.id == pageData.cluster.id
-        )
-        if (currentClusterIndex == 0) return
-        const newCluster = pageData.clusters[currentClusterIndex - 1]
-        goto(`/${newCluster.name}`)
-    }}
-/>
-
-<!-- Go down by a cluster -->
-<Shortcut
-    shift
-    opt
-    key="ArrowDown"
-    action={() => {
-        const currentClusterIndex = pageData.clusters.findIndex(
-            c => c.id == pageData.cluster.id
-        )
-        if (currentClusterIndex >= pageData.clusters.length - 1) return
-        const cluster = pageData.clusters[currentClusterIndex + 1]
-        goto(`/${cluster.name}`)
-    }}
-/>
 
 <!-- TODO: Make toggle for less bandwith usage -->
 <svelte:head>

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { PressedKeys } from "runed"
     import { onMount } from "svelte"
     import { run } from "svelte/legacy"
 
@@ -7,7 +8,6 @@
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { settings, videoElement } from "$lib/stores.svelte"
-    import Shortcut from "$reusables/Shortcut.svelte"
 
     const formatDuration = (seconds: number) => {
         let hours = Math.floor(seconds / 3600)
@@ -42,6 +42,39 @@
         })
 
         resizeObserver.observe(video)
+
+        const keys = new PressedKeys()
+        keys.onKeys([" "], () => {
+            paused = !paused
+        })
+        keys.onKeys(["k"], () => {
+            paused = !paused
+        })
+        keys.onKeys(["j"], () => {
+            const seekBy = 60
+            if (currentTime - seekBy < 0) currentTime = 0
+            else currentTime -= seekBy
+        })
+        keys.onKeys(["ArrowLeft"], () => {
+            const seekBy = 15
+            if (currentTime - seekBy < 0) currentTime = 0
+            else currentTime -= seekBy
+        })
+        keys.onKeys(["ArrowRight"], () => {
+            const seekBy = 15
+            if (currentTime + seekBy > duration) currentTime = duration
+            else currentTime += seekBy
+        })
+        keys.onKeys(["j"], () => {
+            const seekBy = 60
+            if (currentTime - seekBy < 0) currentTime = 0
+            else currentTime -= seekBy
+        })
+        keys.onKeys(["l"], () => {
+            const seekBy = 60
+            if (currentTime + seekBy > duration) currentTime = duration
+            else currentTime += seekBy
+        })
 
         // This callback cleans up the observer
         return () => resizeObserver.unobserve(video)
@@ -211,43 +244,6 @@
         </div>
     </div>
 </main>
-
-<Shortcut key=" " action={() => (paused = !paused)} />
-<Shortcut key="k" action={() => (paused = !paused)} />
-
-<Shortcut
-    key="j"
-    action={() => {
-        const seekBy = 60
-        if (currentTime - seekBy < 0) currentTime = 0
-        else currentTime -= seekBy
-    }}
-/>
-<Shortcut
-    key="ArrowLeft"
-    action={() => {
-        const seekBy = 15
-        if (currentTime - seekBy < 0) currentTime = 0
-        else currentTime -= seekBy
-    }}
-/>
-
-<Shortcut
-    key="l"
-    action={() => {
-        const seekBy = 60
-        if (currentTime + seekBy > duration) currentTime = duration
-        else currentTime += seekBy
-    }}
-/>
-<Shortcut
-    key="ArrowRight"
-    action={() => {
-        const seekBy = 15
-        if (currentTime + seekBy > duration) currentTime = duration
-        else currentTime += seekBy
-    }}
-/>
 
 <style lang="scss">
     main {

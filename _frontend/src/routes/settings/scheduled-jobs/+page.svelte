@@ -38,7 +38,7 @@
             countScheduled={data.gatherPerceivedLoudness.countScheduled}
             countApplicable={data.gatherPerceivedLoudness.countApplicable}
             onCreate={async idsToProcess => {
-                for (const id of idsToProcess) {
+                for (const { id } of idsToProcess) {
                     await query("createJob", {
                         name: "gatherPerceivedLoudness",
                         data: JSON.stringify({ id }),

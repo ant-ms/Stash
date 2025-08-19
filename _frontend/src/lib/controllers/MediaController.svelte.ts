@@ -1,5 +1,6 @@
 import type { Media } from "@prisma/client/wasm"
 import { md5 } from "hash-wasm"
+import { PressedKeys } from "runed"
 import { untrack } from "svelte"
 import { get } from "svelte/store"
 
@@ -20,6 +21,8 @@ class MediaController {
             return
         }
 
+        this.alreadyInitialized = true
+
         $effect(() => {
             if (!this.filters) {
             }
@@ -37,7 +40,9 @@ class MediaController {
 
         mediaTypeFilter.subscribe(() => this.updateMedia)
 
-        this.alreadyInitialized = true
+        const keys = new PressedKeys()
+        keys.onKeys([","], goToPreviousMedia)
+        keys.onKeys(["."], goToNextMedia)
     }
 
     public visibleMedium: MediaType | null = $state(null)
@@ -195,4 +200,31 @@ const calculatePages = async (media: MediaType[]) => {
     }
 
     return pages
+}
+
+const goToPreviousMedia = async () => {
+    if (!mediaController.visibleMedium) return
+
+    const mediaIndex = mediaController.media.findIndex(
+        m => m.id == mediaController.visibleMedium?.id
+    )
+
+    if (mediaIndex > 0)
+        mediaController.visibleMedium = mediaController.media[mediaIndex - 1]
+}
+
+const goToNextMedia = async () => {
+    if (!mediaController.visibleMedium) return
+
+    const mediaIndex = mediaController.media.findIndex(
+        m => m.id == mediaController.visibleMedium?.id
+    )
+
+    if (mediaIndex < mediaController.media.length - 1)
+        mediaController.visibleMedium = mediaController.media[mediaIndex + 1]
+    else
+        mediaController.loadMoreMedia().then(() => {
+            mediaController.visibleMedium =
+                mediaController.media[mediaIndex + 1]
+        })
 }

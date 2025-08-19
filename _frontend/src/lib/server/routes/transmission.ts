@@ -4,8 +4,23 @@ import { createPostUploadJobs } from "../actions/create-post-upload-jobs"
 import { createPreUploadMediaEntry } from "../actions/create-pre-upload-media-entry"
 import prisma from "../prisma"
 
-const TRANSMISSION_ENDPOINT = "https://torrent.hera.lan/transmission/rpc"
-const TRANSMISSION_STASH_DATA_LOCATION = "/stash"
+const getTransmissionEndpoint = async () =>
+    (
+        await prisma.settingsKeyValuePairs.findUniqueOrThrow({
+            where: {
+                key: "TRANSMISSION_ENDPOINT"
+            }
+        })
+    ).value
+
+const getTransmissionStashDataLocation = async () =>
+    (
+        await prisma.settingsKeyValuePairs.findUniqueOrThrow({
+            where: {
+                key: "TRANSMISSION_STASH_DATA_LOCATION"
+            }
+        })
+    ).value
 
 let transmissionSessionId = ""
 
@@ -13,7 +28,7 @@ const make_request = async (body: object) => {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
 
     const _make_request = async (body: object) => {
-        const response = await fetch(TRANSMISSION_ENDPOINT, {
+        const response = await fetch(await getTransmissionEndpoint(), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -40,8 +55,10 @@ const make_request = async (body: object) => {
     return await response.json()
 }
 
-export const getAllCompletedTorrents = async (d: {}) =>
-    (
+export const getAllCompletedTorrents = async (d: {}) => {
+    const transmissionStashDataLocation =
+        await getTransmissionStashDataLocation()
+    return (
         (await make_request({
             method: "torrent-get",
             arguments: {
@@ -67,8 +84,9 @@ export const getAllCompletedTorrents = async (d: {}) =>
         t =>
             [0, 5, 6].includes(t.status) &&
             t.files.length == 1 &&
-            t.downloadDir != TRANSMISSION_STASH_DATA_LOCATION
+            t.downloadDir != transmissionStashDataLocation
     )
+}
 
 export const transmissionCreatePreUploadMediaEntry = async (d: {
     name: string
@@ -108,7 +126,7 @@ export const moveTorrentPath = async (d: { id: number }) => {
         method: "torrent-set-location",
         arguments: {
             ids: [d.id],
-            location: TRANSMISSION_STASH_DATA_LOCATION,
+            location: await getTransmissionStashDataLocation(),
             move: true
         }
     })
@@ -121,4 +139,38 @@ export const createPostMoveJobs = async (d: { mediaId: string }) => {
         }
     })
     await createPostUploadJobs(d.mediaId, type)
+}
+
+export const getAllSeedingTorrents = async (d: {}) => {
+    const transmissionStashDataLocation =
+        await getTransmissionStashDataLocation()
+    return (
+        (await make_request({
+            method: "torrent-get",
+            arguments: {
+                fields: [
+                    "id",
+                    "name",
+                    "downloadDir",
+                    "totalSize",
+                    "uploadedEver",
+                    "uploadRatio"
+                ]
+            }
+        })) as {
+            arguments: {
+                torrents: Array<{
+                    id: number
+                    name: string
+                    downloadDir: string
+                    totalSize: number
+                    uploadedEver: number
+                    uploadRatio: number
+                }>
+            }
+            result: string
+        }
+    ).arguments.torrents.filter(
+        t => t.downloadDir == transmissionStashDataLocation
+    )
 }

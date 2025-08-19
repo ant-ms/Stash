@@ -1,5 +1,7 @@
 <script lang="ts">
+    import { PressedKeys } from "runed"
     import selectFiles from "select-files"
+    import { onMount } from "svelte"
 
     import { browser } from "$app/environment"
     import { page } from "$app/stores"
@@ -17,7 +19,6 @@
         isFullscreen
     } from "$lib/stores.svelte"
     import Dropdown from "$reusables/Dropdown.svelte"
-    import Shortcut from "$reusables/Shortcut.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"
     import TagChip from "../Tags/TagChip.svelte"
@@ -72,23 +73,17 @@
         if (!browser) return
         MediaViewer_replaceVideoThumbnail()
     }
+
+    onMount(() => {
+        const keys = new PressedKeys()
+        keys.onKeys(["f"], () => {
+            isFullscreen.set(!$isFullscreen)
+        })
+        keys.onKeys(["i"], () => {
+            $controller.setPopup("Media Details")
+        })
+    })
 </script>
-
-<!-- Toggle Fullscreen -->
-<Shortcut
-    key="f"
-    action={() => {
-        isFullscreen.set(!$isFullscreen)
-    }}
-/>
-
-<Shortcut
-    meta
-    key="i"
-    action={() => {
-        $controller.setPopup("Media Details")
-    }}
-/>
 
 {#if mediaController.visibleMedium}
     <main class:fullscreen={$isFullscreen}>

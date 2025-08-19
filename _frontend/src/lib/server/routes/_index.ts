@@ -4,6 +4,7 @@ import * as groups from "./groups"
 import * as jobs from "./jobs"
 import * as media from "./media"
 import * as mediaQuery from "./media-query"
+import * as settings from "./settings"
 import * as stories from "./stories"
 import * as tags from "./tags"
 import * as transmission from "./transmission"
@@ -17,5 +18,6 @@ export default {
     ...jobs,
     ...credentials,
     ...transmission,
-    ...groups
+    ...groups,
+    ...settings
 }

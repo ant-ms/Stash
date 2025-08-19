@@ -1,11 +1,12 @@
 <script lang="ts">
+    import { PressedKeys } from "runed"
+    import { onMount } from "svelte"
     import SvelteMarkdown from "svelte-markdown"
 
     import { page } from "$app/stores"
     import query from "$lib/client/call"
     import { controller } from "$lib/stores.svelte"
     import varsSvelte from "$lib/vars.svelte"
-    import Shortcut from "$reusables/Shortcut.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"
 
@@ -45,6 +46,13 @@
 
         window.history.pushState({ storyOpen: true }, "")
     }
+
+    onMount(() => {
+        const keys = new PressedKeys()
+        keys.onKeys(["c"], () => {
+            $controller.setPopup("Create Story")
+        })
+    })
 </script>
 
 <svelte:window onpopstate={() => (varsSvelte.chaptersOfStory = [])} />
@@ -79,9 +87,6 @@
             {/each}
         {/await}
     </main>
-
-    <!-- Add new story -->
-    <Shortcut key="c" action={() => $controller.setPopup("Create Story")} />
 {/if}
 
 <style lang="scss">

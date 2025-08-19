@@ -5,7 +5,6 @@
     import Icon from "$components/elements/Icon.svelte"
     import Key from "$components/elements/Key.svelte"
     import type { possibleIcons } from "$lib/possibleIcons"
-    import Shortcut from "$reusables/Shortcut.svelte"
 
     let {
         icon = null as keyof typeof possibleIcons | null,
@@ -98,13 +97,14 @@
     {/if}
 </a>
 
-{#if shortcut}
+<!-- TODO: Reimplement and make it cancel any potential other actions that could have been triggered -->
+<!-- {#if shortcut}
     <Shortcut
         modifier={shortcut.modifier as any}
         key={shortcut.key}
         action={onclick}
     />
-{/if}
+{/if} -->
 
 <style lang="scss">
     @use "sass:color";

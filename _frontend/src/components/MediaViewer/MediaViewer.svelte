@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { PressedKeys } from "runed"
     import { onMount } from "svelte"
 
     import { page } from "$app/stores"
@@ -13,7 +14,6 @@
         isFullscreen,
         settings
     } from "$lib/stores.svelte"
-    import Shortcut from "$reusables/Shortcut.svelte"
 
     import MediaViewerImage from "./MediaViewerImage.svelte"
     import MediaViewerVideo from "./MediaViewerVideo.svelte"
@@ -75,20 +75,18 @@
 
         hideControlsAfterTimeout()
 
+        const keys = new PressedKeys()
+        keys.onKeys(["escape"], () => {
+            isFullscreen.set(false)
+            mediaController.visibleMedium = null
+        })
+
         return () => {
             window.removeEventListener("mousemove", handleMouseMove)
             clearTimeout(hideTimeout)
         }
     })
 </script>
-
-<Shortcut
-    key="Escape"
-    action={() => {
-        isFullscreen.set(false)
-        mediaController.visibleMedium = null
-    }}
-/>
 
 {#if mediaController.visibleMedium}
     <main class:fullscreen={$isFullscreen} class:mobile={isMobile.current}>

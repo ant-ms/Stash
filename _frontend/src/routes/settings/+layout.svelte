@@ -32,9 +32,9 @@
         </SidebarSection>
 
         <SidebarSection title="Content">
-            <Button icon="mdiRhombusSplit" href="/settings/clusters"
-                >Clusters</Button
-            >
+            <Button icon="mdiRhombusSplit" href="/settings/clusters">
+                Clusters
+            </Button>
             <Button icon="mdiTagMultiple" href="/settings/tags">Tags</Button>
         </SidebarSection>
 
@@ -51,6 +51,12 @@
             >
             <Button icon="mdiImageMultiple" href="/settings/icon-packs">
                 Icon Packs
+            </Button>
+        </SidebarSection>
+
+        <SidebarSection title="Integrations">
+            <Button icon="mdiTransmissionTower" href="/settings/transmission">
+                Transmission
             </Button>
         </SidebarSection>
 
@@ -116,6 +122,7 @@
         .content {
             overflow: hidden;
             flex-grow: 1;
+            background: var(--color-dark-level-base);
         }
 
         .mobileBottomBar {
