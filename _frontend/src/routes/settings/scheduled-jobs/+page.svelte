@@ -48,6 +48,25 @@
             }}
         />
 
+                <JobCard
+                    title="Create Media Thumbnail"
+                    icon="mdiImage"
+                    itemsAwaitingProcessing={data.createMediaThumbnail
+                        .idsStillUnprocessed}
+                    countProcessed={data.createMediaThumbnail.countApplicable - data.createMediaThumbnail.countScheduled}
+                    countScheduled={data.createMediaThumbnail.countScheduled}
+                    countApplicable={data.createMediaThumbnail.countApplicable}
+                    onCreate={async idsToProcess => {
+                        for (const { id } of idsToProcess) {
+                            await query("createJob", {
+                                name: "createMediaThumbnail",
+                                data: JSON.stringify({ id }),
+                                priority: -10
+                            })
+                        }
+                    }}
+                />
+
         <!-- <span>Regenerate all media Data</span>
         <Button
             card
