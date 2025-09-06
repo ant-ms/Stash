@@ -92,19 +92,17 @@ export const load: PageServerLoad = async () => {
         createMediaThumbnail: {
             idsStillUnprocessed: new Promise(async resolve => {
                 const thumbnails = (await fs.readdir("./thumbnails")).filter(file => file.endsWith(".webp"));
+                const thumbnailIds = new Set(thumbnails.map(id => id.replace(".webp", "")));
 
-                const mediaIdsWithoutThumbnails = await prisma.media.findMany({
-                    where: {
-                        id: {
-                            notIn: thumbnails.map(id => id.replace(".webp", ""))
-                        }
-                    },
-                    select: {
-                        id: true
-                    }
+                const allMedia = await prisma.media.findMany({
+                    select: { id: true }
                 });
 
-                resolve(mediaIdsWithoutThumbnails.map(media => media.id));
+                const mediaIdsWithoutThumbnails = allMedia
+                    .map(m => m.id)
+                    .filter(id => !thumbnailIds.has(id));
+
+                resolve(mediaIdsWithoutThumbnails);
             }),
             countApplicable: countTotalMedia,
             countScheduled: prisma.job.count({
