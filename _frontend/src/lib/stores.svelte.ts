@@ -8,7 +8,7 @@ import type Controller from "../routes/Controller.svelte"
 export let controller: Writable<Controller> = writable()
 
 // Constants
-export const PAGE_SIZE = 100
+export const PAGE_SIZE = 200
 
 // Page Data
 export let collapsedTags: Writable<string[]> = writable([])

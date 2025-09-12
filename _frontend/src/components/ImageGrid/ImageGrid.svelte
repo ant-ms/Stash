@@ -1,5 +1,6 @@
 <script lang="ts">
     import { page } from "$app/stores"
+    import Button from "$components/elements/Button.svelte"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"
@@ -67,6 +68,14 @@
                     {/if}
                 </div>
             {/each}
+            <Button
+                card
+                icon="mdiPageNext"
+                onclick={async () => {
+                    await mediaController.loadMoreMedia()
+                }}
+                styleOverride="margin: 1rem">Load More Media</Button
+            >
         </section>
     {/if}
 </main>

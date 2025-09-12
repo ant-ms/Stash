@@ -19,13 +19,13 @@
 <style lang="scss">
     .wrapper {
         position: fixed;
+        z-index: 2;
         top: 0;
         bottom: 0;
 
         display: flex;
 
         padding: 1.5rem;
-        z-index: 2;
 
         main {
             overflow-y: scroll;

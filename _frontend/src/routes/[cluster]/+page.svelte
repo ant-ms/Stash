@@ -12,25 +12,6 @@
 
     let imageGallerySection: HTMLDivElement
 
-    onMount(() => {
-        loadMoreMediaIfOverflowed()
-    })
-
-    afterUpdate(() => {
-        loadMoreMediaIfOverflowed()
-    })
-
-    const loadMoreMediaIfOverflowed = () => {
-        if (!imageGallerySection) return
-
-        const isOverflowed =
-            imageGallerySection.scrollHeight > imageGallerySection.clientHeight
-
-        if (!isOverflowed) {
-            mediaController.loadMoreMedia()
-        }
-    }
-
     const onscroll = (e: Event) => {
         const target = e.target as HTMLDivElement
         if (
