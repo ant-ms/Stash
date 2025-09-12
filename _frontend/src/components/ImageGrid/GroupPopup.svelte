@@ -25,6 +25,7 @@
         display: flex;
 
         padding: 1.5rem;
+        z-index: 2;
 
         main {
             overflow-y: scroll;
