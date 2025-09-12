@@ -61,22 +61,20 @@
     bind:endX
 >
     {#each getProcessedMedia(media) as medium}
-        <GridThumbnail
-            medium={medium.groupedIntoNamesId == null
-                ? medium
-                : getSortedMatchingMedia(medium).shift()}
-            onclick={() => {
-                if (medium.groupedIntoNamesId != null) {
+        {#if medium.groupedIntoNamesId == null}
+            <GridThumbnail {medium} />
+        {:else}
+            <GridThumbnail
+                medium={getSortedMatchingMedia(medium).shift() as any}
+                onclick={() => {
                     const popupMedia = getSortedMatchingMedia(medium)
                     mediaController.mediaOverride = popupMedia
                     groupPopupMedia = popupMedia
                     showGroupPopup = true
-                } else {
-                    mediaController.visibleMedium = medium
-                }
-            }}
-            isParent={medium.groupedIntoNamesId != null}
-        />
+                }}
+                isParent
+            />
+        {/if}
     {/each}
 </Grid>
 

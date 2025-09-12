@@ -141,6 +141,7 @@
 
 <IntersectionObserver
     on:click={e => {
+        console.log("CLICK", !!onclick)
         if (onclick) onclick(e.detail)
         else leftClick(e.detail)
     }}

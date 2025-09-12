@@ -5,7 +5,6 @@
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import Key from "$components/elements/Key.svelte"
-    import FuzzyTemplate from "$components/FuzzyTemplate.svelte"
     import TagChip from "$components/Tags/TagChip.svelte"
     import TagInputField from "$components/Tags/TagInputField.svelte"
     import query from "$lib/client/call"
