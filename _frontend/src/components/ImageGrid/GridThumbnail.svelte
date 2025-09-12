@@ -60,7 +60,7 @@
     const leftClick = (e: MouseEvent) => {
         if (e.metaKey) {
             mediaController.visibleMedium = null
-            if (varsSvelte.selectedMedias.some(m => m.id === medium.id)){
+            if (varsSvelte.selectedMedias.some(m => m.id === medium.id)) {
                 // If includes media already, remove
                 varsSvelte.selectedMedias = varsSvelte.selectedMedias.filter(
                     j => j.id != medium.id
@@ -71,9 +71,16 @@
 
                 // If shift key is pressed and there is exactly one selected media, selectall in between
                 if (e.shiftKey && varsSvelte.selectedMedias.length == 1) {
-                    const startIndex = mediaController.media.findIndex(m => m.id === varsSvelte.selectedMedias[0].id)
-                    const endIndex = mediaController.media.findIndex(m => m.id === medium.id)
-                    toBeSelected = mediaController.media.slice(Math.min(startIndex, endIndex), Math.max(startIndex, endIndex) + 1)
+                    const startIndex = mediaController.media.findIndex(
+                        m => m.id === varsSvelte.selectedMedias[0].id
+                    )
+                    const endIndex = mediaController.media.findIndex(
+                        m => m.id === medium.id
+                    )
+                    toBeSelected = mediaController.media.slice(
+                        Math.min(startIndex, endIndex),
+                        Math.max(startIndex, endIndex) + 1
+                    )
                 }
 
                 varsSvelte.selectedMedias = [
@@ -169,7 +176,9 @@
             ondragstart={dragStartHandler}
             bind:this={element}
             class:selectedExists={varsSvelte.selectedMedias.length != 0}
-            class:selected={varsSvelte.selectedMedias.some(m => m.id === medium.id)}
+            class:selected={varsSvelte.selectedMedias.some(
+                m => m.id === medium.id
+            )}
             class:rigidAspectRatio
             onmousemove={processSeeking}
             ontouchmove={processSeeking}
