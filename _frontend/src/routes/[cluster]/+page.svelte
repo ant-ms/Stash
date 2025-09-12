@@ -1,17 +1,35 @@
 <script lang="ts">
+    import { afterUpdate, onMount } from "svelte"
+
     import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
     import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
     import MenuBar from "$components/MenuBar.svelte"
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
-    import {
-        actionBar,
-        actionBars,
-        isFullscreen,
-        settings
-    } from "$lib/stores.svelte"
+    import { actionBar, actionBars, isFullscreen } from "$lib/stores.svelte"
 
     import Sidebar from "./Sidebar.svelte"
+
+    let imageGallerySection: HTMLDivElement
+
+    onMount(() => {
+        loadMoreMediaIfOverflowed()
+    })
+
+    afterUpdate(() => {
+        loadMoreMediaIfOverflowed()
+    })
+
+    const loadMoreMediaIfOverflowed = () => {
+        if (!imageGallerySection) return
+
+        const isOverflowed =
+            imageGallerySection.scrollHeight > imageGallerySection.clientHeight
+
+        if (!isOverflowed) {
+            mediaController.loadMoreMedia()
+        }
+    }
 
     const onscroll = (e: Event) => {
         const target = e.target as HTMLDivElement
@@ -31,7 +49,11 @@
 
     {#if !$isFullscreen}
         <div class="center">
-            <section id="imageGallerySection" {onscroll}>
+            <section
+                id="imageGallerySection"
+                {onscroll}
+                bind:this={imageGallerySection}
+            >
                 <MenuBar />
                 <ImageGrid />
             </section>
