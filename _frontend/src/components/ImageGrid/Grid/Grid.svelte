@@ -66,17 +66,16 @@
         })
         grid.renderItems()
 
-
         const resizeObserver = new ResizeObserver(entries => {
-          const entry = entries.at(0) as ResizeObserverEntry;
-          startX = entry.target.getBoundingClientRect().left;
-          endX = entry.target.getBoundingClientRect().right;
-        });
+            const entry = entries.at(0) as ResizeObserverEntry
+            startX = entry.target.getBoundingClientRect().left
+            endX = entry.target.getBoundingClientRect().right
+        })
 
-        resizeObserver.observe(container);
+        resizeObserver.observe(container)
 
         // This callback cleans up the observer
-        return () => resizeObserver.unobserve(container);
+        return () => resizeObserver.unobserve(container)
     })
 
     afterUpdate(async () => {

@@ -2,8 +2,9 @@
     import type { Media } from "@prisma/client/wasm"
 
     import Grid from "$components/ImageGrid/Grid/Grid.svelte"
-    import GridThumbnail from "./GridThumbnail.svelte"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
+
+    import GridThumbnail from "./GridThumbnail.svelte"
     import GroupPopup from "./GroupPopup.svelte"
 
     interface Props {
@@ -61,7 +62,9 @@
 >
     {#each getProcessedMedia(media) as medium}
         <GridThumbnail
-            {medium}
+            medium={medium.groupedIntoNamesId == null
+                ? medium
+                : getSortedMatchingMedia(medium).shift()}
             onclick={() => {
                 if (medium.groupedIntoNamesId != null) {
                     const popupMedia = getSortedMatchingMedia(medium)

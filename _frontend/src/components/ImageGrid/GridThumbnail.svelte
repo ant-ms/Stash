@@ -18,7 +18,7 @@
     interface Props {
         medium: MediaType
         disableActive?: boolean
-        disableIntersectionDetection?: boolean,
+        disableIntersectionDetection?: boolean
         rigidAspectRatio?: boolean
         disableZoom?: boolean
         isParent?: boolean
@@ -212,9 +212,7 @@
                 {/if}
 
                 {#if parent}
-                    <div
-                        style="position: absolute; left: 0.25em; top: 0.25em;"
-                    >
+                    <div style="position: absolute; top: 0.25em; left: 0.25em;">
                         <Icon name="mdiFolderMultiple" size={0.8} />
                     </div>
                 {/if}

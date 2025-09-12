@@ -2,7 +2,9 @@
     type T = $$Generic<Record>
 
     interface Props {
-        headers?: (string | { title: string, sortableProperty: keyof T })[] | null
+        headers?:
+            | (string | { title: string; sortableProperty: keyof T })[]
+            | null
         data: T[]
         borderless?: boolean
         children?: import("svelte").Snippet<[any]>

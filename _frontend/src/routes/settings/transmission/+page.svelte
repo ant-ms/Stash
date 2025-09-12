@@ -98,10 +98,15 @@
             {:else if seedingTorrents.current}
                 <Table
                     data={seedingTorrents.current}
-                    headers={["Name", "Size", {
-                        title: "Uploaded",
-                        sortableProperty: "uploadedEver"
-                    }, "Ratio"]}
+                    headers={[
+                        "Name",
+                        "Size",
+                        {
+                            title: "Uploaded",
+                            sortableProperty: "uploadedEver"
+                        },
+                        "Ratio"
+                    ]}
                 >
                     {#snippet children({ entry })}
                         <td>

@@ -1,7 +1,8 @@
+import fs from "fs/promises"
+
 import prisma from "$lib/server/prisma"
 
 import type { PageServerLoad } from "./$types"
-import fs from "fs/promises"
 
 export const load: PageServerLoad = async () => {
     const countTotalMedia = prisma.media.count()
@@ -91,18 +92,22 @@ export const load: PageServerLoad = async () => {
 
         createMediaThumbnail: {
             idsStillUnprocessed: new Promise(async resolve => {
-                const thumbnails = (await fs.readdir("./thumbnails")).filter(file => file.endsWith(".webp"));
-                const thumbnailIds = new Set(thumbnails.map(id => id.replace(".webp", "")));
+                const thumbnails = (await fs.readdir("./thumbnails")).filter(
+                    file => file.endsWith(".webp")
+                )
+                const thumbnailIds = new Set(
+                    thumbnails.map(id => id.replace(".webp", ""))
+                )
 
                 const allMedia = await prisma.media.findMany({
                     select: { id: true }
-                });
+                })
 
                 const mediaIdsWithoutThumbnails = allMedia
                     .map(m => m.id)
-                    .filter(id => !thumbnailIds.has(id));
+                    .filter(id => !thumbnailIds.has(id))
 
-                resolve(mediaIdsWithoutThumbnails);
+                resolve(mediaIdsWithoutThumbnails)
             }) as Promise<string[]>,
             countApplicable: countTotalMedia,
             countScheduled: prisma.job.count({

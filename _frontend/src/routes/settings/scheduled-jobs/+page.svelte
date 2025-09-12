@@ -48,24 +48,30 @@
             }}
         />
 
-                <JobCard
-                    title="Create Media Thumbnail"
-                    icon="mdiImage"
-                    itemsAwaitingProcessing={data.createMediaThumbnail
-                        .idsStillUnprocessed}
-                    countProcessed={Promise.all([data.createMediaThumbnail.countApplicable, data.createMediaThumbnail.countScheduled]).then(([countApplicable, countScheduled]) => countApplicable - countScheduled)}
-                    countScheduled={data.createMediaThumbnail.countScheduled}
-                    countApplicable={data.createMediaThumbnail.countApplicable}
-                    onCreate={async idsToProcess => {
-                        for (const id of idsToProcess) {
-                            await query("createJob", {
-                                name: "createMediaThumbnail",
-                                data: JSON.stringify({ id }),
-                                priority: -10
-                            })
-                        }
-                    }}
-                />
+        <JobCard
+            title="Create Media Thumbnail"
+            icon="mdiImage"
+            itemsAwaitingProcessing={data.createMediaThumbnail
+                .idsStillUnprocessed}
+            countProcessed={Promise.all([
+                data.createMediaThumbnail.countApplicable,
+                data.createMediaThumbnail.countScheduled
+            ]).then(
+                ([countApplicable, countScheduled]) =>
+                    countApplicable - countScheduled
+            )}
+            countScheduled={data.createMediaThumbnail.countScheduled}
+            countApplicable={data.createMediaThumbnail.countApplicable}
+            onCreate={async idsToProcess => {
+                for (const id of idsToProcess) {
+                    await query("createJob", {
+                        name: "createMediaThumbnail",
+                        data: JSON.stringify({ id }),
+                        priority: -10
+                    })
+                }
+            }}
+        />
 
         <!-- <span>Regenerate all media Data</span>
         <Button
