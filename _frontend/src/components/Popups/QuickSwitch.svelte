@@ -78,7 +78,7 @@
                     }}
                 >
                     <div class="icon">
-                        <Icon name={result.icon} size={0.8} />
+                        <Icon name={result.icon} size={0.8} opacity={result.iconOpacity} />
                     </div>
                     <span class="label">
                         {result.label}{#if result.submenu}

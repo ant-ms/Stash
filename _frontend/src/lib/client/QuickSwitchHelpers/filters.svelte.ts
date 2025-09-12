@@ -116,9 +116,16 @@ const gatherAllTags = async () => {
     const tags: ResultsType = []
 
     const addTagAndChildrenToArray = (tag: TagExtended, parentPrefix = "") => {
+        const [icon, iconOpacity] = (() => {
+            if (tag.icon) return [tag.icon, 1]
+            if (tag.indirectIcon) return [tag.indirectIcon, 0.35]
+            return ["mdiFolderOutline", 1]
+        })()
+
         tags.push({
-            icon: tag.icon || "mdiFolderOutline",
-            label: `#${parentPrefix}${tag.tag}${tag.children.length ? "/" : ""}`,
+            icon,
+            iconOpacity,
+            label: `#${parentPrefix}${tag.tag}`,
             action: tag.count,
             onEnter: (e: KeyboardEvent) => {
                 if (e.shiftKey) mediaController.selectedTags.push(tag)
@@ -127,13 +134,13 @@ const gatherAllTags = async () => {
             }
         })
         tag.children.forEach(child =>
-            addTagAndChildrenToArray(child, `${tag.tag}/`)
+            addTagAndChildrenToArray(child, `${parentPrefix}${tag.tag}/`)
         )
     }
 
-    Object.values(tagsController.tagMap).forEach(tag =>
-        addTagAndChildrenToArray(tag)
-    )
+    Object.values(tagsController.tagMap)
+        .filter(t => t.parentId === null)
+        .forEach(tag => addTagAndChildrenToArray(tag))
 
     return tags
 }

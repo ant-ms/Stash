@@ -8,6 +8,7 @@ export type ResultsType = {
     action?: number | string
     submenu?: ResultsType
     onEnter?: (e: KeyboardEvent) => void
+    iconOpacity?: number
 }[]
 
 let searcher: InstanceType<typeof Fuse<ResultsType[number]>> | null =

@@ -59,6 +59,7 @@
     {/await}
 
     <div class="footer">
+        <span>Remaning: {_itemsAwaitingProcessing.length}</span>
         <Button
             noMargin
             icon="mdiPlayOutline"

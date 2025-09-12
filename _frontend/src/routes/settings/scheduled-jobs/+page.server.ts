@@ -103,7 +103,7 @@ export const load: PageServerLoad = async () => {
                     .filter(id => !thumbnailIds.has(id));
 
                 resolve(mediaIdsWithoutThumbnails);
-            }),
+            }) as Promise<string[]>,
             countApplicable: countTotalMedia,
             countScheduled: prisma.job.count({
                 where: {

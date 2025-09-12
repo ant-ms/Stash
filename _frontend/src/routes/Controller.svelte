@@ -84,6 +84,9 @@
         keys.onKeys(["meta", "k"], () => {
             popup = "Quick Switch"
         })
+        keys.onKeys(["meta", "/"], () => {
+            popup = "Quick Switch"
+        })
         keys.onKeys(["meta", ","], () => goto("/settings/general"))
 
         // TODO: These don't seem to work all that well
