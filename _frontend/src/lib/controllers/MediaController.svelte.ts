@@ -46,6 +46,7 @@ class MediaController {
     }
 
     public visibleMedium: MediaType | null = $state(null)
+    public mediaOverride: MediaType[] | null = $state(null)
     public media: MediaType[] = $state([])
     public pages: { hash: string; media: Media[] }[] = $state([])
 
@@ -205,26 +206,31 @@ const calculatePages = async (media: MediaType[]) => {
 const goToPreviousMedia = async () => {
     if (!mediaController.visibleMedium) return
 
-    const mediaIndex = mediaController.media.findIndex(
+    const mediaPool = mediaController.mediaOverride || mediaController.media
+    const mediaIndex = mediaPool.findIndex(
         m => m.id == mediaController.visibleMedium?.id
     )
 
     if (mediaIndex > 0)
-        mediaController.visibleMedium = mediaController.media[mediaIndex - 1]
+        mediaController.visibleMedium = mediaPool[mediaIndex - 1]
 }
 
 const goToNextMedia = async () => {
     if (!mediaController.visibleMedium) return
 
-    const mediaIndex = mediaController.media.findIndex(
+    const mediaPool = mediaController.mediaOverride || mediaController.media
+    const mediaIndex = mediaPool.findIndex(
         m => m.id == mediaController.visibleMedium?.id
     )
 
-    if (mediaIndex < mediaController.media.length - 1)
-        mediaController.visibleMedium = mediaController.media[mediaIndex + 1]
-    else
+    if (mediaIndex < mediaPool.length - 1) {
+        mediaController.visibleMedium = mediaPool[mediaIndex + 1]
+    } else if (!mediaController.mediaOverride) {
         mediaController.loadMoreMedia().then(() => {
-            mediaController.visibleMedium =
-                mediaController.media[mediaIndex + 1]
+            if (mediaIndex < mediaController.media.length - 1) {
+                mediaController.visibleMedium =
+                    mediaController.media[mediaIndex + 1]
+            }
         })
+    }
 }

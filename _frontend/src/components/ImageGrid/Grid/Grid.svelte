@@ -20,6 +20,8 @@
     let grid: any
     let isFirstMount = false
     let attributes: any = {}
+    export let startX = 0
+    export let endX = 0
 
     function updateAttributes() {
         attributes = { ...$$props }
@@ -63,7 +65,20 @@
             })
         })
         grid.renderItems()
+
+
+        const resizeObserver = new ResizeObserver(entries => {
+          const entry = entries.at(0) as ResizeObserverEntry;
+          startX = entry.target.getBoundingClientRect().left;
+          endX = entry.target.getBoundingClientRect().right;
+        });
+
+        resizeObserver.observe(container);
+
+        // This callback cleans up the observer
+        return () => resizeObserver.unobserve(container);
     })
+
     afterUpdate(async () => {
         if (isFirstMount) {
             isFirstMount = false

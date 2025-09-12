@@ -18,15 +18,21 @@
     interface Props {
         medium: MediaType
         disableActive?: boolean
+        disableIntersectionDetection?: boolean,
         rigidAspectRatio?: boolean
         disableZoom?: boolean
+        isParent?: boolean
+        onclick?: (e: MouseEvent) => void
     }
 
     let {
         medium,
         disableActive = false,
+        disableIntersectionDetection = false,
         rigidAspectRatio = false,
-        disableZoom = false
+        disableZoom = false,
+        isParent: parent = false,
+        onclick = undefined
     }: Props = $props()
 
     const dragStartHandler = (e: DragEvent) => {
@@ -134,7 +140,10 @@
 </svelte:head>
 
 <IntersectionObserver
-    on:click={e => leftClick(e.detail)}
+    on:click={e => {
+        if (onclick) onclick(e.detail)
+        else leftClick(e.detail)
+    }}
     once
     top={500}
     style={`position: relative; border-radius: 3px; overflow: hidden`}
@@ -165,7 +174,7 @@
                 />
             </svg>
 
-            {#if intersecting}
+            {#if intersecting || disableIntersectionDetection}
                 <img
                     use:imageRetry
                     in:fade={{ duration: 100 }}
@@ -200,6 +209,14 @@
                     >
                         <track kind="captions" />
                     </video>
+                {/if}
+
+                {#if parent}
+                    <div
+                        style="position: absolute; left: 0.25em; top: 0.25em;"
+                    >
+                        <Icon name="mdiFolderMultiple" size={0.8} />
+                    </div>
                 {/if}
 
                 {#if medium.favourited}
