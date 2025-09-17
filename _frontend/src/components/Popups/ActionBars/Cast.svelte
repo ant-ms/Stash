@@ -1,16 +1,12 @@
 <script lang="ts">
     import { fade } from "svelte/transition"
 
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Icon from "$components/elements/Icon.svelte"
-    import {
-        FCastController,
-        PlaybackStateState
-    } from "$lib/client/fcast.svelte"
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { prompts } from "$lib/controllers/PromptController"
-    import { controller, settings } from "$lib/stores.svelte"
+    import { FCastController, PlaybackStateState } from "fcast-svelte-remote"
 
     let disableSeeking = $state(false)
     let seekVideo: HTMLVideoElement | null = $state(null)
@@ -18,31 +14,52 @@
     let playbackProgress = $derived(
         client &&
             // @ts-ignore
-            (client.playbackState?.time / client.playbackState?.duration) * 100
+            (client.playbackTime / client.playbackDuration) * 100
     )
 
     $effect(() => {
         if (mediaController.visibleMedium && client)
-            client.play(mediaController.visibleMedium)
+            client.play(`${page.data.serverURL}/file/${mediaController.visibleMedium.id}?session=udhmunznya`, mediaController.visibleMedium.type)
         else if (!mediaController.visibleMedium && client) client.stop()
     })
+
+    function handleSliderKeyDown(e: KeyboardEvent) {
+        if (!client || !client.playbackTime) return
+
+        const step = 15 // 15 seconds
+        if (e.key === "ArrowUp" || e.key === "ArrowRight") {
+            e.preventDefault()
+            client.seek(Math.min(client.playbackDuration, client.playbackTime + step))
+        } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
+            e.preventDefault()
+            client.seek(Math.max(0, client.playbackTime - step))
+        } else if (e.key === "Home") {
+            e.preventDefault()
+            client.seek(0)
+        } else if (e.key === "End") {
+            e.preventDefault()
+            client.seek(client.playbackDuration)
+        }
+    }
 </script>
 
 <main>
     <section class="first">
         {#if client}
-            <span
+            <button
+                type="button"
+                aria-label="Disconnect from cast device"
                 onclick={() => {
                     console.info("disconnect")
                     client?.disconnect()
                 }}
             >
                 <Icon name="mdiCastConnected" size={0.8} />
-            </span>
+            </button>
         {:else}
-            <!-- svelte-ignore a11y_click_events_have_key_events -->
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <span
+            <button
+                type="button"
+                aria-label="Connect to cast device"
                 onclick={async () => {
                     console.info("connect")
                     const address = await prompts.text(
@@ -65,53 +82,59 @@
                     if (address)
                         client = new FCastController(
                             address,
-                            remoteAddress || "https://stash.any.gay"
+                            46898
                         )
                 }}
             >
                 <Icon name="mdiCastOff" size={0.8} />
-            </span>
+            </button>
         {/if}
 
         {#if mediaController.visibleMedium}
-            <span onclick={() => (mediaController.visibleMedium = null)}>
+            <button type="button" aria-label="Close media" onclick={() => (mediaController.visibleMedium = null)}>
                 <Icon name={"mdiBackspaceOutline"} size={0.8} />
-            </span>
+            </button>
         {/if}
     </section>
 
     <section>
         {#if mediaController.visibleMedium?.type.startsWith("video")}
             <!-- go backward 60 sec -->
-            <span
-                class:disabled={!client?.playbackState?.time}
+            <button
+                type="button"
+                aria-label="Rewind 60 seconds"
+                disabled={!client?.playbackTime}
                 onclick={() => {
                     // @ts-ignore
-                    client?.seek(client?.playbackState?.time - 60)
+                    client?.seek(client?.playbackTime - 60)
                 }}
                 transition:fade={{ duration: 100 }}
             >
                 <Icon name="mdiRewind60" size={0.8} />
-            </span>
+            </button>
 
             <!-- go backward 15 sec -->
-            <span
-                class:disabled={!client?.playbackState?.time}
+            <button
+                type="button"
+                aria-label="Rewind 15 seconds"
+                disabled={!client?.playbackTime}
                 onclick={() => {
                     // @ts-ignore
-                    client?.seek(client?.playbackState?.time - 15)
+                    client?.seek(client?.playbackTime - 15)
                 }}
                 transition:fade={{ duration: 100 }}
             >
                 <Icon name="mdiRewind15" size={0.8} />
-            </span>
+            </button>
 
             <!-- play/pause -->
-            <span
-                class:disabled={!client?.playbackState}
+            <button
+                type="button"
+                aria-label={client?.playbackState == PlaybackStateState.PLAYING ? "Pause" : "Play"}
+                disabled={!client?.playbackState}
                 onclick={() => {
                     if (
-                        client?.playbackState?.state ==
+                        client?.playbackState ==
                         PlaybackStateState.PLAYING
                     )
                         client?.pause()
@@ -120,43 +143,49 @@
                 transition:fade={{ duration: 100 }}
             >
                 <Icon
-                    name={client?.playbackState?.state ==
+                    name={client?.playbackState ==
                     PlaybackStateState.PLAYING
                         ? "mdiPause"
                         : "mdiPlay"}
                     size={0.8}
                 />
-            </span>
+            </button>
 
             <!-- go forward 15 sec -->
-            <span
-                class:disabled={!client?.playbackState?.time}
+            <button
+                type="button"
+                aria-label="Fast-forward 15 seconds"
+                disabled={!client?.playbackTime}
                 onclick={() => {
                     // @ts-ignore
-                    client?.seek(client?.playbackState?.time + 15)
+                    client?.seek(client?.playbackTime + 15)
                 }}
                 transition:fade={{ duration: 100 }}
             >
                 <Icon name="mdiFastForward15" size={0.8} />
-            </span>
+            </button>
 
             <!-- go forward 60 sec -->
-            <span
-                class:disabled={!client?.playbackState?.time}
+            <button
+                type="button"
+                aria-label="Fast-forward 60 seconds"
+                disabled={!client?.playbackTime}
                 onclick={() => {
                     // @ts-ignore
-                    client?.seek(client?.playbackState?.time + 60)
+                    client?.seek(client?.playbackTime + 60)
                 }}
                 transition:fade={{ duration: 100 }}
             >
                 <Icon name="mdiFastForward60" size={0.8} />
-            </span>
+            </button>
         {/if}
     </section>
 
     <section class="last">
         {#if mediaController.visibleMedium}
-            <span
+            <button
+                type="button"
+                aria-label={mediaController.visibleMedium.favourited ? "Remove from favourites" : "Add to favourites"}
                 onclick={() => {
                     fetch(
                         `/api/media/${mediaController.visibleMedium?.id}/favourited`,
@@ -183,25 +212,33 @@
                 {:else}
                     <Icon name="mdiStarOutline" size={0.8} />
                 {/if}
-            </span>
-            <span onclick={() => $controller.goToPreviousMedia()}>
+            </button>
+            <!-- <button type="button" aria-label="Previous media" onclick={() => $controller.goToPreviousMedia()}>
                 <Icon name="mdiChevronLeft" size={0.8} />
-            </span>
-            <span onclick={() => $controller.goToNextMedia()}>
+            </button>
+            <button type="button" aria-label="Next media" onclick={() => $controller.goToNextMedia()}>
                 <Icon name="mdiChevronRight" size={0.8} />
-            </span>
+            </button> -->
         {/if}
     </section>
 
     {#if mediaController.visibleMedium?.type.startsWith("video") && client}
         <div
+            role="slider"
+            tabindex="0"
+            aria-label="Playback progress"
+            aria-orientation="vertical"
+            aria-valuemin={0}
+            aria-valuemax={client.playbackDuration || 0}
+            aria-valuenow={client.playbackTime || 0}
             class="playbackStatus"
             onclick={e => {
                 client?.seek(
                     (e.clientY / window.innerHeight) *
-                        (client.playbackState?.duration || 0)
+                        (client.playbackDuration || 0)
                 )
             }}
+            onkeydown={handleSliderKeyDown}
             onmousemove={e => {
                 if (seekVideo) {
                     seekVideo.currentTime =
@@ -216,7 +253,7 @@
 
             {#if !isMobile.current && !disableSeeking}
                 <video
-                    src="{$page.data.serverURL}/thumb/{mediaController
+                    src="{page.data.serverURL}/thumb/{mediaController
                         .visibleMedium?.id}_seek.webm"
                     muted
                     bind:this={seekVideo}
@@ -255,7 +292,8 @@
             align-self: end;
         }
 
-        span {
+        button {
+            all: unset;
             cursor: pointer;
 
             display: flex;
@@ -272,14 +310,14 @@
                 background 100ms,
                 border 100ms;
 
-            &.disabled {
+            &:disabled {
                 pointer-events: none;
                 opacity: 0.5;
             }
 
             @media (hover: hover) and (pointer: fine) {
 
-                &:not(.disabled):hover {
+                &:not(:disabled):hover {
                     border: 1px solid var(--border-color-1-hover);
                     background: var(--border-color-1);
                 }
@@ -293,11 +331,11 @@
             top: 0;
             right: 0;
 
-            width: 3px;
+            width: 5px;
             height: 100vh;
 
             div {
-                width: 3px;
+                width: 5px;
                 background: var(--border-color-1);
                 transition: height 150ms;
             }

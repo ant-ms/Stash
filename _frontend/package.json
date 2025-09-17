@@ -48,6 +48,7 @@
         "@mistralai/mistralai": "^1.9.17",
         "@prisma/client": "^6.14.0",
         "cookie": "^1.0.2",
+        "fcast-svelte-remote": "https://gitlab.com/ant.ms/fcast-svelte-remote/-/package_files/228813564/download",
         "fuse.js": "^7.1.0",
         "fuzzy-search": "^3.2.1",
         "mdi-svelte": "^1.1.2",

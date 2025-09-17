@@ -153,17 +153,11 @@
                     c => c.clustersId === entry.id
                 )?._count.id || 0} Videos
             </td>
-            <td>
-                {prettyBytes(
-                    data.clusterStorageUsageImages.find(
-                        c => c.clustersId === entry.id
-                    )?._sum.sizeBytes || 0
-                )} Images,
-                {prettyBytes(
-                    data.clusterStorageUsageVideos.find(
-                        c => c.clustersId === entry.id
-                    )?._sum.sizeBytes || 0
-                )} Videos
+            <td
+                style={`background: linear-gradient(to right, var(--accent-background) ${entry.percentage}%, transparent ${entry.percentage}%)`}
+            >
+                {prettyBytes(entry.imageUsage)} Images,
+                {prettyBytes(entry.videoUsage)} Videos
             </td>
         {/snippet}
     </Table>
