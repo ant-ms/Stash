@@ -18,8 +18,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       fcast-svelte-remote:
-        specifier: https://gitlab.com/ant.ms/fcast-svelte-remote/-/package_files/228813564/download
-        version: https://gitlab.com/ant.ms/fcast-svelte-remote/-/package_files/228813564/download(svelte@5.38.2)
+        specifier: /Users/yanik/Development/fcast-svelte-remote/dist
+        version: link:../../fcast-svelte-remote/dist
       fuse.js:
         specifier: ^7.1.0
         version: 7.1.0
@@ -1353,12 +1353,6 @@ packages:
 
   fastq@1.19.0:
     resolution: {integrity: sha512-7SFSRCNjBQIZH/xZR3iy5iQYR8aGBE0h3VG6/cwlbrpdciNYBMotQav8c1XI3HjHH+NikUpP53nPdlZSdWmFzA==}
-
-  fcast-svelte-remote@https://gitlab.com/ant.ms/fcast-svelte-remote/-/package_files/228813564/download:
-    resolution: {tarball: https://gitlab.com/ant.ms/fcast-svelte-remote/-/package_files/228813564/download}
-    version: 0.0.1
-    peerDependencies:
-      svelte: ^5.0.0
 
   fdir@6.4.4:
     resolution: {integrity: sha512-1NZP+GK4GfuAv3PqKvxQRDMjdSRZjnkq7KfhlNrCNNlZ0ygQFpebfrnfnq/W7fpUnAv9aGWmY1zKx7FYL3gwhg==}
@@ -3352,10 +3346,6 @@ snapshots:
   fastq@1.19.0:
     dependencies:
       reusify: 1.0.4
-
-  fcast-svelte-remote@https://gitlab.com/ant.ms/fcast-svelte-remote/-/package_files/228813564/download(svelte@5.38.2):
-    dependencies:
-      svelte: 5.38.2
 
   fdir@6.4.4(picomatch@4.0.2):
     optionalDependencies:

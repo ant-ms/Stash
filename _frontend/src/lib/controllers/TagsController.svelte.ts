@@ -1,6 +1,6 @@
 import { get } from "svelte/store"
 
-import { page } from "$app/stores"
+import { page } from "$app/state"
 import query from "$lib/client/call"
 import assembleTagHierarchyMap from "$lib/helpers/assembleTagHierarchyMap"
 import type { possibleIcons } from "$lib/possibleIcons"
@@ -96,7 +96,7 @@ export class TagsController {
 
         // TODO: Icon
 
-        await fetch(`/api/cluster/${get(page).params.cluster}/tags`, {
+        await fetch(`/api/cluster/${page.params.cluster}/tags`, {
             method: "POST",
             body: JSON.stringify({
                 name,

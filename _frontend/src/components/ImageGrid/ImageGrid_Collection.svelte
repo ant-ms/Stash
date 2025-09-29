@@ -1,13 +1,13 @@
 <script lang="ts">
     import { onMount } from "svelte"
 
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import tagsController from "$lib/controllers/TagsController.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"
 
-    let pageData = $derived($page.data as PageData)
+    let pageData = $derived(page.data as PageData)
 
     let data: {
         tagid: number
@@ -40,7 +40,7 @@
             }}
         >
             <img
-                src={`${$page.data.serverURL}/api/media/${d.mediaid}/thumbnail`}
+                src={`${page.data.serverURL}/api/media/${d.mediaid}/thumbnail`}
                 alt=""
             />
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import SidebarSection from "$components/SidebarSection.svelte"
     import { isMobile } from "$lib/context"
     import tagsController from "$lib/controllers/TagsController.svelte"
@@ -11,7 +11,7 @@
     <SidebarSection>
         {#each Object.values(tagsController.tagMap)
             .filter(t => !t.parentId)
-            .sort( (a, b) => ($page.params.cluster == "Camp Buddy" ? b.tag.localeCompare(a.tag) : b.count + b.indirectCount - (a.count + a.indirectCount)) ) as tag}
+            .sort( (a, b) => (page.params.cluster == "Camp Buddy" ? b.tag.localeCompare(a.tag) : b.count + b.indirectCount - (a.count + a.indirectCount)) ) as tag}
             <SidebarHierarchyEntry tagId={tag.id} />
         {/each}
     </SidebarSection>

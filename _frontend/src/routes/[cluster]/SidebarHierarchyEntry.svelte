@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import { presentationMode } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
@@ -158,7 +158,7 @@
 {#if tagsController.tagMap[tagId].children && !tagsController.tagMap[tagId].collapsed}
     {#each tagsController.tagMap[tagId].children
         .map(t => t.id)
-        .sort( (a, b) => ($page.params.cluster == "Camp Buddy" ? tagsController.tagMap[b].tag.localeCompare(tagsController.tagMap[a].tag) : tagsController.tagMap[b].count + tagsController.tagMap[b].indirectCount - (tagsController.tagMap[a].count + tagsController.tagMap[a].indirectCount)) ) as c}
+        .sort( (a, b) => (page.params.cluster == "Camp Buddy" ? tagsController.tagMap[b].tag.localeCompare(tagsController.tagMap[a].tag) : tagsController.tagMap[b].count + tagsController.tagMap[b].indirectCount - (tagsController.tagMap[a].count + tagsController.tagMap[a].indirectCount)) ) as c}
         <SidebarHierarchyEntry indent={indent + 1} tagId={c} />
     {/each}
 {/if}

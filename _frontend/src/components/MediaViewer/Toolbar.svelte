@@ -4,7 +4,7 @@
     import { onMount } from "svelte"
 
     import { browser } from "$app/environment"
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import SpecialFilterAttributeDropdown from "$components/Tags/SpecialFilterAttributeDropdown.svelte"
@@ -24,7 +24,7 @@
     import TagChip from "../Tags/TagChip.svelte"
     import TagInputField from "../Tags/TagInputField.svelte"
 
-    let pageData = $derived($page.data as PageData)
+    let pageData = $derived(page.data as PageData)
 
     let dropdownVisible = $state(false)
     let { hideControls } = $props()
@@ -218,7 +218,7 @@
         icon="mdiOpenInNew"
         onclick={() => {
             window.open(
-                `${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`,
+                `${page.data.serverURL}/file/${mediaController.visibleMedium?.id}`,
                 "_blank"
             )
             dropdownVisible = false

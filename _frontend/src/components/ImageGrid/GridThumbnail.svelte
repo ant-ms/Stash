@@ -1,7 +1,7 @@
 <script lang="ts">
     import { fade } from "svelte/transition"
 
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Icon from "$components/elements/Icon.svelte"
     import imageRetry from "$lib/client/actions/imageRetry.svelte"
     import { setSpecialFilterAttribute } from "$lib/client/actions/mediaActions.svelte"
@@ -99,7 +99,7 @@
     let suffix = $derived(
         vars.thumbnailSuffixParameter &&
             vars.thumbnailSuffixParameter.mediaId == medium.id
-            ? `?${vars.thumbnailSuffixParameter.suffix}`
+            ? `&${vars.thumbnailSuffixParameter.suffix}`
             : ""
     )
 
@@ -143,7 +143,7 @@
         if (presentationMode.current) {
             return `https://picsum.photos/${medium.width}/${medium.height}?q=${medium.id}`
         }
-        return `${$page.data.serverURL}/thumb/${medium.id}.webp${suffix}`
+        return `${page.data.serverURL}/thumb/${medium.id}.webp?session=${page.data.session}${suffix}`
     })
 </script>
 
@@ -154,8 +154,7 @@
         <link
             rel="preload"
             as="image"
-            href="{$page.data.serverURL}/thumb/{medium.id}.webp"
-            crossorigin="use-credentials"
+            href="{page.data.serverURL}/thumb/{medium.id}.webp?session={page.data.session}"
         />
     {/if}
 </svelte:head>
@@ -206,19 +205,15 @@
                     alt={medium.name}
                     class:active={!disableActive &&
                         mediaController.visibleMedium?.id == medium.id}
-                    crossorigin={presentationMode.current
-                        ? "anonymous"
-                        : "use-credentials"}
                     class:disableZoom
                     bind:this={thumbElement}
                 />
 
                 {#if medium.type.startsWith("video") && showSeekPreview}
                     <video
-                        src="{$page.data.serverURL}/thumb/{medium.id}_seek.webm"
+                        src="{page.data.serverURL}/thumb/{medium.id}_seek.webm?session={page.data.session}"
                         bind:this={seekVideo}
                         muted
-                        crossorigin="use-credentials"
                         preload="auto"
                         style="
                             position: absolute;

@@ -3,7 +3,7 @@
     import { run } from "svelte/legacy"
 
     import { goto, invalidateAll } from "$app/navigation"
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Table from "$components/elements/Table.svelte"
     import Toggle from "$components/elements/Toggle.svelte"
@@ -107,15 +107,14 @@
                 <td>
                     {#if entry.type.startsWith("image")}
                         <img
-                            src={`${$page.data.serverURL}/file/${entry.id}`}
+                            src={`${page.data.serverURL}/file/${entry.id}?session=${page.data.sessionId}`}
                             alt={entry.id}
-                            crossorigin="use-credentials"
                         />
                     {:else if entry.type.startsWith("video")}
                         <!-- svelte-ignore a11y_media_has_caption -->
                         <video controls>
                             <source
-                                src={`${$page.data.serverURL}/file/${entry.id}`}
+                                src={`${page.data.serverURL}/file/${entry.id}?session=${page.data.sessionId}`}
                                 type={entry.type}
                             />
                         </video>
@@ -169,7 +168,7 @@
             card
             icon="mdiDebugStepOver"
             onclick={() => {
-                fetch(`${$page.url.href}/ignore`, {
+                fetch(`${page.url.href}/ignore`, {
                     method: "PUT"
                 })
                     .then(async () => {
@@ -193,7 +192,7 @@
                 icon="mdiSourceMerge"
                 highlighted
                 onclick={() => {
-                    fetch(`${$page.url.href}/merge`, {
+                    fetch(`${page.url.href}/merge`, {
                         method: "PUT",
                         body: JSON.stringify({
                             idToKeep: getValueToKeep("id"),

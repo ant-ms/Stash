@@ -1,6 +1,6 @@
 <script lang="ts">
     import { invalidateAll } from "$app/navigation"
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import Table from "$components/elements/Table.svelte"
@@ -153,7 +153,7 @@
                     data.tagClusterMappings[entry.id]
                         .map(
                             cluster =>
-                                ($page.data as PageData).clusters.find(
+                                (page.data as PageData).clusters.find(
                                     c => c.id == cluster
                                 )?.name
                         )
@@ -175,7 +175,7 @@
                                             data.tagClusterMappings[entry.id]
                                                 .map(cluster =>
                                                     (
-                                                        $page.data as PageData
+                                                        page.data as PageData
                                                     ).clusters
                                                         .find(
                                                             c => c.id == cluster

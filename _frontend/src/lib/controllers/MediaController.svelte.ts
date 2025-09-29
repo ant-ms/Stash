@@ -4,7 +4,7 @@ import { PressedKeys } from "runed"
 import { untrack } from "svelte"
 import { get } from "svelte/store"
 
-import { page } from "$app/stores"
+import { page } from "$app/state"
 import query from "$lib/client/call"
 import { mediaTypeFilter, PAGE_SIZE } from "$lib/stores.svelte"
 import vars from "$lib/vars.svelte"
@@ -69,7 +69,7 @@ class MediaController {
         filters: typeof this.filters | null = null
     ) => {
         console.debug(
-            `%cUpdating media with new cluster: ${newCluster} to ${get(page).params.cluster}`,
+            `%cUpdating media with new cluster: ${newCluster} to ${page.params.cluster}`,
             "color: grey"
         )
 
@@ -96,7 +96,7 @@ class MediaController {
         this.prefetchedQueryForTagId = [
             tagId,
             query("media_query_from_database", {
-                cluster: get(page).params.cluster,
+                cluster: page.params.cluster,
                 tags: [tagId],
                 offset: 0,
                 ...(this._filtersOverrides || this.filters)
@@ -108,7 +108,7 @@ class MediaController {
     // TODO: Make easier to read / more organised
     private loadMedia = async (
         offset: number,
-        cluster = get(page).params.cluster
+        cluster = page.params.cluster
     ) => {
         // TODO: This is ridiculous, there must be a better way
         if ([this.selectedTags, this.filters, this._filtersOverrides].length) {

@@ -3,7 +3,7 @@
     import { onMount } from "svelte"
     import { run } from "svelte/legacy"
 
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
@@ -163,7 +163,7 @@
         onclick={() => {
             if ($settings.mediaTouchAction !== "seek") paused = !paused
         }}
-        src={`${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`}
+        src={`${page.data.serverURL}/file/${mediaController.visibleMedium?.id}?session=${page.data.session}`}
         autoplay
         bind:this={video}
         bind:paused
@@ -176,7 +176,6 @@
         onplaying={() => {
             if (video.duration <= 5) video.loop = true
         }}
-        crossorigin="use-credentials"
     >
         <track kind="captions" />
     </video>
@@ -224,11 +223,10 @@
             <div class="thumb" style="left: {playbackPercentage}%"></div>
             {#if !isMobile.current && !disableSeeking}
                 <video
-                    src="{$page.data.serverURL}/thumb/{mediaController
-                        .visibleMedium?.id}_seek.webm"
+                    src="{page.data.serverURL}/thumb/{mediaController
+                        .visibleMedium?.id}_seek.webm?session={page.data.session}"
                     bind:this={seekVideo}
                     muted
-                    crossorigin="use-credentials"
                     onerror={() => (disableSeeking = true)}
                 >
                     <track kind="captions" />

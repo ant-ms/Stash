@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
 
@@ -9,7 +9,7 @@
     import ImageGridStories from "./ImageGrid_Stories.svelte"
     import ImageGridStudios from "./ImageGrid_Studios.svelte"
 
-    let pageData = $derived($page.data as PageData)
+    let pageData = $derived(page.data as PageData)
 </script>
 
 <main>

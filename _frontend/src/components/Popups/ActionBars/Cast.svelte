@@ -6,7 +6,7 @@
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { prompts } from "$lib/controllers/PromptController"
-    import { FCastController, PlaybackStateState } from "fcast-svelte-remote"
+    import { FCastController, PlaybackStateState } from "/Users/yanik/Development/fcast-svelte-remote/dist/index.js"
 
     let disableSeeking = $state(false)
     let seekVideo: HTMLVideoElement | null = $state(null)
@@ -21,6 +21,10 @@
         if (mediaController.visibleMedium && client)
             client.play(`${page.data.serverURL}/file/${mediaController.visibleMedium.id}?session=udhmunznya`, mediaController.visibleMedium.type)
         else if (!mediaController.visibleMedium && client) client.stop()
+    })
+
+    $effect(() => {
+        console.log(client?.playbackState)
     })
 
     function handleSliderKeyDown(e: KeyboardEvent) {
@@ -254,10 +258,9 @@
             {#if !isMobile.current && !disableSeeking}
                 <video
                     src="{page.data.serverURL}/thumb/{mediaController
-                        .visibleMedium?.id}_seek.webm"
+                        .visibleMedium?.id}_seek.webm?session={page.data.session}"
                     muted
                     bind:this={seekVideo}
-                    crossorigin="use-credentials"
                     onerror={() => (disableSeeking = true)}
                 >
                     <track kind="captions" />

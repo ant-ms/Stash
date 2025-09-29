@@ -2,7 +2,7 @@
     import { PressedKeys } from "runed"
     import { onMount } from "svelte"
 
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import { isMobile } from "$lib/context"
     import {
         mediaController,
@@ -36,9 +36,9 @@
                 mediaController.media[mediaIndex + i].type.startsWith("image")
             ) {
                 output.push(
-                    `${$page.data.serverURL}/file/${
+                    `${page.data.serverURL}/file/${
                         mediaController.media[mediaIndex + i].id
-                    }${$imageSuffixParameter}`
+                    }${$imageSuffixParameter}?session=${page.data.session}`
                 )
             } else {
                 break
@@ -121,7 +121,7 @@
     </main>
 
     {#each preloadedImageUrls as href}
-        <link rel="preload" as="image" {href} crossorigin="use-credentials" />
+        <link rel="preload" as="image" {href} />
     {/each}
 {/if}
 

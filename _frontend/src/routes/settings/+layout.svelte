@@ -75,6 +75,9 @@
             >
                 Duplicates
             </Button>
+            <Button icon="mdiTrashCanOutline" href="/settings/trash-bin" count={data.trash_count}>
+                Trash Bin
+            </Button>
         </SidebarSection>
 
         <div class="divider"></div>

@@ -4,7 +4,7 @@
 
     import { browser } from "$app/environment"
     import { goto } from "$app/navigation"
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import MediaViewerMobile from "$components/Mobile/MediaViewerMobile.svelte"
     import CreateStoryPopup from "$components/Popups/CreateStoryPopup.svelte"
     import ImportPopup from "$components/Popups/ImportPopup/ImportPopup.svelte"
@@ -24,10 +24,10 @@
 
     import type { PageData } from "./[cluster]/$types"
 
-    let pageData = $page.data as PageData
+    let pageData = page.data as PageData
 
     $effect(() => {
-        varsSvelte.clusterName = $page.params.cluster
+        varsSvelte.clusterName = page.params.cluster
     })
 
     onMount(() => {
@@ -64,11 +64,11 @@
         newActionBar: keyof typeof actionBars | null
     ) => actionBar.set(newActionBar)
 
-    windowControlsSpacerVisible.set($page.data.userAgent?.includes("Electron"))
+    windowControlsSpacerVisible.set(page.data.userAgent?.includes("Electron"))
 
     onMount(() => {
         varsSvelte.layout.isElectron =
-            $page.data.userAgent?.includes("Electron")
+            page.data.userAgent?.includes("Electron")
         // @ts-ignore
         window.fullscreenChanged = (state: boolean) => {
             windowControlsSpacerVisible.set(!state)
@@ -122,8 +122,7 @@
                     <link
                         rel="preload"
                         as="image"
-                        href="{pageData.serverURL}/thumb/{id}.webp"
-                        crossorigin="use-credentials"
+                        href="{pageData.serverURL}/thumb/{id}.webp?session={page.data.session}"
                     />
                 {/each}
             {/await}

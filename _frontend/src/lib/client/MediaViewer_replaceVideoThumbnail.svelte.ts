@@ -1,6 +1,6 @@
 import { get } from "svelte/store"
 
-import { page } from "$app/stores"
+import { page } from "$app/state"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
 import { prompts } from "$lib/controllers/PromptController"
 import { controller, videoElement } from "$lib/stores.svelte"
@@ -63,7 +63,7 @@ export default async () => {
         return
     }
 
-    await fetch(`${get(page).data.serverURL}/api/media/${mediaId}/thumbnail`, {
+    await fetch(`${page.data.serverURL}/api/media/${mediaId}/thumbnail`, {
         method: "POST",
         body: data
     }).then(async () => {

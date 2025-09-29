@@ -1,6 +1,6 @@
 <script lang="ts">
     import { invalidateAll } from "$app/navigation"
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Table from "$components/elements/Table.svelte"
     import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
@@ -21,9 +21,8 @@
             <td>
                 {#each entry.media_ids as id}
                     <img
-                        src={`${$page.data.serverURL}/api/media/${id}/thumbnail`}
+                        src={`${page.data.serverURL}/api/media/${id}/thumbnail?session=${page.data.session}`}
                         alt={id}
-                        crossorigin="use-credentials"
                     />
                 {/each}
 
@@ -42,7 +41,7 @@
                         icon="mdiDebugStepOver"
                         onclick={() => {
                             fetch(
-                                `${$page.url.href}/${entry.content_hash}/ignore`,
+                                `${page.url.href}/${entry.content_hash}/ignore`,
                                 {
                                     method: "PUT"
                                 }

@@ -13,15 +13,20 @@ export const load: LayoutServerLoad = async () => {
     return {
         duplicates_count: (
             (await prisma.$queryRaw`
-        SELECT COUNT(DISTINCT content_hash) 
-        FROM "Media" 
-        WHERE content_hash != 'IGNORED' 
-            AND content_hash != 'ERROR' 
-            AND content_hash IS NOT NULL
-    `) as any
+                SELECT COUNT(DISTINCT content_hash)
+                FROM "Media"
+                WHERE content_hash != 'IGNORED'
+                    AND content_hash != 'ERROR'
+                    AND content_hash IS NOT NULL
+            `) as any
         )[0].count as number,
         unimported_count: Math.abs(
             filesInMedia.filter(file => file.isFile()).length - mediaInDatabase
-        )
+        ),
+        trash_count: await prisma.media.count({
+            where: {
+                deleted: true
+            }
+        })
     }
 }

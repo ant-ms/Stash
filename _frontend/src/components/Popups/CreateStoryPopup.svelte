@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import query from "$lib/client/call"
     import { prompts } from "$lib/controllers/PromptController"
@@ -8,7 +8,7 @@
 
     import type { PageData } from "../../routes/[cluster]/$types"
 
-    let pageData = $derived($page.data as PageData)
+    let pageData = $derived(page.data as PageData)
 
     let title = $state("")
     let source = $state("")

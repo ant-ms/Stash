@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import { presentationMode } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { settings } from "$lib/stores.svelte"
@@ -98,7 +98,7 @@
         if (presentationMode.current) {
             return `https://picsum.photos/${mediaController.visibleMedium?.width}/${mediaController.visibleMedium?.height}?q=${mediaController.visibleMedium?.id}`
         }
-        return `${$page.data.serverURL}/file/${mediaController.visibleMedium?.id}`
+        return `${page.data.serverURL}/file/${mediaController.visibleMedium?.id}?session=${page.data.session}`
     })
 </script>
 
@@ -110,7 +110,6 @@
         onmousemove={calculateCursor}
         style:cursor
         {src}
-        crossorigin={presentationMode.current ? "anonymous" : "use-credentials"}
         alt={mediaController.visibleMedium?.name}
     />
 </main>

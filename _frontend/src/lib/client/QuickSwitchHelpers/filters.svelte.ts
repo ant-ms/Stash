@@ -1,7 +1,7 @@
 import { get } from "svelte/store"
 
 import { goto } from "$app/navigation"
-import { page } from "$app/stores"
+import { page } from "$app/state"
 import { SUBJECT_TYPES } from "$lib/constants"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
 import { prompts } from "$lib/controllers/PromptController"
@@ -101,7 +101,7 @@ const actions = async () => {
                     parentTagId: mediaController.selectedTags.length
                         ? mediaController.selectedTags[0].id
                         : null,
-                    clusterId: get(page).data.cluster.id
+                    clusterId: page.data.cluster.id
                 })
 
                 tagsController.updateTags()
@@ -146,7 +146,7 @@ const gatherAllTags = async () => {
 }
 
 const gatherAllClusters = async () =>
-    (get(page).data as PageData).clusters.map(
+    (page.data as PageData).clusters.map(
         cluster =>
             ({
                 icon: cluster.icon as any,

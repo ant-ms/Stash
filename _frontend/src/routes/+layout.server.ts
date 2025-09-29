@@ -44,9 +44,12 @@ export const load: LayoutServerLoad = async ({ request, url, cookies }) => {
     if (url.hostname == "stash.any.gay") serverURL = "https://stash.any.gay"
     console.log(new Date().toISOString(), "/+layout.server.ts2", url.pathname)
 
+    const session = cookies.get("session") || ""
+
     return {
         userAgent: request.headers.get("user-agent") || "Unknown",
-        clusters: await getClusters(cookies.get("session") || ""),
-        serverURL
+        clusters: await getClusters(session),
+        serverURL,
+        session
     }
 }

@@ -3,14 +3,14 @@
     import { onMount } from "svelte"
     import SvelteMarkdown from "svelte-markdown"
 
-    import { page } from "$app/stores"
+    import { page } from "$app/state"
     import query from "$lib/client/call"
     import { controller } from "$lib/stores.svelte"
     import varsSvelte from "$lib/vars.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"
 
-    let pageData = $page.data as PageData
+    let pageData = page.data as PageData
 
     $effect(() => {
         varsSvelte.layout.hideSidebar = storyPromise != null
