@@ -8,5 +8,5 @@ export const SUBJECT_TYPES = [
 ] as const
 
 // TODO: Make everything use these
-export const MEDIA_ROOT = "./media";
-export const THUMBNAIL_ROOT = "./thumbnails";
+export const MEDIA_ROOT = "./media"
+export const THUMBNAIL_ROOT = "./thumbnails"

@@ -1,16 +1,15 @@
 <script lang="ts">
+    import Button from "$components/elements/Button.svelte"
+    import Grid from "$components/ImageGrid/Grid/Grid.svelte"
     import GridThumbnail from "$components/ImageGrid/GridThumbnail.svelte"
     import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
-    import Grid from "$components/ImageGrid/Grid/Grid.svelte"
-    import Button from "$components/elements/Button.svelte"
-    import { prompts } from "$lib/controllers/PromptController.js"
     import query from "$lib/client/call"
+    import { prompts } from "$lib/controllers/PromptController.js"
 
     let { data } = $props()
 </script>
 
 <SettingsPageContent title="Trash Bin">
-
     {#snippet headerActions()}
         <Button
             card
@@ -18,11 +17,15 @@
             onclick={async () => {
                 const mediaToDelete = data.mediaInTrash
 
-                const confirm = await prompts.notify(`Are you sure you want to delete ${mediaToDelete.length} media files?`)
+                const confirm = await prompts.notify(
+                    `Are you sure you want to delete ${mediaToDelete.length} media files?`
+                )
 
                 if (confirm) {
                     for (const media of mediaToDelete) {
-                        await query("permanentlyDeleteMedia", { mediaId: media.id })
+                        await query("permanentlyDeleteMedia", {
+                            mediaId: media.id
+                        })
                     }
                 }
             }}
@@ -40,7 +43,12 @@
         useTransform={true}
     >
         {#each data.mediaInTrash as medium}
-            <GridThumbnail {medium} disableActive disableIntersectionDetection disableZoom />
+            <GridThumbnail
+                {medium}
+                disableActive
+                disableIntersectionDetection
+                disableZoom
+            />
         {/each}
     </Grid>
 </SettingsPageContent>

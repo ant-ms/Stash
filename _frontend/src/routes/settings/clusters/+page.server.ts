@@ -51,13 +51,28 @@ export const load: PageServerLoad = async ({ parent }) => {
     })
 
     const totalStorage =
-        clusterStorageUsageImages.reduce((acc, c) => acc + Number(c._sum.sizeBytes || 0), 0) +
-        clusterStorageUsageVideos.reduce((acc, c) => acc + Number(c._sum.sizeBytes || 0), 0);
+        clusterStorageUsageImages.reduce(
+            (acc, c) => acc + Number(c._sum.sizeBytes || 0),
+            0
+        ) +
+        clusterStorageUsageVideos.reduce(
+            (acc, c) => acc + Number(c._sum.sizeBytes || 0),
+            0
+        )
 
     const clustersWithUsage = clusters.map(cluster => {
-        const imageUsage = Number(clusterStorageUsageImages.find(c => c.clustersId === cluster.id)?._sum.sizeBytes || 0);
-        const videoUsage = Number(clusterStorageUsageVideos.find(c => c.clustersId === cluster.id)?._sum.sizeBytes || 0);
-        const percentage = totalStorage > 0 ? ((imageUsage + videoUsage) / totalStorage) * 100 : 0;
+        const imageUsage = Number(
+            clusterStorageUsageImages.find(c => c.clustersId === cluster.id)
+                ?._sum.sizeBytes || 0
+        )
+        const videoUsage = Number(
+            clusterStorageUsageVideos.find(c => c.clustersId === cluster.id)
+                ?._sum.sizeBytes || 0
+        )
+        const percentage =
+            totalStorage > 0
+                ? ((imageUsage + videoUsage) / totalStorage) * 100
+                : 0
 
         return {
             ...cluster,
@@ -65,11 +80,11 @@ export const load: PageServerLoad = async ({ parent }) => {
             videoUsage,
             percentage
         }
-    });
+    })
 
     return {
         clusters: clustersWithUsage,
         mediaCountByClusterImages,
-        mediaCountByClusterVideos,
+        mediaCountByClusterVideos
     }
 }

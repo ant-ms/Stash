@@ -67,8 +67,7 @@
     windowControlsSpacerVisible.set(page.data.userAgent?.includes("Electron"))
 
     onMount(() => {
-        varsSvelte.layout.isElectron =
-            page.data.userAgent?.includes("Electron")
+        varsSvelte.layout.isElectron = page.data.userAgent?.includes("Electron")
         // @ts-ignore
         window.fullscreenChanged = (state: boolean) => {
             windowControlsSpacerVisible.set(!state)
@@ -122,7 +121,8 @@
                     <link
                         rel="preload"
                         as="image"
-                        href="{pageData.serverURL}/thumb/{id}.webp?session={page.data.session}"
+                        href="{pageData.serverURL}/thumb/{id}.webp?session={page
+                            .data.session}"
                     />
                 {/each}
             {/await}

@@ -4,12 +4,12 @@
         enable,
         disable,
         state = $bindable()
-    } = $props<{
+    }: {
         toggle?: (value: boolean) => void
         enable?: (value: boolean) => void
         disable?: (value: boolean) => void
         state: boolean
-    }>()
+    } = $props()
 
     //   $: if (state != undefined) toggle(state)
     //   $: if (state == true) dispatch("enable")
@@ -22,9 +22,9 @@
 <main
     onclick={() => {
         state = !state
-        if (state != undefined) toggle(state)
-        if (state == true) enable(true)
-        if (state == false) disable(false)
+        if (state != undefined && toggle) toggle(state)
+        if (state == true && enable) enable(true)
+        if (state == false && disable) disable(false)
     }}
 >
     <!-- svelte-ignore element_invalid_self_closing_tag -->

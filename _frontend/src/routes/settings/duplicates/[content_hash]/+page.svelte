@@ -5,12 +5,12 @@
     import { goto, invalidateAll } from "$app/navigation"
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
-    import Table from "$components/elements/Table.svelte"
     import Toggle from "$components/elements/Toggle.svelte"
     import Popup from "$reusables/Popup.svelte"
 
     import type { PageData } from "./$types"
     import type { DuplicatesMergeServerPutRequestData } from "./merge/+server"
+    import TagChip from "$components/Tags/TagChip.svelte"
 
     interface Props {
         data: PageData
@@ -80,89 +80,33 @@
     const getValueToKeep = (
         attribute: (typeof attributesToTransfer)[number]["attr"]
     ) => {
-        const dominantObject = attributesToTransfer.find(
-            a => a.attr === attribute
-        )
-        if (!dominantObject) throw new Error("Attribute not found!")
-        return (
-            (data.duplicate_media[dominantObject.selectedIndex][
-                attribute
-            ] as any) || null
-        )
+        try {
+            const dominantObject = attributesToTransfer.find(
+                a => a.attr === attribute
+            )
+            if (!dominantObject) throw new Error("Attribute not found!")
+            return (
+                (data.duplicate_media[dominantObject.selectedIndex][
+                    attribute
+                ] as any) || null
+            )
+        } catch {
+            return null
+        }
     }
+
+    let attributesToKeep = $derived({
+        createdDate: getValueToKeep("createdDate"),
+        date: getValueToKeep("date"),
+        favourited: getValueToKeep("favourited"),
+        groupedIntoNamesId: getValueToKeep("groupedIntoNamesId"),
+        name: getValueToKeep("name"),
+        specialFilterAttribute: getValueToKeep("specialFilterAttribute"),
+        tags: tags.map(t => t.id)
+    })
 </script>
 
 <Popup title="Merge" onclose={() => goto("/settings/duplicates")}>
-    <main>
-        <div class="row">
-            <span>Tags</span>
-            <div style="display: flex">
-                {#each tags as tag}
-                    <span class="tag">{tag.tag}</span>
-                {/each}
-            </div>
-        </div>
-        <Table borderless data={data.duplicate_media}>
-            {#snippet children({ entry, i })}
-                <td>
-                    {#if entry.type.startsWith("image")}
-                        <img
-                            src={`${page.data.serverURL}/file/${entry.id}?session=${page.data.sessionId}`}
-                            alt={entry.id}
-                        />
-                    {:else if entry.type.startsWith("video")}
-                        <!-- svelte-ignore a11y_media_has_caption -->
-                        <video controls>
-                            <source
-                                src={`${page.data.serverURL}/file/${entry.id}?session=${page.data.sessionId}`}
-                                type={entry.type}
-                            />
-                        </video>
-                    {:else}
-                        <span>ERROR: Unknown format!</span>
-                    {/if}
-                </td>
-                <td>
-                    {#each attributesToTransfer as { attr, name, selectedIndex, formatter }, j}
-                        <div
-                            class="row"
-                            class:disabled={data.duplicate_media.every(
-                                m => m[attr] === data.duplicate_media[0][attr]
-                            )}
-                        >
-                            <span class:disabled={selectedIndex != -1}
-                                >{name}</span
-                            >
-                            {#if formatter}
-                                <span class:disabled={selectedIndex != -1}
-                                    >{formatter(entry[attr])}</span
-                                >
-                            {:else}
-                                <span class:disabled={selectedIndex != -1}
-                                    >{entry[attr]}</span
-                                >
-                            {/if}
-                            <div class="div">
-                                <Toggle
-                                    state={selectedIndex == i}
-                                    enable={() => {
-                                        attributesToTransfer[j].selectedIndex =
-                                            i
-                                        console.log(attributesToTransfer[j])
-                                    }}
-                                    disable={() => {
-                                        attributesToTransfer[j].selectedIndex =
-                                            -1
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    {/each}
-                </td>
-            {/snippet}
-        </Table>
-    </main>
-
     {#snippet actionsLeft()}
         <Button
             card
@@ -191,8 +135,8 @@
                 card
                 icon="mdiSourceMerge"
                 highlighted
-                onclick={() => {
-                    fetch(`${page.url.href}/merge`, {
+                onclick={async () => {
+                    await fetch(`${page.url.href}/merge`, {
                         method: "PUT",
                         body: JSON.stringify({
                             idToKeep: getValueToKeep("id"),
@@ -203,18 +147,7 @@
                                         attributesToTransfer[0].selectedIndex
                                 )
                                 .map(m => m.id),
-                            attributesToKeep: {
-                                createdDate: getValueToKeep("createdDate"),
-                                date: getValueToKeep("date"),
-                                favourited: getValueToKeep("favourited"),
-                                groupedIntoNamesId:
-                                    getValueToKeep("groupedIntoNamesId"),
-                                name: getValueToKeep("name"),
-                                specialFilterAttribute: getValueToKeep(
-                                    "specialFilterAttribute"
-                                ),
-                                tags: tags.map(t => t.id)
-                            }
+                            attributesToKeep
                         } satisfies DuplicatesMergeServerPutRequestData)
                     })
                         .then(async () => {
@@ -231,57 +164,141 @@
             </Button>
         {/key}
     {/snippet}
+
+    {#snippet sidebar()}
+        <h2>Result</h2>
+        <div class="attributesToKeepInSidebar">
+            <!-- {#each Object.entries(attributesToKeep) as [attr, value]}
+                {#if value instanceof Date}
+
+                    <span>{attr}: {dateFormatter(value as any)}</span>
+                {:else}
+                    <span>{attr}: {String(value)}</span>
+                    {/if}
+            {/each} -->
+            {#each attributesToTransfer as { attr, name, selectedIndex, formatter }, j}
+                {#if !data.duplicate_media.every(m => m[attr] === data.duplicate_media[0][attr])}
+                    <div class="row">
+                        <span>{name}</span>
+                        {#if formatter}
+                            <span>
+                                {formatter((attributesToKeep as any)[attr])}
+                            </span>
+                        {:else}
+                            <span>
+                                {(attributesToKeep as any)[attr] || "False / TODO"}
+                            </span>
+                        {/if}
+                    </div>
+                {/if}
+            {/each}
+            <div class="row">
+                <span>Tags</span>
+                {#each attributesToKeep.tags as tag}
+                    <TagChip {tag} show="both"/>
+                {/each}
+            </div>
+        </div>
+    {/snippet}
+
+    <main>
+        {#each data.duplicate_media as entry, i}
+            <div class="duplicateEntry">
+                <div class="left">
+                    {#if entry.type.startsWith("image")}
+                        <img
+                            src={`${page.data.serverURL}/file/${entry.id}?session=${page.data.session}`}
+                            alt={entry.id}
+                        />
+                    {:else if entry.type.startsWith("video")}
+                        <video controls>
+                            <source
+                                src={`${page.data.serverURL}/file/${entry.id}?session=${page.data.sessionId}`}
+                                type={entry.type}
+                            />
+                        </video>
+                    {:else}
+                        <span>ERROR: Unknown format!</span>
+                    {/if}
+                </div>
+                <div class="right">
+                    {#each attributesToTransfer as { attr, name, selectedIndex, formatter }, j}
+                        {#if !data.duplicate_media.every(m => m[attr] === data.duplicate_media[0][attr])}
+                            <div class="row">
+                                <span class:disabled={selectedIndex != -1}
+                                    >{name}</span
+                                >
+                                {#if formatter}
+                                    <span class:disabled={selectedIndex != -1}
+                                        >{formatter(entry[attr])}</span
+                                    >
+                                {:else}
+                                    <span class:disabled={selectedIndex != -1}
+                                        >{entry[attr]}</span
+                                    >
+                                {/if}
+                                <div class="div">
+                                    <Toggle
+                                        state={selectedIndex == i}
+                                        enable={() => {
+                                            attributesToTransfer[
+                                                j
+                                            ].selectedIndex = i
+                                            console.log(attributesToTransfer[j])
+                                        }}
+                                        disable={() => {
+                                            attributesToTransfer[
+                                                j
+                                            ].selectedIndex = -1
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        {/if}
+                    {/each}
+                </div>
+            </div>
+        {/each}
+    </main>
 </Popup>
 
 <style lang="scss">
+    h2 {
+        margin: 0;
+    }
+
     main {
-        overflow: scroll;
-        max-height: calc(100vh - 250px);
+        overflow-y: scroll;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2rem;
+
+        max-height: 70vh;
     }
 
-    td:nth-child(1) {
-        padding: 0;
-        padding-right: 1rem;
-
-        img,
-        video {
-            width: 200px;
-        }
+    img,
+    video {
+        width: 200px;
     }
 
-    td:nth-child(2) {
-        display: flex;
-        flex-direction: column;
+    .row {
+        display: grid;
+        grid-template-columns: 150px 1fr auto;
         gap: 1rem;
-
-        .row {
-            display: grid;
-            grid-template-columns: 150px 1fr auto;
-            gap: 1rem;
-            align-items: center;
-
-            &.disabled {
-                pointer-events: none;
-                opacity: 0.3;
-            }
-
-            .disabled {
-                opacity: 0.3;
-            }
-        }
-    }
-
-    .tag {
-        cursor: pointer;
-
-        display: flex;
         align-items: center;
 
-        margin: 0.15em;
-        padding: 0.3em 0.5em;
-        border: 1px solid var(--color-dark-level-1);
-        border-radius: 3px;
+        .disabled {
+            pointer-events: none;
+            opacity: 0.25;
+        }
+    }
 
-        background: var(--color-dark-level-2);
+    .attributesToKeepInSidebar {
+        display: grid;
+        gap: 0.5rem;
+
+        width: 325px;
+        margin-top: 0.25rem;
+        padding: 0.25rem;
     }
 </style>

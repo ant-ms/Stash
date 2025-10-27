@@ -154,7 +154,8 @@
         <link
             rel="preload"
             as="image"
-            href="{page.data.serverURL}/thumb/{medium.id}.webp?session={page.data.session}"
+            href="{page.data.serverURL}/thumb/{medium.id}.webp?session={page
+                .data.session}"
         />
     {/if}
 </svelte:head>
@@ -211,7 +212,9 @@
 
                 {#if medium.type.startsWith("video") && showSeekPreview}
                     <video
-                        src="{page.data.serverURL}/thumb/{medium.id}_seek.webm?session={page.data.session}"
+                        src="{page.data
+                            .serverURL}/thumb/{medium.id}_seek.webm?session={page
+                            .data.session}"
                         bind:this={seekVideo}
                         muted
                         preload="auto"

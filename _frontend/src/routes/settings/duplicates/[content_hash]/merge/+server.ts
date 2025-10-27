@@ -94,6 +94,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     })
 
     for (const id of data.idsToRemove) {
+        // TODO: This should be doen differently
         await fs.rm(`./media/${id}`)
         await fs.rm(`./thumb/${id}.webp`)
         await fs.rm(`./thumb/${id}_seek.webm`, { force: true })

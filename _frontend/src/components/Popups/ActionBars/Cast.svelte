@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { FCastController, PlaybackStateState } from "fcast-svelte-remote"
     import { fade } from "svelte/transition"
 
     import { page } from "$app/state"
@@ -6,7 +7,6 @@
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { prompts } from "$lib/controllers/PromptController"
-    import { FCastController, PlaybackStateState } from "fcast-svelte-remote"
 
     let disableSeeking = $state(false)
     let seekVideo: HTMLVideoElement | null = $state(null)
@@ -19,7 +19,10 @@
 
     $effect(() => {
         if (mediaController.visibleMedium && client)
-            client.play(`${page.data.serverURL}/file/${mediaController.visibleMedium.id}?session=udhmunznya`, mediaController.visibleMedium.type)
+            client.play(
+                `${page.data.serverURL}/file/${mediaController.visibleMedium.id}?session=udhmunznya`,
+                mediaController.visibleMedium.type
+            )
         else if (!mediaController.visibleMedium && client) client.stop()
     })
 
@@ -33,7 +36,9 @@
         const step = 15 // 15 seconds
         if (e.key === "ArrowUp" || e.key === "ArrowRight") {
             e.preventDefault()
-            client.seek(Math.min(client.playbackDuration, client.playbackTime + step))
+            client.seek(
+                Math.min(client.playbackDuration, client.playbackTime + step)
+            )
         } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
             e.preventDefault()
             client.seek(Math.max(0, client.playbackTime - step))
@@ -83,11 +88,7 @@
                             remoteAddress
                         )
                     }
-                    if (address)
-                        client = new FCastController(
-                            address,
-                            46898
-                        )
+                    if (address) client = new FCastController(address, 46898)
                 }}
             >
                 <Icon name="mdiCastOff" size={0.8} />
@@ -95,7 +96,11 @@
         {/if}
 
         {#if mediaController.visibleMedium}
-            <button type="button" aria-label="Close media" onclick={() => (mediaController.visibleMedium = null)}>
+            <button
+                type="button"
+                aria-label="Close media"
+                onclick={() => (mediaController.visibleMedium = null)}
+            >
                 <Icon name={"mdiBackspaceOutline"} size={0.8} />
             </button>
         {/if}
@@ -134,21 +139,19 @@
             <!-- play/pause -->
             <button
                 type="button"
-                aria-label={client?.playbackState == PlaybackStateState.PLAYING ? "Pause" : "Play"}
+                aria-label={client?.playbackState == PlaybackStateState.PLAYING
+                    ? "Pause"
+                    : "Play"}
                 disabled={!client?.playbackState}
                 onclick={() => {
-                    if (
-                        client?.playbackState ==
-                        PlaybackStateState.PLAYING
-                    )
+                    if (client?.playbackState == PlaybackStateState.PLAYING)
                         client?.pause()
                     else client?.resume()
                 }}
                 transition:fade={{ duration: 100 }}
             >
                 <Icon
-                    name={client?.playbackState ==
-                    PlaybackStateState.PLAYING
+                    name={client?.playbackState == PlaybackStateState.PLAYING
                         ? "mdiPause"
                         : "mdiPlay"}
                     size={0.8}
@@ -189,7 +192,9 @@
         {#if mediaController.visibleMedium}
             <button
                 type="button"
-                aria-label={mediaController.visibleMedium.favourited ? "Remove from favourites" : "Add to favourites"}
+                aria-label={mediaController.visibleMedium.favourited
+                    ? "Remove from favourites"
+                    : "Add to favourites"}
                 onclick={() => {
                     fetch(
                         `/api/media/${mediaController.visibleMedium?.id}/favourited`,
@@ -258,7 +263,8 @@
             {#if !isMobile.current && !disableSeeking}
                 <video
                     src="{page.data.serverURL}/thumb/{mediaController
-                        .visibleMedium?.id}_seek.webm?session={page.data.session}"
+                        .visibleMedium?.id}_seek.webm?session={page.data
+                        .session}"
                     muted
                     bind:this={seekVideo}
                     onerror={() => (disableSeeking = true)}
@@ -297,6 +303,7 @@
 
         button {
             all: unset;
+
             cursor: pointer;
 
             display: flex;

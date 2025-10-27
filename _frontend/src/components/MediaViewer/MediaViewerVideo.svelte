@@ -224,7 +224,8 @@
             {#if !isMobile.current && !disableSeeking}
                 <video
                     src="{page.data.serverURL}/thumb/{mediaController
-                        .visibleMedium?.id}_seek.webm?session={page.data.session}"
+                        .visibleMedium?.id}_seek.webm?session={page.data
+                        .session}"
                     bind:this={seekVideo}
                     muted
                     onerror={() => (disableSeeking = true)}
