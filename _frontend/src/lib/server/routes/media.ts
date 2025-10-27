@@ -1,4 +1,6 @@
+import { MEDIA_ROOT, THUMBNAIL_ROOT } from "$lib/constants"
 import prisma from "../prisma"
+import fs from "fs/promises"
 
 export const markMediaAsDeleted = async (d: { mediaId: string }) => {
     await prisma.media.update({
@@ -7,6 +9,18 @@ export const markMediaAsDeleted = async (d: { mediaId: string }) => {
         },
         data: {
             deleted: true
+        }
+    })
+}
+
+export const permanentlyDeleteMedia = async (d: { mediaId: string }) => {
+    await fs.rm(`${THUMBNAIL_ROOT}/${d.mediaId}.webp`, {force: true, recursive: false}) // TODO: Also delete old thumbnails? (should probably rework that)
+    await fs.rm(`${THUMBNAIL_ROOT}/${d.mediaId}_seek.webm`, {force: true, recursive: false})
+    await fs.rm(`${MEDIA_ROOT}/${d.mediaId}`, {force: true, recursive: false})
+
+    await prisma.media.delete({
+        where: {
+            id: d.mediaId
         }
     })
 }

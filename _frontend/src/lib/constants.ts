@@ -6,3 +6,7 @@ export const SUBJECT_TYPES = [
     { value: "group", icon: "mdiAccountMultiplePlus" },
     { value: "show_unknown", icon: "mdiAccountQuestion" }
 ] as const
+
+// TODO: Make everything use these
+export const MEDIA_ROOT = "./media";
+export const THUMBNAIL_ROOT = "./thumbnails";
