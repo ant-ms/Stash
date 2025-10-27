@@ -18,6 +18,7 @@ export const load: LayoutServerLoad = async () => {
                 WHERE content_hash != 'IGNORED'
                     AND content_hash != 'ERROR'
                     AND content_hash IS NOT NULL
+                    AND "clustersId" != 3
             `) as any
         )[0].count as number,
         unimported_count: Math.abs(
