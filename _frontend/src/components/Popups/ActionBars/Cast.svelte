@@ -6,7 +6,7 @@
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { prompts } from "$lib/controllers/PromptController"
-    import { FCastController, PlaybackStateState } from "/Users/yanik/Development/fcast-svelte-remote/dist/index.js"
+    import { FCastController, PlaybackStateState } from "fcast-svelte-remote"
 
     let disableSeeking = $state(false)
     let seekVideo: HTMLVideoElement | null = $state(null)
