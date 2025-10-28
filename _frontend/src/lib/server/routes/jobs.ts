@@ -37,3 +37,16 @@ export const areThereUpdateMediaMetadataFromFileJobs = async (d: {}) => {
     })
     return match != null
 }
+
+export const removeAllCompletedJobs = async (d: {}) =>
+    await prisma.job.deleteMany({
+        where: {
+            status: "completed"
+        }
+    })
+export const removeAllFailedJobs = async (d: {}) =>
+    await prisma.job.deleteMany({
+        where: {
+            status: "failed"
+        }
+    })

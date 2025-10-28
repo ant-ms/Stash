@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte"
 
-    import { invalidate, invalidateAll } from "$app/navigation"
+    import { invalidateAll } from "$app/navigation"
     import Button from "$components/elements/Button.svelte"
     import Table from "$components/elements/Table.svelte"
     import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
@@ -28,6 +28,27 @@
 </script>
 
 <SettingsPageContent title="Jobs">
+    {#snippet headerActions()}
+        <Button
+            card
+            icon="mdiDeleteAlert"
+            onclick={async () => {
+                await query("removeAllFailedJobs", {})
+            }}
+        >
+            Remove all failed jobs
+        </Button>
+        <Button
+            card
+            icon="mdiSprayBottle"
+            onclick={async () => {
+                await query("removeAllCompletedJobs", {})
+            }}
+        >
+            Remove all completed jobs
+        </Button>
+    {/snippet}
+
     <Table headers={["ID", "Name", "Status"]} data={data.jobs}>
         {#snippet children({ entry })}
             <td>{entry.id}</td>

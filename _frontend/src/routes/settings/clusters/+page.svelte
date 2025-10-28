@@ -91,6 +91,14 @@
         data={data.clusters}
     >
         {#snippet children({ entry })}
+            {@const mediaCountByClusterImages =
+                data.mediaCountByClusterImages.find(
+                    c => c.clustersId === entry.id
+                )}
+            {@const mediaCountByClusterVideos =
+                data.mediaCountByClusterVideos.find(
+                    c => c.clustersId === entry.id
+                )}
             <td>
                 {entry.id}
             </td>
@@ -146,18 +154,22 @@
                 </div>
             </td>
             <td>
-                {data.mediaCountByClusterImages.find(
-                    c => c.clustersId === entry.id
-                )?._count.id || 0} Images,
-                {data.mediaCountByClusterVideos.find(
-                    c => c.clustersId === entry.id
-                )?._count.id || 0} Videos
+                {#if mediaCountByClusterImages && mediaCountByClusterImages._count.id}
+                    {mediaCountByClusterImages._count.id} Images
+                {/if}
+                {#if mediaCountByClusterVideos && mediaCountByClusterVideos._count.id}
+                    {mediaCountByClusterVideos._count.id} Videos
+                {/if}
             </td>
             <td
                 style={`background: linear-gradient(to right, var(--accent-background) ${entry.percentage}%, transparent ${entry.percentage}%)`}
             >
-                {prettyBytes(entry.imageUsage)} Images,
-                {prettyBytes(entry.videoUsage)} Videos
+                {#if entry.imageUsage}
+                    {prettyBytes(entry.imageUsage)} Images,
+                {/if}
+                {#if entry.videoUsage}
+                    {prettyBytes(entry.videoUsage)} Videos
+                {/if}
             </td>
         {/snippet}
     </Table>

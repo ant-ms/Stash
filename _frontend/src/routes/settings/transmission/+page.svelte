@@ -131,7 +131,15 @@
                         <td>
                             {prettyBytes(entry.uploadedEver)}
                         </td>
-                        <td>
+                        <td
+                            style={`
+                                background: linear-gradient(to right,
+                                    var(--accent-${entry.uploadRatio > 1 ? "background" : "foreground"})
+                                        ${Math.round(entry.uploadRatio * 100)}%,
+                                    transparent
+                                        ${Math.round(entry.uploadRatio * 100)}%)
+                            `}
+                        >
                             {(entry.uploadRatio as number).toFixed(2)}
                         </td>
                     {/snippet}

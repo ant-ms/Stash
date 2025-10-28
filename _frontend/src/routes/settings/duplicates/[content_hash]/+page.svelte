@@ -6,11 +6,11 @@
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Toggle from "$components/elements/Toggle.svelte"
+    import TagChip from "$components/Tags/TagChip.svelte"
     import Popup from "$reusables/Popup.svelte"
 
     import type { PageData } from "./$types"
     import type { DuplicatesMergeServerPutRequestData } from "./merge/+server"
-    import TagChip from "$components/Tags/TagChip.svelte"
 
     interface Props {
         data: PageData
@@ -186,7 +186,8 @@
                             </span>
                         {:else}
                             <span>
-                                {(attributesToKeep as any)[attr] || "False / TODO"}
+                                {(attributesToKeep as any)[attr] ||
+                                    "False / TODO"}
                             </span>
                         {/if}
                     </div>
@@ -195,7 +196,7 @@
             <div class="row">
                 <span>Tags</span>
                 {#each attributesToKeep.tags as tag}
-                    <TagChip {tag} show="both"/>
+                    <TagChip {tag} show="both" />
                 {/each}
             </div>
         </div>
