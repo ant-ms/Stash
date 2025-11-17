@@ -60,7 +60,7 @@ class MediaController {
         minResolution: null as number | null,
         mediaType: "all" as "all" | "image" | "video",
         traverse: false,
-        includeTaggedTags: false
+        includeTaggedTags: true
     })
     private _filtersOverrides: typeof this.filters | null = null
 
