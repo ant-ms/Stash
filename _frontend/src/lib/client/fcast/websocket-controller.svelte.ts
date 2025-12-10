@@ -16,7 +16,7 @@ export class WebSocketController {
 		// Connect to the local proxy, assuming standard Vite port 5173.
 		// In a production environment, this URL would need to be configured differently.
 		// TODO
-		this.proxyUrl = `ws://10.42.0.1:3069/tcp/${ip}/${port}`;
+		this.proxyUrl = `wss://stash.hera.lan/tcp/${ip}/${port}`;
 		this.eventHandlers = eventHandlers;
 		this.connect();
 	}
