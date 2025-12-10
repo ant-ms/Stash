@@ -1,30 +1,6 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaPg } from "@prisma/adapter-pg"
 
-import redis from "./redis"
+import { PrismaClient } from "../../generated/prisma/client"
 
-const prisma = new PrismaClient({
-    log: [
-        {
-            emit: "event",
-            level: "query"
-        },
-        {
-            emit: "stdout",
-            level: "error"
-        },
-        {
-            emit: "stdout",
-            level: "info"
-        },
-        {
-            emit: "stdout",
-            level: "warn"
-        }
-    ]
-})
-
-export default prisma
-
-prisma.$on("query", async e => {
-    await redis.set(`query:${e.timestamp}`, JSON.stringify(e))
-})
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+export default new PrismaClient({ adapter })

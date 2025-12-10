@@ -3,11 +3,11 @@
 
     import { page } from "$app/state"
     import Icon from "$components/elements/Icon.svelte"
+    import { FCastController } from "$lib/client/fcast/controller.svelte"
+    import { PlaybackState } from "$lib/client/fcast/protocol"
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { prompts } from "$lib/controllers/PromptController"
-    import { FCastController } from "$lib/client/fcast/controller.svelte"
-    import { PlaybackState } from "$lib/client/fcast/protocol"
 
     let disableSeeking = $state(false)
     let seekVideo: HTMLVideoElement | null = $state(null)
@@ -99,11 +99,12 @@
                     }
 
                     // TODO: Target
-                    if (address) client = new FCastController(address, 46899, {
-                        appName: "Stash",
-                        appVersion: "1.0.0",
-                        displayName: "Stash"
-                    })
+                    if (address)
+                        client = new FCastController(address, 46899, {
+                            appName: "Stash",
+                            appVersion: "1.0.0",
+                            displayName: "Stash"
+                        })
                 }}
             >
                 <Icon name="mdiCastOff" size={0.8} />

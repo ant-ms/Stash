@@ -15,6 +15,7 @@
         "@egjs/grid": "^1.17.1",
         "@ianvs/prettier-plugin-sort-imports": "^4.6.2",
         "@mdi/js": "^7.4.47",
+        "@prisma/adapter-pg": "^7.1.0",
         "@sveltejs/adapter-node": "^5.3.1",
         "@sveltejs/kit": "^2.33.0",
         "@sveltejs/vite-plugin-svelte": "^6.1.2",
