@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { FCastController, PlaybackStateState } from "fcast-svelte-remote"
     import { fade } from "svelte/transition"
 
     import { page } from "$app/state"
@@ -7,6 +6,8 @@
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { prompts } from "$lib/controllers/PromptController"
+    import { FCastController } from "$lib/client/fcast/controller.svelte"
+    import { PlaybackState } from "$lib/client/fcast/protocol"
 
     let disableSeeking = $state(false)
     let seekVideo: HTMLVideoElement | null = $state(null)
@@ -20,7 +21,7 @@
     $effect(() => {
         if (mediaController.visibleMedium && client)
             client.play(
-                `${page.data.serverURL}/file/${mediaController.visibleMedium.id}?session=udhmunznya`,
+                `${localStorage.getItem("lastConnectedRemoteAddress") || page.data.serverURL}/file/${mediaController.visibleMedium.id}?session=${page.data.session}`,
                 mediaController.visibleMedium.type
             )
         else if (!mediaController.visibleMedium && client) client.stop()
@@ -36,6 +37,10 @@
         const step = 15 // 15 seconds
         if (e.key === "ArrowUp" || e.key === "ArrowRight") {
             e.preventDefault()
+            if (client.playbackDuration == undefined) {
+                console.error("Playback duration is undefined")
+                return
+            }
             client.seek(
                 Math.min(client.playbackDuration, client.playbackTime + step)
             )
@@ -47,6 +52,10 @@
             client.seek(0)
         } else if (e.key === "End") {
             e.preventDefault()
+            if (client.playbackDuration == undefined) {
+                console.error("Playback duration is undefined")
+                return
+            }
             client.seek(client.playbackDuration)
         }
     }
@@ -88,7 +97,13 @@
                             remoteAddress
                         )
                     }
-                    if (address) client = new FCastController(address, 46898)
+
+                    // TODO: Target
+                    if (address) client = new FCastController(address, 46899, {
+                        appName: "Stash",
+                        appVersion: "1.0.0",
+                        displayName: "Stash"
+                    })
                 }}
             >
                 <Icon name="mdiCastOff" size={0.8} />
@@ -139,19 +154,19 @@
             <!-- play/pause -->
             <button
                 type="button"
-                aria-label={client?.playbackState == PlaybackStateState.PLAYING
+                aria-label={client?.playbackState == PlaybackState.Playing
                     ? "Pause"
                     : "Play"}
                 disabled={!client?.playbackState}
                 onclick={() => {
-                    if (client?.playbackState == PlaybackStateState.PLAYING)
+                    if (client?.playbackState == PlaybackState.Playing)
                         client?.pause()
                     else client?.resume()
                 }}
                 transition:fade={{ duration: 100 }}
             >
                 <Icon
-                    name={client?.playbackState == PlaybackStateState.PLAYING
+                    name={client?.playbackState == PlaybackState.Playing
                         ? "mdiPause"
                         : "mdiPlay"}
                     size={0.8}
