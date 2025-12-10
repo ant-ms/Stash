@@ -2,7 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"encoding/binary"
+	"encoding/json"
+	"io"
 	"log"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -15,6 +19,12 @@ import (
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool { return true }, // In production, you may want stricter origin checks.
+}
+
+// ClientMessage defines the structure for messages from the WebSocket client.
+type ClientMessage struct {
+	Opcode int             `json:"opcode"`
+	Body   json.RawMessage `json:"body"`
 }
 
 func main() {
@@ -69,20 +79,20 @@ func main() {
 	fs_seek := http.FileServer(http.Dir("./thumbnails"))
 	http.Handle("/thumb/", authMiddleware(http.StripPrefix("/thumb", fs_seek)))
 
-	// WebSocket handler
-	http.HandleFunc("/ws/", func(w http.ResponseWriter, r *http.Request) {
+	// WebSocket to TCP proxy handler
+	http.HandleFunc("/tcp/", func(w http.ResponseWriter, r *http.Request) {
 		// Extract target IP and port from the URL path
 		pathParts := strings.Split(r.URL.Path, "/")
 		if len(pathParts) < 4 {
-			http.Error(w, "Invalid WebSocket target format. Must be /ws/<ip>/<port>", http.StatusBadRequest)
+			http.Error(w, "Invalid WebSocket target format. Must be /tcp/<ip>/<port>", http.StatusBadRequest)
 			return
 		}
 
 		targetIP := pathParts[2]
 		targetPort := pathParts[3]
 
-		targetURL := "ws://" + targetIP + ":" + targetPort + "/"
-		proxyWebSocket(w, r, targetURL)
+		targetAddr := targetIP + ":" + targetPort
+		proxyWsToTcp(w, r, targetAddr)
 	})
 
 	// Set up the reverse proxy for all other requests
@@ -105,52 +115,109 @@ func main() {
 	}
 }
 
-// proxyWebSocket handles the WebSocket proxying between the client and the target server
-func proxyWebSocket(w http.ResponseWriter, r *http.Request, targetURL string) {
+// proxyWsToTcp handles the proxying between a WebSocket client and a backend TCP server.
+func proxyWsToTcp(w http.ResponseWriter, r *http.Request, targetAddr string) {
 	// Upgrade the client connection to WebSocket
-	clientConn, err := upgrader.Upgrade(w, r, nil)
+	wsConn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		http.Error(w, "Failed to upgrade WebSocket", http.StatusInternalServerError)
 		log.Printf("WebSocket upgrade error: %v", err)
 		return
 	}
-	defer clientConn.Close()
+	defer wsConn.Close()
+	log.Println("Frontend websocket connected")
 
-	// Dial the target WebSocket server
-	targetConn, _, err := websocket.DefaultDialer.Dial(targetURL, nil)
+	// Connect to the target TCP server
+	tcpConn, err := net.Dial("tcp", targetAddr)
 	if err != nil {
-		http.Error(w, "Failed to connect to target WebSocket", http.StatusBadGateway)
-		log.Printf("WebSocket dial error: %v", err)
+		log.Printf("Failed to connect to target TCP server %s: %v", targetAddr, err)
 		return
 	}
-	defer targetConn.Close()
+	defer tcpConn.Close()
+	log.Println("Connected to fcast TCP server")
 
-	// Proxy data between client and target server
 	errChan := make(chan error, 2)
 
-	go copyWebSocketData(clientConn, targetConn, errChan)
-	go copyWebSocketData(targetConn, clientConn, errChan)
+	// Goroutine to handle messages from client (WebSocket) to target (TCP)
+	go func() {
+		for {
+			_, message, err := wsConn.ReadMessage()
+			if err != nil {
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+					log.Printf("wsConn.ReadMessage error: %v", err)
+				}
+				errChan <- err
+				return
+			}
 
-	// Wait for any error from either direction
-	if err := <-errChan; err != nil {
-		log.Printf("WebSocket proxy error: %v", err)
-	}
-}
+			var msg ClientMessage
+			if err := json.Unmarshal(message, &msg); err != nil {
+				log.Printf("Error unmarshalling message from frontend: %v", err)
+				continue
+			}
 
-// copyWebSocketData copies data between two WebSocket connections
-func copyWebSocketData(src, dst *websocket.Conn, errChan chan error) {
-	for {
-		messageType, message, err := src.ReadMessage()
-		if err != nil {
-			errChan <- err
-			return
+			body := msg.Body
+			if body == nil || string(body) == "null" {
+				body = []byte{}
+			}
+
+			header := make([]byte, 5)
+			binary.LittleEndian.PutUint32(header[0:4], uint32(len(body)+1))
+			header[4] = byte(msg.Opcode)
+
+			packet := append(header, body...)
+
+			if _, err := tcpConn.Write(packet); err != nil {
+				log.Printf("tcpConn.Write error: %v", err)
+				errChan <- err
+				return
+			}
 		}
+	}()
 
-		if err := dst.WriteMessage(messageType, message); err != nil {
-			errChan <- err
-			return
+	// Goroutine to handle messages from target (TCP) to client (WebSocket)
+	go func() {
+		for {
+			header := make([]byte, 5)
+			if _, err := io.ReadFull(tcpConn, header); err != nil {
+				if err != io.EOF {
+					log.Printf("tcpConn.Read header error: %v", err)
+				}
+				errChan <- err
+				return
+			}
+
+			size := binary.LittleEndian.Uint32(header[0:4])
+			opcode := header[4]
+			bodySize := size - 1
+
+			var body json.RawMessage
+			if bodySize > 0 {
+				bodyBytes := make([]byte, bodySize)
+				if _, err := io.ReadFull(tcpConn, bodyBytes); err != nil {
+					log.Printf("tcpConn.Read body error: %v", err)
+					errChan <- err
+					return
+				}
+				body = json.RawMessage(bodyBytes)
+			}
+
+			response := ClientMessage{Opcode: int(opcode), Body: body}
+			responseJSON, err := json.Marshal(response)
+			if err != nil {
+				log.Printf("Error marshalling response to frontend: %v", err)
+				continue
+			}
+
+			if err := wsConn.WriteMessage(websocket.TextMessage, responseJSON); err != nil {
+				log.Printf("wsConn.WriteMessage error: %v", err)
+				errChan <- err
+				return
+			}
 		}
-	}
+	}()
+
+	err = <-errChan
+	log.Printf("Proxy error: %v. Closing connections.", err)
 }
 
 // isValidSession checks if the session token is valid by querying the database
