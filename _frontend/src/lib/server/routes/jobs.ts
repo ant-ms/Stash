@@ -1,5 +1,4 @@
-import { JobStatus, type Job } from "@prisma/client"
-
+import { JobStatus, type Job } from "../../../generated/prisma/client"
 import prisma from "../prisma"
 
 export const setJobStatus = async (d: {

@@ -1,9 +1,9 @@
-import type { Media } from "@prisma/client"
 import type { Cookies } from "@sveltejs/kit"
 
 import prisma from "$lib/server/prisma"
 import { PAGE_SIZE } from "$lib/stores.svelte"
 
+import type { Media } from "../../../generated/prisma/client"
 import { sortingMethods } from "../../../types"
 import { protectEndpoint } from "../protect-endpoint"
 

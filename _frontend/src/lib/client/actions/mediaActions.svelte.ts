@@ -1,9 +1,7 @@
-import type { Media } from "@prisma/client"
-
-import { invalidateAll } from "$app/navigation"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
 import { prompts } from "$lib/controllers/PromptController"
 
+import type { Media } from "../../../generated/prisma/browser"
 import query from "../call"
 
 export const setSpecialFilterAttribute = (medium: Media, newValue: string) => {
