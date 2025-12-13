@@ -1,7 +1,6 @@
 import { persisted } from "svelte-local-storage-store"
 import { writable, type Writable } from "svelte/store"
 
-import QuickActionsCast from "$components/Popups/ActionBars/Cast.svelte"
 
 import type Controller from "../routes/Controller.svelte"
 
@@ -14,10 +13,6 @@ export const PAGE_SIZE = 200
 export let collapsedTags: Writable<string[]> = writable([])
 
 // Navigation and Layout
-export const actionBars = {
-    Cast: QuickActionsCast
-}
-export let actionBar: Writable<keyof typeof actionBars | null> = writable(null)
 export let windowControlsSpacerVisible = writable(false)
 
 export let uploadPopupOpen = writable(false)

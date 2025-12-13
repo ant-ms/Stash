@@ -2,10 +2,11 @@
     import { onMount } from "svelte"
 
     import { mediaController } from "$lib/controllers/MediaController.svelte"
-    import { actionBar, controller } from "$lib/stores.svelte"
+    import { controller } from "$lib/stores.svelte"
 
     import MediaViewer from "../MediaViewer/MediaViewer.svelte"
     import Toolbar from "../MediaViewer/Toolbar.svelte"
+    import varsSvelte from "$lib/vars.svelte"
 
     onMount(() => {
         window.history.pushState({ popupOpened: true }, "")
@@ -19,7 +20,7 @@
 
 <svelte:window onpopstate={onPopState} />
 
-{#if !$actionBar}
+{#if !varsSvelte.layout.castVisible}
     <main>
         <MediaViewer />
         <Toolbar />

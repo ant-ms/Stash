@@ -10,7 +10,7 @@ import {
     type TagExtended
 } from "$lib/controllers/TagsController.svelte"
 import type { possibleIcons } from "$lib/possibleIcons"
-import { actionBar, controller, selectedMediaIds } from "$lib/stores.svelte"
+import { controller } from "$lib/stores.svelte"
 import varsSvelte from "$lib/vars.svelte"
 
 import type { PageData } from "../../../routes/[cluster]/$types"
@@ -54,10 +54,7 @@ const actions = async () => {
             icon: "mdiCast",
             label: "/Cast",
             onEnter: () => {
-                get(controller).setPopup(null)
-                get(controller).setActionBar(
-                    get(actionBar) == "Cast" ? null : "Cast"
-                )
+                varsSvelte.layout.castVisible = !varsSvelte.layout.castVisible
             }
         },
         {

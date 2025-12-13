@@ -6,9 +6,11 @@
     import MenuBar from "$components/MenuBar.svelte"
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
-    import { actionBar, actionBars, isFullscreen } from "$lib/stores.svelte"
+    import { isFullscreen } from "$lib/stores.svelte"
 
     import Sidebar from "./Sidebar.svelte"
+    import varsSvelte from "$lib/vars.svelte"
+    import Cast from "$components/Popups/ActionBars/Cast.svelte"
 
     let imageGallerySection: HTMLDivElement
 
@@ -41,12 +43,11 @@
         </div>
     {/if}
 
-    {#if $actionBar}
-        {@const SvelteComponent = actionBars[$actionBar]}
-        <SvelteComponent />
+    {#if varsSvelte.layout.castVisible}
+        <Cast />
     {/if}
 
-    {#if mediaController.visibleMedium && !isMobile.current && $actionBar != "Cast"}
+    {#if mediaController.visibleMedium && !isMobile.current && !varsSvelte.layout.castVisible}
         <MediaViewer />
     {/if}
 </main>

@@ -15,8 +15,6 @@
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import tagsController from "$lib/controllers/TagsController.svelte"
     import {
-        actionBar,
-        actionBars,
         selectedMediaIds,
         windowControlsSpacerVisible
     } from "$lib/stores.svelte"
@@ -60,9 +58,6 @@
     let popup: keyof typeof popups | null = $state(null)
     let Popup = $derived(popup ? popups[popup] : null) as any
     export const setPopup = (newPopup: typeof popup) => (popup = newPopup)
-    export const setActionBar = (
-        newActionBar: keyof typeof actionBars | null
-    ) => actionBar.set(newActionBar)
 
     windowControlsSpacerVisible.set(page.data.userAgent?.includes("Electron"))
 

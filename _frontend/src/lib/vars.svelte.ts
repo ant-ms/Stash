@@ -3,6 +3,7 @@ import type { MediaType } from "./controllers/MediaController.svelte"
 class Layout {
     isElectron = $state(false) as false | true | "fullscreen"
     hideSidebar = $state(false)
+    castVisible = $state(false)
 }
 
 class Vars {

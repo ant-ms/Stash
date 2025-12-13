@@ -7,6 +7,8 @@
 
     import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
     import Button from "./elements/Button.svelte"
+    import varsSvelte from "$lib/vars.svelte"
+
 
     // Svelte 5 runes for state management
     let windowHeight = $state(0)
@@ -114,6 +116,16 @@
                 />
             {/each}
             <div class="spacer"></div>
+            <Button
+                size="large"
+                active={varsSvelte.layout.castVisible}
+                card
+                icon="mdiCast"
+                onclick={() => {
+                    varsSvelte.layout.castVisible = !varsSvelte.layout.castVisible
+                }}
+                styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
+            />
             <Button
                 size="large"
                 active={page.url.pathname.includes("settings")}
