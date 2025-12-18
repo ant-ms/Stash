@@ -7,6 +7,11 @@
 
     import type { LayoutData } from "./$types"
 
+    interface PermittedCluster {
+        id: number
+        name: string
+    }
+
     let {
         data,
         children
@@ -75,7 +80,9 @@
                 </div>
             </td>
             <td>
-                {entry.permittedClusters.map(c => c.name).join(", ")}
+                {entry.permittedClusters
+                    .map((c: PermittedCluster) => c.name)
+                    .join(", ")}
                 <div class="floating">
                     <Button
                         noMargin
@@ -87,8 +94,8 @@
                                     value: c.id.toString(),
                                     name: c.name
                                 })),
-                                entry.permittedClusters.map(c =>
-                                    c.id.toString()
+                                entry.permittedClusters.map(
+                                    (c: PermittedCluster) => c.id.toString()
                                 )
                             )
                             if (newClusters)

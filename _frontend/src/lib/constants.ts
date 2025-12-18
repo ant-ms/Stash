@@ -7,6 +7,8 @@ export const SUBJECT_TYPES = [
     { value: "show_unknown", icon: "mdiAccountQuestion" }
 ] as const
 
+export const PAGE_SIZE = 200
+
 // TODO: Make everything use these
 export const MEDIA_ROOT = "./media"
 export const THUMBNAIL_ROOT = "./thumbnails"

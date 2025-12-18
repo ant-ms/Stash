@@ -7,10 +7,13 @@
     import Button from "$components/elements/Button.svelte"
     import Toggle from "$components/elements/Toggle.svelte"
     import TagChip from "$components/Tags/TagChip.svelte"
+    import { MediaType } from "$lib/controllers/MediaController.svelte"
     import Popup from "$reusables/Popup.svelte"
 
     import type { PageData } from "./$types"
     import type { DuplicatesMergeServerPutRequestData } from "./merge/+server"
+
+    type ExtendedMedia = Media & MediaType
 
     interface Props {
         data: PageData
@@ -24,7 +27,7 @@
             .replace(",", "")
 
     const attributesToTransfer: {
-        attr: keyof Media
+        attr: keyof ExtendedMedia
         name: string
         selectedIndex: number
         formatter?: (value: any) => string
@@ -68,8 +71,10 @@
     run(() => {
         attributesToTransfer.forEach((a, i) => {
             if (
-                data.duplicate_media.every(
-                    m => m[a.attr] === data.duplicate_media[0][a.attr]
+                (data.duplicate_media as ExtendedMedia[]).every(
+                    m =>
+                        m[a.attr] ===
+                        (data.duplicate_media[0] as ExtendedMedia)[a.attr]
                 )
             ) {
                 attributesToTransfer[i].selectedIndex = 0
@@ -86,9 +91,11 @@
             )
             if (!dominantObject) throw new Error("Attribute not found!")
             return (
-                (data.duplicate_media[dominantObject.selectedIndex][
-                    attribute
-                ] as any) || null
+                (
+                    data.duplicate_media[
+                        dominantObject.selectedIndex
+                    ] as ExtendedMedia
+                )[attribute] || null
             )
         } catch {
             return null
@@ -177,16 +184,18 @@
                     {/if}
             {/each} -->
             {#each attributesToTransfer as { attr, name, selectedIndex, formatter }, j}
-                {#if !data.duplicate_media.every(m => m[attr] === data.duplicate_media[0][attr])}
+                {#if !data.duplicate_media.every((m: ExtendedMedia) => (m as ExtendedMedia)[attr] === (data.duplicate_media[0] as ExtendedMedia)[attr])}
                     <div class="row">
                         <span>{name}</span>
                         {#if formatter}
                             <span>
-                                {formatter((attributesToKeep as any)[attr])}
+                                {formatter(
+                                    (attributesToKeep as ExtendedMedia)[attr]
+                                )}
                             </span>
                         {:else}
                             <span>
-                                {(attributesToKeep as any)[attr] ||
+                                {(attributesToKeep as ExtendedMedia)[attr] ||
                                     "False / TODO"}
                             </span>
                         {/if}
@@ -203,7 +212,7 @@
     {/snippet}
 
     <main>
-        {#each data.duplicate_media as entry, i}
+        {#each data.duplicate_media as entry: ExtendedMedia, i}
             <div class="duplicateEntry">
                 <div class="left">
                     {#if entry.type.startsWith("image")}
@@ -224,7 +233,7 @@
                 </div>
                 <div class="right">
                     {#each attributesToTransfer as { attr, name, selectedIndex, formatter }, j}
-                        {#if !data.duplicate_media.every(m => m[attr] === data.duplicate_media[0][attr])}
+                        {#if !data.duplicate_media.every((m: ExtendedMedia) => (m as ExtendedMedia)[attr] === (data.duplicate_media[0] as ExtendedMedia)[attr])}
                             <div class="row">
                                 <span class:disabled={selectedIndex != -1}
                                     >{name}</span

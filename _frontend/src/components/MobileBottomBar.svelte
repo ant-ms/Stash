@@ -4,11 +4,10 @@
     import { page } from "$app/state"
     import TagsController from "$lib/controllers/TagsController.svelte"
     import { controller } from "$lib/stores.svelte"
+    import varsSvelte from "$lib/vars.svelte"
 
     import SidebarHierarchyEntry from "../routes/[cluster]/SidebarHierarchyEntry.svelte"
     import Button from "./elements/Button.svelte"
-    import varsSvelte from "$lib/vars.svelte"
-
 
     // Svelte 5 runes for state management
     let windowHeight = $state(0)
@@ -122,7 +121,8 @@
                 card
                 icon="mdiCast"
                 onclick={() => {
-                    varsSvelte.layout.castVisible = !varsSvelte.layout.castVisible
+                    varsSvelte.layout.castVisible =
+                        !varsSvelte.layout.castVisible
                 }}
                 styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
             />

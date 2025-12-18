@@ -1,14 +1,15 @@
 <script lang="ts">
-    import type { Media } from "@prisma/client/wasm"
-
     import Grid from "$components/ImageGrid/Grid/Grid.svelte"
-    import { mediaController } from "$lib/controllers/MediaController.svelte"
+    import {
+        mediaController,
+        type MediaType
+    } from "$lib/controllers/MediaController.svelte"
 
     import GridThumbnail from "./GridThumbnail.svelte"
     import GroupPopup from "./GroupPopup.svelte"
 
     interface Props {
-        media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>
+        media: Array<MediaType & { disabled?: Boolean; expanded?: Boolean }>
     }
 
     let { media }: Props = $props()
@@ -45,7 +46,7 @@
     }
 
     let showGroupPopup = $state(false)
-    let groupPopupMedia: Media[] = $state([])
+    let groupPopupMedia: MediaType[] = $state([])
     let startX = $state(0)
     let endX = $state(0)
 </script>

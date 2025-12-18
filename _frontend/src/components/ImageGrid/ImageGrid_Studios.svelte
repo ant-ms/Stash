@@ -1,13 +1,15 @@
 <script lang="ts">
-    import type { Media } from "@prisma/client/wasm"
-
     import { isMobile } from "$lib/context"
+    import {
+        mediaController,
+        type MediaType
+    } from "$lib/controllers/MediaController.svelte"
     import IntersectionObserver from "$reusables/IntersectionObserver.svelte"
 
     import ImageGridStudiosThumbnail from "./ImageGrid_Studios_Thumbnail.svelte"
 
     interface Props {
-        media: Array<Media & { disabled?: Boolean; expanded?: Boolean }>
+        media: Array<MediaType & { disabled?: Boolean; expanded?: Boolean }>
         i: number
     }
 

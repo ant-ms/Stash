@@ -116,8 +116,8 @@ const gatherAllTags = async () => {
         const [icon, iconOpacity] = (() => {
             if (tag.icon) return [tag.icon, 1]
             if (tag.indirectIcon) return [tag.indirectIcon, 0.35]
-            return ["mdiFolderOutline", 1]
-        })()
+            return ["mdiFolderOutline" as keyof typeof possibleIcons, 1]
+        })() as [keyof typeof possibleIcons, number]
 
         tags.push({
             icon,

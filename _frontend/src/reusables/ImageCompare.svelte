@@ -24,6 +24,7 @@
     }
 
     function start(e) {
+        e.preventDefault()
         sliding = true
         move(e)
     }
@@ -56,14 +57,14 @@
         bind:this={img}
         src={after}
         alt="after"
-        onmousedown|preventDefault
-        on:load={resize}
+        onmousedown={start}
+        onload={resize}
         {style}
     />
     <img
         src={before}
         alt="before"
-        onmousedown|preventDefault
+        onmousedown={start}
         style="{style}clip:rect(0, {x}px, {h}px, 0);"
     />
     <div class="handle" style="left: calc({offset * 100}% - 20px)">

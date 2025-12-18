@@ -36,7 +36,9 @@
 
         <Button
             noMargin
-            onclick={() => (varsSvelte.selectedMedias = [])}
+            onclick={() => {
+                varsSvelte.selectedMedias = []
+            }}
             icon="mdiSelectionOff"
         >
             Clear Selection ({varsSvelte.selectedMedias.length})

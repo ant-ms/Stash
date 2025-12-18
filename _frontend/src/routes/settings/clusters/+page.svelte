@@ -141,9 +141,9 @@
                 <div class="floating">
                     <Button
                         icon="mdiPencil"
-                        onclick={async ({ detail }) => {
+                        onclick={async (event: MouseEvent) => {
                             const newType = await prompts.dropdown(
-                                detail.target?.closest("td"),
+                                event.currentTarget as HTMLElement,
                                 ClusterType,
                                 entry.type
                             )

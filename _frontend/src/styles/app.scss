@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $hue: 13;
 $saturation: 16%;
 $accent: hsl($hue, $saturation + 10%, 30%);
@@ -21,13 +23,14 @@ body {
     --border-color-2: hsl(0, 0%, 27%);
     --border-color-2-hover: hsl(0, 0%, 29%);
 
-    --accent-foreground: #{mix(hsl($hue, $saturation, 80%), $accent, 50%)};
+    --accent-foreground: #{color.mix(hsl($hue, $saturation, 80%), $accent, 50%)};
     --accent: #{$accent};
-    --accent-background: #{mix(hsl($hue, $saturation, 12%), $accent, 50%)};
+    --accent-background: #{color.mix(hsl($hue, $saturation, 12%), $accent, 50%)};
+    --dropdown-shadow-color: 0deg 0% 0%;
 }
 
 body.light {
-    --color-lowest: #fff;
+    /* --color-lowest: #fff;
     --color-dark-level-lower: hsl(0, 0%, 95%);
     --color-dark-level-base: hsl(0, 0%, 100%);
     --color-dark-level-1: hsl(0, 0%, 95%);
@@ -43,7 +46,27 @@ body.light {
     --border-color-1: hsl(0, 0%, 80%);
     --border-color-1-hover: hsl(0, 0%, 78%);
     --border-color-2: hsl(0, 0%, 71%);
-    --border-color-2-hover: hsl(0, 0%, 70%);
+    --border-color-2-hover: hsl(0, 0%, 70%); */
+
+    /* New: "Gruvbox Hard" Light Theme */
+    --color-lowest: hsl(53, 74%, 91%);
+    --color-dark-level-lower: hsl(48, 87%, 88%);
+    --color-dark-level-base: hsl(53, 74%, 91%);
+    --color-dark-level-1: hsl(43, 59%, 81%);
+    --color-dark-level-1-hover: hsl(40, 38%, 73%);
+    --color-dark-level-2: hsl(40, 38%, 73%);
+    --color-dark-level-2-hover: hsl(39, 24%, 66%);
+    --color-dark-level-3: hsl(35, 17%, 59%);
+
+    --color-text: hsl(0, 0%, 16%);
+
+    --border-color-lower: hsl(43, 59%, 81%);
+    --border-color-base: hsl(40, 38%, 73%);
+    --border-color-1: hsl(39, 24%, 66%);
+    --border-color-1-hover: hsl(35, 17%, 59%);
+    --border-color-2: hsl(35, 17%, 59%);
+    --border-color-2-hover: hsl(30, 12%, 51%);
+    --dropdown-shadow-color: 43deg 59% 40%;
 }
 
 body.amoled {
@@ -142,6 +165,12 @@ select {
         outline: 1px solid hsl(0, 0%, 33%);
         outline-offset: calc(var(--outline-size) * -1);
     }
+}
+
+.dropdown-shadow {
+    --shadow-color: 0deg 0% 0%;
+    box-shadow: 0 0.2rem 0.5rem 0 hsl(var(--shadow-color) / 0.4);
+    transition: box-shadow 300ms;
 }
 
 table {

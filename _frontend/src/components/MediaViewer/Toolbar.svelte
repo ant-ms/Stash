@@ -13,11 +13,8 @@
     import query from "$lib/client/call"
     import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail.svelte"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
-    import {
-        controller,
-        imageSuffixParameter,
-        isFullscreen
-    } from "$lib/stores.svelte"
+    import { controller } from "$lib/stores.svelte"
+    import vars from "$lib/vars.svelte"
     import Dropdown from "$reusables/Dropdown.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"
@@ -30,9 +27,8 @@
     let { hideControls } = $props()
 
     ;(window as any).test = () =>
-        imageSuffixParameter.set(
-            `?${Math.random().toString(16).substring(2, 8)}`
-        )
+        (vars.imageSuffixParameter = `?${Math.random().toString(16).substring(2, 8)}`)
+
     const replaceMedia = (newMedia: Blob) => {
         const data = new FormData()
         data.append(
@@ -51,9 +47,7 @@
             body: data
         }).then(async () => {
             // reload image in viewer
-            imageSuffixParameter.set(
-                `?${Math.random().toString(16).substring(2, 8)}`
-            )
+            vars.imageSuffixParameter = `?${Math.random().toString(16).substring(2, 8)}`
 
             // visibleMedium.update()
             // // This seems to ignore the history pushes
@@ -77,7 +71,7 @@
     onMount(() => {
         const keys = new PressedKeys()
         keys.onKeys(["f"], () => {
-            isFullscreen.set(!$isFullscreen)
+            vars.layout.isFullscreen = !vars.layout.isFullscreen
         })
         keys.onKeys(["i"], () => {
             $controller.setPopup("Media Details")
@@ -86,7 +80,7 @@
 </script>
 
 {#if mediaController.visibleMedium}
-    <main class:fullscreen={$isFullscreen}>
+    <main class:fullscreen={vars.layout.isFullscreen}>
         <section>
             <button onclick={() => (mediaController.visibleMedium = null)}>
                 <Icon name="mdiClose" size={0.8} />
@@ -150,8 +144,8 @@
             {#if !hideControls}
                 <button
                     onclick={() => {
-                        isFullscreen.set(!$isFullscreen)
-                        if ($isFullscreen) {
+                        vars.layout.isFullscreen = !vars.layout.isFullscreen
+                        if (vars.layout.isFullscreen) {
                             document.documentElement.requestFullscreen()
                         } else {
                             document.exitFullscreen()

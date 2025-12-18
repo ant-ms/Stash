@@ -40,7 +40,7 @@
     id="dropdownContainer"
     style:width={width == "unset" ? "unset" : `${width}px`}
 >
-    <div class="moreActionsDropdown">
+    <div>
         {@render children?.()}
     </div>
 </main>
@@ -55,8 +55,6 @@
         // padding: 5px 0;
 
         background: var(--color-dark-level-base);
-        box-shadow:
-            rgba(0, 0, 0, 0.3) 0px 3px 9px 0px,
-            rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
+        box-shadow: 0 0.2rem 0.5rem 0 hsl(var(--dropdown-shadow-color) / 0.4);
     }
 </style>

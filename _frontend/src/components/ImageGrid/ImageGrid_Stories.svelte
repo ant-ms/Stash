@@ -10,38 +10,42 @@
 
     import type { PageData } from "../../routes/[cluster]/$types"
 
+    interface StoryType {
+        id: string
+        title: string
+    }
+
     let pageData = page.data as PageData
 
     $effect(() => {
         varsSvelte.layout.hideSidebar = storyPromise != null
     })
 
-    let story: Awaited<typeof pageData.streamed.stories>[number] | null =
-        $state(null)
+    let story: StoryType | null = $state(null)
     let storyPromise = $derived(
         story
-            ? query("getStoryContent", { id: story.id }).then(content => {
-                  varsSvelte.selectedChapterIndex = 0
-                  varsSvelte.chaptersOfStory = []
+            ? query("getStoryContent", { id: (story as StoryType).id }).then(
+                  content => {
+                      varsSvelte.selectedChapterIndex = 0
+                      varsSvelte.chaptersOfStory = []
 
-                  const chapters = content.split("\n#")
+                      const chapters = content.split("\n#")
 
-                  for (const i in chapters) {
-                      const chapter = chapters[i]
+                      for (const i in chapters) {
+                          const chapter = chapters[i]
 
-                      varsSvelte.chaptersOfStory.push(
-                          chapter.split("\n")[0].replaceAll("#", "").trim()
-                      )
+                          varsSvelte.chaptersOfStory.push(
+                              chapter.split("\n")[0].replaceAll("#", "").trim()
+                          )
+                      }
+
+                      return content
                   }
-
-                  return content
-              })
+              )
             : null
     )
 
-    const selectStory = async (
-        _story: Awaited<typeof pageData.streamed.stories>[number]
-    ) => {
+    const selectStory = async (_story: StoryType) => {
         story = _story
 
         window.history.pushState({ storyOpen: true }, "")

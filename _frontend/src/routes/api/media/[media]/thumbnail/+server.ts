@@ -9,7 +9,11 @@ const thumbnailRoot = "./thumbnails"
 export const GET: RequestHandler = async ({ params }) => {
     try {
         return new Response(
-            await fs.readFile(`${thumbnailRoot}/${params.media}.webp`)
+            new Blob([
+                new Uint8Array(
+                    await fs.readFile(`${thumbnailRoot}/${params.media}.webp`)
+                )
+            ])
         )
     } catch (e: any) {
         console.error("Error generating thumbnail", e.message)

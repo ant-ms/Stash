@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
                     id: cluster
                 }
             },
-            tags: []
+            tags: [] as string[]
         }
     })
 

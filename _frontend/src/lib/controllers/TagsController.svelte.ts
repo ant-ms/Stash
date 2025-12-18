@@ -1,10 +1,7 @@
-import { get } from "svelte/store"
-
 import { page } from "$app/state"
 import query from "$lib/client/call"
 import assembleTagHierarchyMap from "$lib/helpers/assembleTagHierarchyMap"
 import type { possibleIcons } from "$lib/possibleIcons"
-import { mediaTypeFilter } from "$lib/stores.svelte"
 import vars from "$lib/vars.svelte"
 
 import { mediaController } from "./MediaController.svelte"
@@ -23,7 +20,7 @@ export type TagBase = {
 export type TagExtended = TagBase & {
     children: TagExtended[]
     indirectCount: number
-    indirectIcon: string | null
+    indirectIcon: keyof typeof possibleIcons | null
 }
 
 export class TagsController {
@@ -45,7 +42,7 @@ export class TagsController {
                 "updating with ",
                 vars.clusterName,
                 mediaController.filters.favouritesOnly,
-                get(mediaTypeFilter)
+                vars.mediaTypeFilter
             )
             this.updateTags()
         })
@@ -55,7 +52,7 @@ export class TagsController {
         const data: TagBase[] = await query("tags_query_from_database", {
             cluster: vars.clusterName || null,
             favouritesOnly: mediaController.filters.favouritesOnly,
-            mediaTypeFilter: get(mediaTypeFilter)
+            mediaTypeFilter: vars.mediaTypeFilter
         })
 
         const tmpTagMap = assembleTagHierarchyMap(data)

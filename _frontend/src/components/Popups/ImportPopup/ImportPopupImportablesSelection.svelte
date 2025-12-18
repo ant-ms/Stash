@@ -8,11 +8,7 @@
         type ImportSource
     } from "./ImportSources.svelte"
 
-    const {
-        queue
-    }: {
-        queue: ImportSource[]
-    } = $props()
+    const { queue = $bindable() }: { queue: ImportSource[] } = $props()
 
     let data: string[] = $state([])
 

@@ -11,7 +11,9 @@ export const GET: RequestHandler = async ({ params }) => {
         where: { id: params.media }
     })
 
-    return new Response(await fs.readFile(`${mediaRoot}/${id}`), {
+    const fileBuffer = await fs.readFile(`${mediaRoot}/${id}`)
+
+    return new Response(new Blob([new Uint8Array(fileBuffer)]), {
         headers: {
             "Content-Type": type,
             "Content-Disposition": `attachment; filename="${name}"`

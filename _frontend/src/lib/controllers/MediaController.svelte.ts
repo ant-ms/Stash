@@ -6,12 +6,17 @@ import { get } from "svelte/store"
 
 import { page } from "$app/state"
 import query from "$lib/client/call"
-import { mediaTypeFilter, PAGE_SIZE } from "$lib/stores.svelte"
+import { PAGE_SIZE } from "$lib/constants"
 import vars from "$lib/vars.svelte"
 
 import type { TagExtended } from "./TagsController.svelte"
 
-export type MediaType = Media & { tags: number[] }
+export type MediaType = Omit<Media, "tags" | "countAttribute"> & {
+    tags: number[]
+    specialFilterAttribute?: string
+    specialFilterAttributeGuess?: string
+    tagsGuess?: string[]
+}
 
 class MediaController {
     private alreadyInitialized = false
@@ -38,7 +43,9 @@ class MediaController {
             this.updateMedia(vars.clusterName)
         })
 
-        mediaTypeFilter.subscribe(() => this.updateMedia)
+        $effect(() => {
+            this.filters.mediaType = vars.mediaTypeFilter || "all"
+        })
 
         const keys = new PressedKeys()
         keys.onKeys([","], goToPreviousMedia)
@@ -48,7 +55,7 @@ class MediaController {
     public visibleMedium: MediaType | null = $state(null)
     public mediaOverride: MediaType[] | null = $state(null)
     public media: MediaType[] = $state([])
-    public pages: { hash: string; media: Media[] }[] = $state([])
+    public pages: { hash: string; media: MediaType[] }[] = $state([])
 
     public selectedTags: TagExtended[] = $state([])
     public filters = $state({
@@ -93,14 +100,18 @@ class MediaController {
             this.prefetchedQueryForTagId[0] == tagId
         )
             return
+
+        const cluster = page.params.cluster
+        if (!cluster) return
+
         this.prefetchedQueryForTagId = [
             tagId,
             query("media_query_from_database", {
-                cluster: page.params.cluster,
+                cluster,
                 tags: [tagId],
                 offset: 0,
                 ...(this._filtersOverrides || this.filters)
-            })
+            }) as Promise<MediaType[]>
         ]
     }
 
@@ -133,15 +144,18 @@ class MediaController {
         })
 
         if (dataPromise === null) {
+            const clusterToUse = cluster || page.params.cluster
+            if (!clusterToUse) return []
+
             dataPromise = query("media_query_from_database", {
-                cluster,
+                cluster: clusterToUse,
                 tags: this.selectedTags.map(t => t.id),
                 offset,
                 ...(this._filtersOverrides || this.filters)
-            })
+            }) as Promise<MediaType[]>
         }
 
-        const data = await dataPromise
+        const data = (await dataPromise) as (Media & { tags: string })[]
 
         $effect.root(() => {
             this._filtersOverrides = null
@@ -151,7 +165,7 @@ class MediaController {
         const processedData = data.map(m => ({
             ...m,
             tags: m.tags?.split(",").map(t => +t) || []
-        })) satisfies MediaType[]
+        }))
         this.isCurrentlyLoadingNewMedia = false
         return processedData
     }
@@ -168,42 +182,10 @@ class MediaController {
     }
 }
 
-const _mediaController = new MediaController()
-export const mediaController = _mediaController
+// const _mediaController = new MediaController()
+export const mediaController = new MediaController()
 
-const calculatePages = async (media: MediaType[]) => {
-    // TODO: scroll up when changes occur in pages that are not the last one (aka: when changed and not appended)
-
-    if (!media.length) {
-        return []
-    }
-    const pages: { hash: string; media: Media[] }[] = []
-
-    // For each page
-    for (
-        let i = 0;
-        i <
-        Math.max(
-            Math.ceil(media.length / PAGE_SIZE),
-            _mediaController.pages.length
-        );
-        i++
-    ) {
-        const page = media.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE)
-        if (!page.length) break
-
-        const hash = await md5(page.map(m => [m.id, m.tags]).join())
-
-        // If the page has changed, update it
-        if (_mediaController.pages[i]?.hash != hash) {
-            pages[i] = { hash, media: page }
-        } else pages[i] = _mediaController.pages[i]
-    }
-
-    return pages
-}
-
-const goToPreviousMedia = async () => {
+export const goToPreviousMedia = async () => {
     if (!mediaController.visibleMedium) return
 
     const mediaPool = mediaController.mediaOverride || mediaController.media
@@ -215,7 +197,7 @@ const goToPreviousMedia = async () => {
         mediaController.visibleMedium = mediaPool[mediaIndex - 1]
 }
 
-const goToNextMedia = async () => {
+export const goToNextMedia = async () => {
     if (!mediaController.visibleMedium) return
 
     const mediaPool = mediaController.mediaOverride || mediaController.media
@@ -233,4 +215,35 @@ const goToNextMedia = async () => {
             }
         })
     }
+}
+const calculatePages = async (media: MediaType[]) => {
+    // TODO: scroll up when changes occur in pages that are not the last one (aka: when changed and not appended)
+
+    if (!media.length) {
+        return []
+    }
+    const pages: { hash: string; media: MediaType[] }[] = []
+
+    // For each page
+    for (
+        let i = 0;
+        i <
+        Math.max(
+            Math.ceil(media.length / PAGE_SIZE),
+            mediaController.pages.length
+        );
+        i++
+    ) {
+        const page = media.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE)
+        if (!page.length) break
+
+        const hash = await md5(page.map(m => [m.id, m.tags]).join())
+
+        // If the page has changed, update it
+        if (mediaController.pages[i]?.hash != hash) {
+            pages[i] = { hash, media: page }
+        } else pages[i] = mediaController.pages[i]
+    }
+
+    return pages
 }

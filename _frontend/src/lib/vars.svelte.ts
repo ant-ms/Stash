@@ -4,6 +4,8 @@ class Layout {
     isElectron = $state(false) as false | true | "fullscreen"
     hideSidebar = $state(false)
     castVisible = $state(false)
+    windowControlsSpacerVisible = $state(false)
+    isFullscreen = $state(false)
 }
 
 class Vars {
@@ -13,6 +15,9 @@ class Vars {
         suffix: string
     } | null = $state(null)
 
+    // ========== Page Data ==========
+    public collapsedTags: string[] = $state([])
+
     // ========== State for reader ==========
     public chaptersOfStory: string[] = $state([])
     public selectedChapterIndex: number = $state(0)
@@ -20,6 +25,9 @@ class Vars {
     // ========== Global states =========
 
     public selectedMedias: MediaType[] = $state([])
+    public imageSuffixParameter = $state("")
+    public mediaTypeFilter: "video" | "image" | "" = $state("")
+    public videoElement: HTMLVideoElement | null = $state(null)
 
     // ========== Global modes ==========
 

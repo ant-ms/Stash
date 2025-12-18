@@ -219,7 +219,7 @@
 
                 <div style="height: 40px">
                     <Icon name="mdiTagHidden" />
-                    {#each mediaController.visibleMedium.tagsGuess as tagGuess}
+                    {#each mediaController.visibleMedium.tagsGuess || [] as tagGuess: string}
                         {@const tag = Object.values(
                             TagsControllerSvelte.tagMap
                         ).find(

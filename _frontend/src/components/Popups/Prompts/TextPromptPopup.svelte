@@ -3,8 +3,6 @@
 
     import PromptFramework from "./_PromptFramework.svelte"
 
-    let _value = $state(value)
-
     interface Props {
         question: string
         value: string
@@ -12,6 +10,8 @@
     }
 
     let { question, value, onresult }: Props = $props()
+
+    let _value = $state(value)
 
     const onInput = (e: KeyboardEvent) => {
         if (e.key == "Enter") {

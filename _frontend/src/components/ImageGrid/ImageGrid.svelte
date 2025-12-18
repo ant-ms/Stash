@@ -59,7 +59,7 @@
       {/if} -->
 
         <section>
-            {#each mediaController.pages as { hash, media }, i (hash)}
+            {#each mediaController.pages as { hash, media }: { hash: string; media: MediaType[] }, i (hash)}
                 <div>
                     {#if pageData.cluster.type == "withName"}
                         <ImageGridStudios {media} {i} />

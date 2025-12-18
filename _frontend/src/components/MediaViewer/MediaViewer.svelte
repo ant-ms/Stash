@@ -5,15 +5,13 @@
     import { page } from "$app/state"
     import { isMobile } from "$lib/context"
     import {
+        goToNextMedia,
+        goToPreviousMedia,
         mediaController,
         type MediaType
     } from "$lib/controllers/MediaController.svelte"
-    import {
-        controller,
-        imageSuffixParameter,
-        isFullscreen,
-        settings
-    } from "$lib/stores.svelte"
+    import { controller, settings } from "$lib/stores.svelte"
+    import vars from "$lib/vars.svelte"
 
     import MediaViewerImage from "./MediaViewerImage.svelte"
     import MediaViewerVideo from "./MediaViewerVideo.svelte"
@@ -38,7 +36,7 @@
                 output.push(
                     `${page.data.serverURL}/file/${
                         mediaController.media[mediaIndex + i].id
-                    }${$imageSuffixParameter}?session=${page.data.session}`
+                    }${vars.imageSuffixParameter}?session=${page.data.session}`
                 )
             } else {
                 break
@@ -77,7 +75,7 @@
 
         const keys = new PressedKeys()
         keys.onKeys(["escape"], () => {
-            isFullscreen.set(false)
+            vars.layout.isFullscreen = false
             mediaController.visibleMedium = null
         })
 
@@ -89,14 +87,17 @@
 </script>
 
 {#if mediaController.visibleMedium}
-    <main class:fullscreen={$isFullscreen} class:mobile={isMobile.current}>
+    <main
+        class:fullscreen={vars.layout.isFullscreen}
+        class:mobile={isMobile.current}
+    >
         <div class="toolbar">
             <Toolbar {hideControls} />
         </div>
         <div
             id="media"
             bind:this={mediaElement}
-            class:darkened={$isFullscreen}
+            class:darkened={vars.layout.isFullscreen}
             class:isZoomedIn
             onpointerdown={e => {
                 if ($settings.mediaTouchAction == "navigate") {
@@ -105,8 +106,8 @@
 
                     if (e.clientY > window.innerHeight - 200) return
 
-                    if (e.offsetX < width / 2) $controller.goToPreviousMedia()
-                    if (e.offsetX > width / 2) $controller.goToNextMedia()
+                    if (e.offsetX < width / 2) goToPreviousMedia()
+                    if (e.offsetX > width / 2) goToNextMedia()
                 }
             }}
         >

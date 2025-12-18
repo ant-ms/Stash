@@ -4,7 +4,7 @@
     import Popup from "$reusables/Popup.svelte"
 </script>
 
-<Popup title="Shortcuts" onclose={() => console.log($controller.setPopup())}>
+<Popup title="Shortcuts" onclose={() => $controller.setPopup(null)}>
     <main>
         <b>Global</b>
         <div>

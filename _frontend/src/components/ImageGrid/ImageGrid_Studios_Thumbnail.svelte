@@ -73,10 +73,10 @@
             icon: "mdiRename",
             action: async () =>
                 parent
-                    ? medium.groupedIntoNamesId
+                    ? medium.groupedIntoNamesId !== null
                         ? (groupName = await renameGroupName(
                               medium.groupedIntoNamesId,
-                              groupName
+                              groupName ?? undefined
                           ))
                         : console.error(
                               "Tried to rename a group without medium.groupedIntoNamesId"

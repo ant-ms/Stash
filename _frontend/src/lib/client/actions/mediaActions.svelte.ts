@@ -1,12 +1,18 @@
-import { mediaController } from "$lib/controllers/MediaController.svelte"
+import {
+    mediaController,
+    type MediaType
+} from "$lib/controllers/MediaController.svelte"
 import { prompts } from "$lib/controllers/PromptController"
 
 import type { Media } from "../../../generated/prisma/browser"
 import query from "../call"
 
-export const setSpecialFilterAttribute = (medium: Media, newValue: string) => {
+export const setSpecialFilterAttribute = (
+    medium: MediaType,
+    newValue: string | null
+) => {
     const oldValue = medium.specialFilterAttribute
-    medium.specialFilterAttribute = newValue
+    medium.specialFilterAttribute = newValue === null ? undefined : newValue
     fetch(`/api/media/${medium?.id}/specialFilterAttribute`, {
         method: "PUT",
         body: JSON.stringify({

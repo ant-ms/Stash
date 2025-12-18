@@ -1,13 +1,13 @@
 <script lang="ts">
     import { PressedKeys } from "runed"
     import { onMount } from "svelte"
-    import { run } from "svelte/legacy"
 
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import { isMobile } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
-    import { settings, videoElement } from "$lib/stores.svelte"
+    import { settings } from "$lib/stores.svelte"
+    import vars from "$lib/vars.svelte"
 
     const formatDuration = (seconds: number) => {
         let hours = Math.floor(seconds / 3600)
@@ -33,7 +33,7 @@
         )
     }
 
-    let videoElementWidth: number = $state()
+    let videoElementWidth: number = $state(0)
     onMount(() => {
         const resizeObserver = new ResizeObserver(entries => {
             const entry = entries.at(0)
@@ -81,10 +81,10 @@
     })
 
     let video: HTMLVideoElement = $state() as any
-    run(() => {
-        videoElement.set(video)
+    $effect(() => {
+        vars.videoElement = video
     })
-    let seekVideo: HTMLVideoElement | null = $state()
+    let seekVideo: HTMLVideoElement | null = $state(null)
 
     let paused = $state(false)
     let currentTime = $state(0)

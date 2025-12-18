@@ -18,10 +18,6 @@ const config = {
         noExternal: ["@egjs/*"]
     },
 
-    rules: {
-        "a11y-click-events-have-key-events": "off"
-    },
-
     server: {
         cors: false
     }

@@ -1,7 +1,7 @@
 import type { Cookies } from "@sveltejs/kit"
 
+import { PAGE_SIZE } from "$lib/constants"
 import prisma from "$lib/server/prisma"
-import { PAGE_SIZE } from "$lib/stores.svelte"
 
 import type { Media } from "../../../generated/prisma/client"
 import { sortingMethods } from "../../../types"
@@ -32,7 +32,7 @@ export const media_query_from_database = async (
         d.includeTaggedTags
     )
 
-    return (await prisma.$queryRawUnsafe(/*sql*/ `
+    return await prisma.$queryRawUnsafe(/*sql*/ `
         ${tagsFilterParts.cte}
         SELECT
             "Media"."id",
@@ -69,7 +69,7 @@ export const media_query_from_database = async (
         ${await assembleOrderBy(d)}
         LIMIT ${PAGE_SIZE}
         OFFSET ${d.offset}
-    `)) as (Media & { tags: string })[]
+    `)
 }
 
 const assembleMinResultionFilter = (minResolution: number | null) => {

@@ -3,7 +3,7 @@ import { get } from "svelte/store"
 import { page } from "$app/state"
 import { mediaController } from "$lib/controllers/MediaController.svelte"
 import { prompts } from "$lib/controllers/PromptController"
-import { controller, videoElement } from "$lib/stores.svelte"
+import { controller } from "$lib/stores.svelte"
 import vars from "$lib/vars.svelte"
 
 const dataURItoBlob = (dataURI: string) => {
@@ -34,7 +34,7 @@ export default async () => {
     const canvas = document.createElement("canvas")
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
 
-    const video = get(videoElement)
+    const video = vars.videoElement
     if (!video) {
         prompts.notify(
             "ERROR: No video element found present while trying to replace thumbnail."

@@ -77,14 +77,18 @@
                 <Button
                     card
                     icon="mdiImport"
-                    onclick={() => (mainPopupContent = "importables")}
+                    onclick={() => {
+                        mainPopupContent = "importables"
+                    }}
                 >
                     Import
                 </Button>
                 <Button
                     card
                     icon="mdiTransmissionTower"
-                    onclick={() => (mainPopupContent = "transmission")}
+                    onclick={() => {
+                        mainPopupContent = "transmission"
+                    }}
                 >
                     Transfer
                 </Button>
@@ -110,8 +114,9 @@
                         <Button
                             noMargin
                             icon="mdiClose"
-                            onclick={() =>
-                                queue.splice(queue.indexOf(queueEntry), 1)}
+                            onclick={() => {
+                                queue.splice(queue.indexOf(queueEntry), 1)
+                            }}
                             styleOverride="outline: none"
                         />
                     </div>
@@ -156,7 +161,9 @@
             <Button
                 card
                 icon="mdiArrowLeft"
-                onclick={() => (mainPopupContent = "home")}
+                onclick={() => {
+                    mainPopupContent = "home"
+                }}
             >
                 Back
             </Button>
@@ -166,7 +173,9 @@
             <Button
                 card
                 icon="mdiArrowLeft"
-                onclick={() => (mainPopupContent = "home")}
+                onclick={() => {
+                    mainPopupContent = "home"
+                }}
             >
                 Back
             </Button>
@@ -184,7 +193,7 @@
             onclick={async () => {
                 for (const queueEntry of queue) {
                     await queueEntry.process({
-                        cluster: page.params.cluster,
+                        cluster: page.params.cluster || "", // Handle undefined
                         tags
                     })
                 }

@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
                 name: params.cluster
             },
             tags: {
-                has: oldName.toLocaleLowerCase()
+                hasSome: oldName.toLocaleLowerCase()
             }
         }
     })
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
             },
             data: {
                 tags: [
-                    ...media.tags.filter(
+                    ...(media.tags as string[]).filter(
                         tag => tag !== oldName.toLocaleLowerCase()
                     ),
                     newName.toLocaleLowerCase()

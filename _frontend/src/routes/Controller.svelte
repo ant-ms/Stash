@@ -12,20 +12,20 @@
     import QuickSwitch from "$components/Popups/QuickSwitch.svelte"
     import MasonaryView from "$components/Popups/views/MasonaryView.svelte"
     import { isMobile } from "$lib/context"
-    import { mediaController } from "$lib/controllers/MediaController.svelte"
-    import tagsController from "$lib/controllers/TagsController.svelte"
     import {
-        selectedMediaIds,
-        windowControlsSpacerVisible
-    } from "$lib/stores.svelte"
-    import varsSvelte from "$lib/vars.svelte"
+        mediaController,
+        type MediaType
+    } from "$lib/controllers/MediaController.svelte"
+    import tagsController from "$lib/controllers/TagsController.svelte"
+    import { selectedMediaIds } from "$lib/stores.svelte"
+    import vars from "$lib/vars.svelte"
 
     import type { PageData } from "./[cluster]/$types"
 
     let pageData = page.data as PageData
 
     $effect(() => {
-        varsSvelte.clusterName = page.params.cluster
+        vars.clusterName = page.params.cluster
     })
 
     onMount(() => {
@@ -59,14 +59,15 @@
     let Popup = $derived(popup ? popups[popup] : null) as any
     export const setPopup = (newPopup: typeof popup) => (popup = newPopup)
 
-    windowControlsSpacerVisible.set(page.data.userAgent?.includes("Electron"))
+    vars.layout.windowControlsSpacerVisible =
+        page.data.userAgent?.includes("Electron")
 
     onMount(() => {
-        varsSvelte.layout.isElectron = page.data.userAgent?.includes("Electron")
+        vars.layout.isElectron = page.data.userAgent?.includes("Electron")
         // @ts-ignore
         window.fullscreenChanged = (state: boolean) => {
-            windowControlsSpacerVisible.set(!state)
-            varsSvelte.layout.isElectron = state ? "fullscreen" : true
+            vars.layout.windowControlsSpacerVisible = !state
+            vars.layout.isElectron = state ? "fullscreen" : true
         }
         // @ts-ignore
         window.getSelectedMediaIds = () => $selectedMediaIds
@@ -111,7 +112,7 @@
 <svelte:head>
     {#if mediaController.prefetchedQueryForTagId}
         {#key mediaController.prefetchedQueryForTagId[0]}
-            {#await mediaController.prefetchedQueryForTagId[1] then mediaToPreload}
+            {#await mediaController.prefetchedQueryForTagId[1] then mediaToPreload: MediaType[]}
                 {#each mediaToPreload as { id }}
                     <link
                         rel="preload"

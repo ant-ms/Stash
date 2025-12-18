@@ -4,6 +4,7 @@
     import GridThumbnail from "$components/ImageGrid/GridThumbnail.svelte"
     import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
     import query from "$lib/client/call"
+    import type { MediaType } from "$lib/controllers/MediaController.svelte"
     import { prompts } from "$lib/controllers/PromptController.js"
 
     let { data } = $props()
@@ -42,9 +43,16 @@
         sizeRange={[150, 500]}
         useTransform={true}
     >
-        {#each data.mediaInTrash as medium}
+        {#each data.mediaInTrash as mediumData}
+            {@const processedMedium: MediaType = {
+                ...mediumData,
+                tags: mediumData.tags_old.map((t: string) => +t) || [],
+                specialFilterAttribute: mediumData.specialFilterAttribute,
+                specialFilterAttributeGuess: mediumData.specialFilterAttributeGuess,
+                tagsGuess: mediumData.tagsGuess,
+            }}
             <GridThumbnail
-                {medium}
+                medium={processedMedium}
                 disableActive
                 disableIntersectionDetection
                 disableZoom

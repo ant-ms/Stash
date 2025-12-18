@@ -4,8 +4,8 @@
     import Button from "$components/elements/Button.svelte"
     import Select from "$components/elements/Select.svelte"
     import { isMobile, presentationMode } from "$lib/context"
-    import { controller, windowControlsSpacerVisible } from "$lib/stores.svelte"
-    import varsSvelte from "$lib/vars.svelte"
+    import { controller } from "$lib/stores.svelte"
+    import vars from "$lib/vars.svelte"
 
     import type { PageData } from "./$types"
     import SidebarTagsSection from "./SidebarTagsSection.svelte"
@@ -15,8 +15,8 @@
 
 <main
     class:mobile={isMobile.current}
-    class:windowControlsSpacerVisible={$windowControlsSpacerVisible}
-    class:hidden={varsSvelte.layout.hideSidebar}
+    class:windowControlsSpacerVisible={vars.layout.windowControlsSpacerVisible}
+    class:hidden={vars.layout.hideSidebar}
 >
     <div class="header">
         <Select

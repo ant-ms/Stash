@@ -135,9 +135,6 @@
         font-weight: 200;
 
         background: var(--color-dark-level-base);
-        box-shadow:
-            rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
-            rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
 
         transition: all 200ms ease;
 
@@ -177,9 +174,7 @@
 
         margin-left: 10px;
 
-        box-shadow:
-            rgba(0, 0, 0, 0.3) 0px 1px 3px 0px,
-            rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
+        box-shadow: 0 0.2rem 0.5rem 0 hsl(var(--dropdown-shadow-color) / 0.4);
 
         span {
             margin-top: 1px;
