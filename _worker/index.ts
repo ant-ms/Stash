@@ -2,7 +2,7 @@ import prisma from "./prisma";
 import { readdirSync } from "fs";
 import { join, extname } from "path";
 
-import { Job, JobStatus } from "@prisma/client";
+import { Job, JobStatus } from "./src/generated/prisma/client";
 
 const registeredJobs = await importAllTsFiles();
 

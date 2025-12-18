@@ -1,4 +1,4 @@
-import { Job } from "@prisma/client";
+import { Job } from "../../src/generated/prisma/client";
 import prisma from "../../prisma";
 
 const mediaRoot = "./media";

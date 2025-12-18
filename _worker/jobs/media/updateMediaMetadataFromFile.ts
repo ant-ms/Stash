@@ -1,4 +1,4 @@
-import { Job } from "@prisma/client";
+import { Job } from "../../src/generated/prisma/client";
 import prisma from "../../prisma";
 import getMetadataFromFile from "../../lib/getMetadataFromFile";
 import type { MetadataType } from "../../lib/getMetadataFromFile.types";

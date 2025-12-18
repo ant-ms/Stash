@@ -1,4 +1,4 @@
-import { Job, Media } from "@prisma/client";
+import { Job, Media } from "../../src/generated/prisma/client";
 import prisma from "../../prisma";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { generateObject } from "ai";

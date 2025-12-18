@@ -1,4 +1,4 @@
-import { Job } from "@prisma/client";
+import { Job } from "../../src/generated/prisma/client";
 import generateThumbnailFromFile from "../../lib/generateThumbnailFromFile";
 import getMetadataFromFile from "../../lib/getMetadataFromFile";
 import prisma from "../../prisma";
@@ -46,17 +46,22 @@ export const execute = async (job: Job) => {
       : [];
   }
 
-  console.debug("Generating thumbnail for media", id, "with options", outputOptions);
+  console.debug(
+    "Generating thumbnail for media",
+    id,
+    "with options",
+    outputOptions,
+  );
   await generateThumbnailFromFile(
     `${mediaRoot}/${id}`,
     `${thumbnailRoot}/${id}.webp`,
-    outputOptions
+    outputOptions,
   );
 };
 
 const parse = async (
   data: any,
-  job: Job
+  job: Job,
 ): Promise<{
   id: string;
 }> => {
