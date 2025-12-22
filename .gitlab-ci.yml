@@ -111,3 +111,29 @@ build-symlinker:
   only:
     changes:
       - _symlinker/**/*
+
+build-tv-client:
+  image: electronuserland/builder:latest
+  stage: build
+  before_script:
+    - cd _tv_client
+    - npm i -g pnpm
+    - apt-get update && apt-get install -y flatpak flatpak-builder
+  script:
+    - flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    - flatpak install -y flathub org.freedesktop.Sdk//25.08 org.freedesktop.Platform//25.08
+    - pnpm install --frozen-lockfile
+    - pnpm run dist:linux-unpacked
+    - ls dist/linux-unpacked
+    - flatpak-builder --disable-rofiles-fuse --repo=repo --force-clean flatpak-build tv-client.yml
+    - flatpak build-export repo flatpak-build
+    - flatpak build-bundle repo "dist/TV Client-0.0.1-x86_64.flatpak"
+  after_script:
+    - cd ..
+    - mkdir -p public
+    # - cp _tv_client/dist/TV\ Client-*.flatpak public/
+  artifacts:
+    paths: [public/, _tv_client/dist/]
+  only:
+    changes:
+      - _tv_client/**/*
