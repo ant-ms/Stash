@@ -1,0 +1,50 @@
+{
+	"name": "tv-client",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"main": "main.js",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"format": "prettier --write .",
+		"lint": "prettier --check .",
+		"start": "electron-forge start",
+		"package": "vite build && electron-forge package",
+		"make": "vite build && electron-forge make"
+	},
+	"devDependencies": {
+		"@electron-forge/cli": "^7.10.2",
+		"@electron-forge/maker-dmg": "^7.10.2",
+		"@sveltejs/adapter-node": "^5.4.0",
+		"@sveltejs/kit": "^2.49.1",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"electron": "^39.2.7",
+		"prettier": "^3.7.4",
+		"prettier-plugin-svelte": "^3.4.0",
+		"sass-embedded": "^1.97.0",
+		"svelte": "^5.45.6",
+		"svelte-check": "^4.3.4",
+		"typescript": "^5.9.3",
+		"vite": "^7.2.6",
+		"wait-on": "^9.0.3"
+	},
+	"dependencies": {
+		"@mdi/js": "^7.4.47",
+		"runed": "^0.37.0"
+	},
+	"config": {
+		"forge": {
+			"packagerConfig": {
+				"extraResource": [
+					"build"
+				]
+			},
+			"makers": [
+				{
+					"name": "@electron-forge/maker-dmg"
+				}
+			]
+		}
+	}
+}
