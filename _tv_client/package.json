@@ -2,24 +2,26 @@
 	"name": "tv-client",
 	"private": true,
 	"version": "0.0.1",
+	"description": "A client for Stash",
+	"author": "Yanik",
+	"license": "MIT",
 	"type": "module",
 	"main": "main.js",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
+		"preview": "vite preview",
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
-		"start": "electron-forge start",
-		"package": "vite build && electron-forge package",
-		"make": "vite build && electron-forge make"
+		"start": "electron .",
+		"dist:linux-unpacked": "vite build && electron-builder --linux --dir"
 	},
 	"devDependencies": {
-		"@electron-forge/cli": "^7.10.2",
-		"@electron-forge/maker-dmg": "^7.10.2",
-		"@sveltejs/adapter-node": "^5.4.0",
+		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.49.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
 		"electron": "^39.2.7",
+		"electron-builder": "^26.0.12",
 		"prettier": "^3.7.4",
 		"prettier-plugin-svelte": "^3.4.0",
 		"sass-embedded": "^1.97.0",
@@ -33,18 +35,26 @@
 		"@mdi/js": "^7.4.47",
 		"runed": "^0.37.0"
 	},
-	"config": {
-		"forge": {
-			"packagerConfig": {
-				"extraResource": [
-					"build"
-				]
-			},
-			"makers": [
-				{
-					"name": "@electron-forge/maker-dmg"
-				}
-			]
+	"build": {
+		"appId": "com.example.tvclient",
+		"productName": "TV Client",
+		"files": [
+			"build/**/*",
+			"main.js",
+			"package.json",
+			"logo.png"
+		],
+		"directories": {
+			"output": "dist"
+		},
+		"linux": {
+			"target": "flatpak",
+			"category": "Utility",
+			"icon": "logo.png"
+		},
+		"flatpak": {
+			"runtimeVersion": "23.08",
+			"sdk": "org.freedesktop.Sdk"
 		}
 	}
 }

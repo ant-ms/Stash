@@ -2,7 +2,6 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { query, vars } from '$lib/index.svelte';
-	import { mdiDiscPlayer } from '@mdi/js';
 	import { PressedKeys } from 'runed';
 	import { onMount } from 'svelte';
 

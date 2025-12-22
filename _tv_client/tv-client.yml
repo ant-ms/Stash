@@ -1,0 +1,15 @@
+app-id: com.example.tvclient
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: zypak-wrapper.sh TV\ Client
+modules:
+  - name: tv-client
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 linux-unpacked/tv-client -t /app/bin/
+      - install -Dm644 linux-unpacked/resources/app.asar -t /app/bin/resources/
+      - install -Dm755 zypak-wrapper.sh /app/bin/zypak-wrapper.sh
+    sources:
+      - type: dir
+        path: dist/linux-unpacked
