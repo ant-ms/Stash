@@ -11,6 +11,9 @@ export const execute = async (job: Job) => {
   await new Promise((resolve, reject) => {
     try {
       ffmpeg()
+        .addOption("-hwaccel", "vaapi")
+        .addOption("-hwaccel_device", "/dev/dri/renderD128")
+        .addOption("-hwaccel_output_format", "vaapi")
         .input(`${mediaRoot}/${id}`)
         .complexFilter([
           `scale=w=${250}:h=${250}:force_original_aspect_ratio=decrease,fps=1/10[v]`,
