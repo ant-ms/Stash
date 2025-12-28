@@ -1,6 +1,0 @@
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - electron
-  - esbuild
-  - fs-xattr
-  - macos-alias

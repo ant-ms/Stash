@@ -1,6 +1,5 @@
 stages:
   - build
-  - deploy
 
 build-frontend:
   stage: build
@@ -116,53 +115,3 @@ build-symlinker:
     changes:
       - .gitlab-ci.yml
       - _symlinker/**/*
-
-build-tv-client:
-  image: electronuserland/builder:latest
-  stage: build
-  before_script:
-    - git config --global protocol.file.allow always
-    - cd _tv_client
-    - npm i -g pnpm
-    - apt-get update && apt-get install -y flatpak flatpak-builder
-  script:
-    - flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    - flatpak install -y flathub org.freedesktop.Sdk//25.08 org.freedesktop.Platform//25.08
-    - pnpm install --frozen-lockfile
-    - pnpm run dist:linux-unpacked
-    - ls dist/linux-unpacked
-    - flatpak-builder --disable-rofiles-fuse --repo=repo --force-clean flatpak-build tv-client.yml
-    - flatpak build-export repo flatpak-build
-    - flatpak build-bundle repo "dist/TV Client-0.0.1-x86_64.flatpak" ms.ant.stash.tv-client
-  artifacts:
-    paths:
-      - "_tv_client/dist/TV Client-0.0.1-x86_64.flatpak"
-      - "_tv_client/repo"
-  only:
-    changes:
-      - .gitlab-ci.yml
-      - _tv_client/**/*
-
-pages:
-  stage: deploy
-  image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
-  script:
-    - ostree init --mode=archive-z2 --repo=public
-    - ostree pull-local --repo=public _tv_client/repo
-    - flatpak build-update-repo public --generate-static-deltas
-    - |
-      cat <<EOF > public/stash.flatpakrepo
-      [Flatpak Repo]
-      Title=Stash Repository
-      Url=${CI_PAGES_URL}
-      GPGVerify=false
-      EOF
-  artifacts:
-    paths:
-      - public
-  needs:
-    - build-tv-client
-  only:
-    changes:
-      - .gitlab-ci.yml
-      - _tv_client/**/*
