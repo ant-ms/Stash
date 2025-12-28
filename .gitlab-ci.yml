@@ -121,6 +121,7 @@ build-tv-client:
   image: electronuserland/builder:latest
   stage: build
   before_script:
+    - git config --global protocol.file.allow always
     - cd _tv_client
     - npm i -g pnpm
     - apt-get update && apt-get install -y flatpak flatpak-builder
