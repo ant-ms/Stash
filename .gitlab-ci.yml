@@ -28,6 +28,7 @@ build-frontend:
       --cache-copy-layers
   only:
     changes:
+      - .gitlab-ci.yml
       - _frontend/**/*
       - schema.prisma
 
@@ -57,6 +58,7 @@ build-worker:
       --cache-copy-layers
   only:
     changes:
+      - .gitlab-ci.yml
       - _worker/**/*
       - schema.prisma
 
@@ -84,6 +86,7 @@ build-gatekeeper:
       --cache-copy-layers
   only:
     changes:
+      - .gitlab-ci.yml
       - _gatekeeper/**/*
       - schema.prisma
 
@@ -111,6 +114,7 @@ build-symlinker:
       --cache-copy-layers
   only:
     changes:
+      - .gitlab-ci.yml
       - _symlinker/**/*
 
 build-tv-client:
@@ -135,6 +139,7 @@ build-tv-client:
       - "_tv_client/repo"
   only:
     changes:
+      - .gitlab-ci.yml
       - _tv_client/**/*
 
 pages:
@@ -158,4 +163,5 @@ pages:
     - build-tv-client
   only:
     changes:
+      - .gitlab-ci.yml
       - _tv_client/**/*
