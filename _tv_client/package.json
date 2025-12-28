@@ -36,7 +36,7 @@
 		"runed": "^0.37.0"
 	},
 	"build": {
-		"appId": "com.example.tvclient",
+		"appId": "ms.ant.stash.tv-client",
 		"productName": "TV Client",
 		"files": [
 			"build/**/*",

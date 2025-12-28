@@ -127,7 +127,7 @@ build-tv-client:
     - ls dist/linux-unpacked
     - flatpak-builder --disable-rofiles-fuse --repo=repo --force-clean flatpak-build tv-client.yml
     - flatpak build-export repo flatpak-build
-    - flatpak build-bundle repo "dist/TV Client-0.0.1-x86_64.flatpak"
+    - flatpak build-bundle repo "dist/TV Client-0.0.1-x86_64.flatpak" ms.ant.stash.tv-client
   after_script:
     - cd ..
     - mkdir -p public
