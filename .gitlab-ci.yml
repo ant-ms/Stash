@@ -144,7 +144,7 @@ build-tv-client:
 
 pages:
   stage: deploy
-  image: electronuserland/builder:latest
+  image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
   script:
     - ostree init --mode=archive-z2 --repo=public
     - ostree pull-local --repo=public _tv_client/repo
