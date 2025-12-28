@@ -139,13 +139,22 @@ build-tv-client:
 
 pages:
   stage: deploy
+  image: electronuserland/builder:latest
   script:
-    - rm -rf public
-    - mv _tv_client/repo public
+    - ostree init --mode=archive-z2 --repo=public
+    - ostree pull-local --repo=public _tv_client/repo
+    - flatpak build-update-repo public --generate-static-deltas
+    - |
+      cat <<EOF > public/stash.flatpakrepo
+      [Flatpak Repo]
+      Title=Stash Repository
+      Url=${CI_PAGES_URL}
+      GPGVerify=false
+      EOF
   artifacts:
     paths:
       - public
-  dependencies:
+  needs:
     - build-tv-client
   only:
     changes:
