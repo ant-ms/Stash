@@ -1,5 +1,6 @@
 stages:
   - build
+  - deploy
 
 build-frontend:
   stage: build
@@ -128,12 +129,24 @@ build-tv-client:
     - flatpak-builder --disable-rofiles-fuse --repo=repo --force-clean flatpak-build tv-client.yml
     - flatpak build-export repo flatpak-build
     - flatpak build-bundle repo "dist/TV Client-0.0.1-x86_64.flatpak" ms.ant.stash.tv-client
-  after_script:
-    - cd ..
-    - mkdir -p public
-    # - cp _tv_client/dist/TV\ Client-*.flatpak public/
   artifacts:
-    paths: [public/, _tv_client/dist/]
+    paths:
+      - "_tv_client/dist/TV Client-0.0.1-x86_64.flatpak"
+      - "_tv_client/repo"
+  only:
+    changes:
+      - _tv_client/**/*
+
+pages:
+  stage: deploy
+  script:
+    - rm -rf public
+    - mv _tv_client/repo public
+  artifacts:
+    paths:
+      - public
+  dependencies:
+    - build-tv-client
   only:
     changes:
       - _tv_client/**/*
