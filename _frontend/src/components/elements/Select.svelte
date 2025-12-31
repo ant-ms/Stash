@@ -71,6 +71,7 @@
         }
         onchange(value)
     }}
+    data-navigable
 >
     {#if options.find(o => o.value == value)?.icon}
         <div class="icon">
@@ -105,6 +106,7 @@
                     onchange(o.value)
                     open = false
                 }}
+                data-navigable
             >
                 {#if o.icon}
                     <Icon size={0.8} name={o.icon} />
@@ -157,7 +159,6 @@
         }
 
         @media (hover: hover) and (pointer: fine) {
-
             &:hover {
                 filter: brightness(110%);
             }

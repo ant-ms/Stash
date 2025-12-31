@@ -4,7 +4,7 @@
 
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { settings } from "$lib/stores.svelte"
     import vars from "$lib/vars.svelte"
@@ -221,7 +221,7 @@
                 style="width: {100 - playbackPercentage}%"
             ></div>
             <div class="thumb" style="left: {playbackPercentage}%"></div>
-            {#if !isMobile.current && !disableSeeking}
+            {#if layout.current == "desktop" && !disableSeeking}
                 <video
                     src="{page.data.serverURL}/thumb/{mediaController
                         .visibleMedium?.id}_seek.webm?session={page.data
@@ -330,7 +330,6 @@
                 }
 
                 &:not(:hover) {
-
                     & > video {
                         display: none;
                     }

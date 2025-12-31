@@ -5,7 +5,7 @@
     import Icon from "$components/elements/Icon.svelte"
     import { FCastController } from "$lib/client/fcast/controller.svelte"
     import { PlaybackState } from "$lib/client/fcast/protocol"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { prompts } from "$lib/controllers/PromptController"
 
@@ -276,7 +276,7 @@
         >
             <div style:height="{playbackProgress}%"></div>
 
-            {#if !isMobile.current && !disableSeeking}
+            {#if layout.current == "desktop" && !disableSeeking}
                 <video
                     src="{page.data.serverURL}/thumb/{mediaController
                         .visibleMedium?.id}_seek.webm?session={page.data
@@ -342,7 +342,6 @@
             }
 
             @media (hover: hover) and (pointer: fine) {
-
                 &:not(:disabled):hover {
                     border: 1px solid var(--border-color-1-hover);
                     background: var(--border-color-1);

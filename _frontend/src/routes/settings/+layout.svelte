@@ -3,16 +3,16 @@
     import Button from "$components/elements/Button.svelte"
     import MobileBottomBar from "$components/MobileBottomBar.svelte"
     import SidebarSection from "$components/SidebarSection.svelte"
-    import { isMobile } from "$lib/context.js"
+    import { layout } from "$lib/context.js"
     import varsSvelte from "$lib/vars.svelte.js"
 
     let { children, data } = $props()
 </script>
 
-<main class:mobile={isMobile.current}>
+<main class:mobile={layout.current == "mobile"}>
     <!-- TODO: Mobile support -->
     <section class="sidebar">
-        {#if !isMobile.current}
+        {#if layout.current != "mobile"}
             <div
                 style="display: flex;
 
@@ -98,7 +98,7 @@
         {@render children()}
     </div>
 
-    {#if isMobile.current}
+    {#if layout.current == "mobile"}
         <div class="mobileBottomBar">
             <MobileBottomBar />
         </div>

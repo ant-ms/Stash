@@ -3,7 +3,7 @@
     import { onMount } from "svelte"
 
     import Icon from "$components/elements/Icon.svelte"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
     import {
         default as tagsController,
         type TagExtended
@@ -66,7 +66,7 @@
 
         return searcher
             .search(query)
-            .slice(0, isMobile.current ? 15 : 10) as TagExtended[]
+            .slice(0, layout.current == "mobile" ? 15 : 10) as TagExtended[]
     }
     let results: TagExtended[] = $derived(executeSearch(value))
 </script>

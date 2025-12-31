@@ -67,6 +67,18 @@ body.light {
     --border-color-2: hsl(35, 17%, 59%);
     --border-color-2-hover: hsl(30, 12%, 51%);
     --dropdown-shadow-color: 43deg 59% 40%;
+
+    --accent-foreground: #{color.mix(
+            hsl($hue, 100% - $saturation, 12%),
+            $accent,
+            50%
+        )};
+    --accent: #{$accent};
+    --accent-background: #{color.mix(
+            hsl($hue, 100% - $saturation, 80%),
+            $accent,
+            50%
+        )};
 }
 
 body.amoled {
@@ -200,4 +212,8 @@ table {
             border-left: 1px solid var(--border-color-base);
         }
     }
+}
+
+[data-selected] {
+    outline: 2px solid var(--accent) !important;
 }

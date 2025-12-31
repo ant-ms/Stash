@@ -11,7 +11,7 @@
     import MediaDetailsPopup from "$components/Popups/MediaDetailsPopup.svelte"
     import QuickSwitch from "$components/Popups/QuickSwitch.svelte"
     import MasonaryView from "$components/Popups/views/MasonaryView.svelte"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
     import {
         mediaController,
         type MediaType
@@ -39,7 +39,7 @@
     })
 
     $effect(() => {
-        if (isMobile.current) {
+        if (layout.current == "mobile") {
             setPopup(
                 mediaController.visibleMedium ? "Media Viewer Mobile" : null
             )

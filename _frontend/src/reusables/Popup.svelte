@@ -3,7 +3,7 @@
     import { fade, scale } from "svelte/transition"
 
     import Icon from "$components/elements/Icon.svelte"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
 
     import { controller } from "../lib/stores.svelte"
 
@@ -63,7 +63,7 @@
         onclose()
         $controller.setPopup(null)
     }}
-    class:mobile={isMobile.current && !disableMobileFullscreen}
+    class:mobile={layout.current == "mobile" && !disableMobileFullscreen}
     class:fullscreen
 >
     <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -78,7 +78,7 @@
             </div>
         {/if}
         <div class="not-sidebar">
-            {#if !hideHeader || (isMobile.current && !disableMobileFullscreen)}
+            {#if !hideHeader || (layout.current == "mobile" && !disableMobileFullscreen)}
                 <div id="header">
                     {#if bottomSheet}
                         <!-- svelte-ignore element_invalid_self_closing_tag -->

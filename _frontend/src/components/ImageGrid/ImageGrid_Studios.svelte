@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
     import {
         mediaController,
         type MediaType
@@ -50,7 +50,7 @@
 <IntersectionObserver once={true} top={750} delay={i > 0 ? 300 : 0}>
     {#snippet children({ intersecting })}
         {#if intersecting}
-            <main class:isMobile={isMobile.current}>
+            <main class:isMobile={layout.current == "mobile"}>
                 {#each getProcessedMedia(media) as medium}
                     <ImageGridStudiosThumbnail
                         {medium}

@@ -161,8 +161,8 @@
 </svelte:head>
 
 <IntersectionObserver
+    data-navigable
     on:click={e => {
-        console.log("CLICK", !!onclick)
         if (onclick) onclick(e.detail)
         else leftClick(e.detail)
     }}
@@ -297,7 +297,6 @@
 
     div:not(.selected) {
         @media (hover: hover) and (pointer: fine) {
-
             img:not(.disableZoom):hover {
                 transform: scale(1.04);
                 filter: brightness(0.85);

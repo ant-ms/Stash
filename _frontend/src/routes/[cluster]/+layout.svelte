@@ -1,6 +1,6 @@
 <script lang="ts">
     import MobileBottomBar from "$components/MobileBottomBar.svelte"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
 
     interface Props {
         children?: import("svelte").Snippet
@@ -9,10 +9,10 @@
     let { children }: Props = $props()
 </script>
 
-<main class:mobile={isMobile.current}>
+<main class:mobile={layout.current == "mobile"}>
     {@render children?.()}
 
-    {#if isMobile.current}
+    {#if layout.current == "mobile"}
         <MobileBottomBar />
     {/if}
 </main>

@@ -1,11 +1,9 @@
 <script lang="ts">
-    import { afterUpdate, onMount } from "svelte"
-
     import ImageGrid from "$components/ImageGrid/ImageGrid.svelte"
     import MediaViewer from "$components/MediaViewer/MediaViewer.svelte"
     import MenuBar from "$components/MenuBar.svelte"
     import Cast from "$components/Popups/ActionBars/Cast.svelte"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import vars from "$lib/vars.svelte"
 
@@ -24,8 +22,8 @@
     }
 </script>
 
-<main class:mobile={isMobile.current}>
-    {#if !vars.layout.isFullscreen && !isMobile.current}
+<main class:mobile={layout.current == "mobile"}>
+    {#if !vars.layout.isFullscreen && layout.current != "mobile"}
         <Sidebar />
     {/if}
 
@@ -46,7 +44,7 @@
         <Cast />
     {/if}
 
-    {#if mediaController.visibleMedium && !isMobile.current && !vars.layout.castVisible}
+    {#if mediaController.visibleMedium && layout.current != "mobile" && !vars.layout.castVisible}
         <MediaViewer />
     {/if}
 </main>
@@ -75,7 +73,6 @@
         }
 
         &.mobile {
-
             #imageGallerySection {
                 min-width: unset;
             }

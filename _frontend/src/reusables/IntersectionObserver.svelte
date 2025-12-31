@@ -23,7 +23,8 @@
         right = 0,
         delay = 0,
         style = "",
-        children
+        children,
+        ...others
     }: Props = $props()
 
     let intersecting = $state(false)
@@ -60,6 +61,11 @@
     })
 </script>
 
-<div bind:this={container} onclick={e => dispatch("click", e)} {style}>
+<div
+    bind:this={container}
+    onclick={e => dispatch("click", e)}
+    {style}
+    {...others}
+>
     {@render children?.({ intersecting })}
 </div>

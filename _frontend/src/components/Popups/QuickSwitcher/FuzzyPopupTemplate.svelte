@@ -3,7 +3,7 @@
     import { onMount, type Snippet } from "svelte"
 
     import Button from "$components/elements/Button.svelte"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
     import { controller, settings } from "$lib/stores.svelte"
     import Popup from "$reusables/Popup.svelte"
 
@@ -43,7 +43,7 @@
         return searcher
             .search(query)
             .filter((d: any) => typeof d != "string" || d != ".DS_STORE")
-            .slice(0, isMobile.current ? 15 : 10) as T
+            .slice(0, layout.current == "mobile" ? 15 : 10) as T
     }
     let results: T[] = $derived(executeSearch(value))
 
@@ -110,7 +110,7 @@
             </div>
         {/each}
 
-        {#if isMobile.current}
+        {#if layout.current == "mobile"}
             <div class="mobileNavigationButtons">
                 <Button
                     card

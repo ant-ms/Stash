@@ -7,7 +7,7 @@
         executeSearch,
         type ResultsType
     } from "$lib/client/QuickSwitchHelpers/search.svelte"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
     import { controller } from "$lib/stores.svelte"
     import Popup from "$reusables/Popup.svelte"
 
@@ -30,7 +30,7 @@
 </script>
 
 <Popup hideHeader onclose={() => $controller.setPopup(null)}>
-    <main class:mobile={isMobile.current}>
+    <main class:mobile={layout.current == "mobile"}>
         <input
             id="quick-switch-input"
             type="search"

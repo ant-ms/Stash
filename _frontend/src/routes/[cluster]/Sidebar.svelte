@@ -3,7 +3,7 @@
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Select from "$components/elements/Select.svelte"
-    import { isMobile, presentationMode } from "$lib/context"
+    import { layout, presentationMode } from "$lib/context"
     import { controller } from "$lib/stores.svelte"
     import vars from "$lib/vars.svelte"
 
@@ -14,7 +14,7 @@
 </script>
 
 <main
-    class:mobile={isMobile.current}
+    class:mobile={layout.current == "mobile"}
     class:windowControlsSpacerVisible={vars.layout.windowControlsSpacerVisible}
     class:hidden={vars.layout.hideSidebar}
 >

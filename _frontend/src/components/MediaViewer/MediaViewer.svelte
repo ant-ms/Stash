@@ -3,7 +3,7 @@
     import { onMount } from "svelte"
 
     import { page } from "$app/state"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
     import {
         goToNextMedia,
         goToPreviousMedia,
@@ -89,7 +89,7 @@
 {#if mediaController.visibleMedium}
     <main
         class:fullscreen={vars.layout.isFullscreen}
-        class:mobile={isMobile.current}
+        class:mobile={layout.current == "mobile"}
     >
         <div class="toolbar">
             <Toolbar {hideControls} />

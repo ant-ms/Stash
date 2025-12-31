@@ -2,7 +2,7 @@
     import Select from "$components/elements/Select.svelte"
     import Toggle from "$components/elements/Toggle.svelte"
     import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
-    import { isMobile, presentationMode } from "$lib/context"
+    import { layout, presentationMode } from "$lib/context"
     import { settings } from "$lib/stores.svelte"
 </script>
 
@@ -21,8 +21,15 @@
         </div>
 
         <div>
-            <span>Mobile Layout</span>
-            <Toggle bind:state={isMobile.current} />
+            <span>Layout</span>
+            <Select
+                options={[
+                    { value: "desktop", name: "Desktop" },
+                    { value: "mobile", name: "Mobile" },
+                    { value: "tv", name: "TV" }
+                ]}
+                bind:value={layout.current}
+            />
         </div>
 
         <div>

@@ -1,13 +1,22 @@
 <script lang="ts">
     import { page } from "$app/state"
+    import Button from "$components/elements/Button.svelte"
     import SidebarSection from "$components/SidebarSection.svelte"
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
+    import { mediaController } from "$lib/controllers/MediaController.svelte"
     import tagsController from "$lib/controllers/TagsController.svelte"
+    import { selectedMediaIds } from "$lib/stores.svelte"
 
     import SidebarHierarchyEntry from "./SidebarHierarchyEntry.svelte"
 </script>
 
-<main class:mobile={isMobile.current}>
+<main class:mobile={layout.current == "mobile"}>
+    <Button icon="mdiBackspaceOutline" onclick={() => {
+        selectedMediaIds.set([])
+        mediaController.selectedTags = []
+    }}>
+        Clear
+    </Button>
     <SidebarSection>
         {#each Object.values(tagsController.tagMap)
             .filter(t => !t.parentId)

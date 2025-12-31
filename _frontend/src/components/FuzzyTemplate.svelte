@@ -2,7 +2,7 @@
     import FuzzySearch from "fuzzy-search"
     import { onMount, type Snippet } from "svelte"
 
-    import { isMobile } from "$lib/context"
+    import { layout } from "$lib/context"
 
     type T = $$Generic<Record>
     type TAsArray = Array<T>
@@ -36,7 +36,7 @@
         return searcher
             .search(query)
             .filter((d: any) => typeof d != "string" || d != ".DS_STORE")
-            .slice(0, isMobile.current ? 15 : 10) as T
+            .slice(0, layout.current == "mobile" ? 15 : 10) as T
     }
     let results: T[] = $derived(executeSearch(value))
 
