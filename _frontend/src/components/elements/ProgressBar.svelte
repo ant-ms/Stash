@@ -48,6 +48,7 @@
 
 <style lang="scss">
     .segmented-progress {
+
         .track {
             overflow: hidden;
             display: flex;

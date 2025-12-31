@@ -11,10 +11,13 @@
 </script>
 
 <main class:mobile={layout.current == "mobile"}>
-    <Button icon="mdiBackspaceOutline" onclick={() => {
-        selectedMediaIds.set([])
-        mediaController.selectedTags = []
-    }}>
+    <Button
+        icon="mdiBackspaceOutline"
+        onclick={() => {
+            selectedMediaIds.set([])
+            mediaController.selectedTags = []
+        }}
+    >
         Clear
     </Button>
     <SidebarSection>

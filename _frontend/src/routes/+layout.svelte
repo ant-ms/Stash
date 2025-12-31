@@ -8,30 +8,38 @@
     import { afterNavigate } from "$app/navigation"
     import { navigateInDirection } from "$lib/client/keyboard-navigation"
     import { layout } from "$lib/context"
+    import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { controller, settings } from "$lib/stores.svelte"
+    import vars from "$lib/vars.svelte"
 
     import Controller from "./Controller.svelte"
-    import { mediaController } from "$lib/controllers/MediaController.svelte"
-    import vars from "$lib/vars.svelte"
 
     let { children } = $props()
 
-    afterNavigate(() => {
+    const recreateNavigationPoint = () => {
         if (!document.querySelector("[data-selected]")) {
             const element = document.querySelector(
                 "[data-navigable]"
             ) as Element
             element.setAttribute("data-selected", "true")
         }
+    }
+
+    afterNavigate(() => {
+        recreateNavigationPoint()
     })
 
     onMount(() => {
         browser && (() => (document.body.className = $settings.theme))()
 
         if (layout.current == "tv") {
-            watch(() => mediaController.visibleMedium, () => {
-                vars.layout.isFullscreen = !!mediaController.visibleMedium
-            })
+            watch(
+                () => mediaController.visibleMedium,
+                () => {
+                    vars.layout.isFullscreen = !!mediaController.visibleMedium
+                    recreateNavigationPoint()
+                }
+            )
 
             document.addEventListener(
                 "keydown",

@@ -297,6 +297,7 @@
 
     div:not(.selected) {
         @media (hover: hover) and (pointer: fine) {
+
             img:not(.disableZoom):hover {
                 transform: scale(1.04);
                 filter: brightness(0.85);
