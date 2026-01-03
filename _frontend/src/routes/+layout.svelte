@@ -26,7 +26,9 @@
     }
 
     afterNavigate(() => {
-        recreateNavigationPoint()
+        if (layout.current == "tv") {
+            recreateNavigationPoint()
+        }
     })
 
     onMount(() => {

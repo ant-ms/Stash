@@ -4,7 +4,8 @@ $hue: 13;
 $saturation: 16%;
 $accent: hsl($hue, $saturation + 10%, 30%);
 
-body {
+body,
+[data-force-dark-mode] {
     --color-lowest: #000;
     --color-dark-level-lower: hsl(#{$hue}, #{$saturation}, 7%);
     --color-dark-level-base: hsl(#{$hue}, #{$saturation}, 8.5%);

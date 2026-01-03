@@ -50,31 +50,22 @@
         keys.onKeys(["k"], () => {
             paused = !paused
         })
-        keys.onKeys(["j"], () => {
-            const seekBy = 60
-            if (currentTime - seekBy < 0) currentTime = 0
-            else currentTime -= seekBy
-        })
-        keys.onKeys(["ArrowLeft"], () => {
-            const seekBy = 15
-            if (currentTime - seekBy < 0) currentTime = 0
-            else currentTime -= seekBy
-        })
-        keys.onKeys(["ArrowRight"], () => {
-            const seekBy = 15
-            if (currentTime + seekBy > duration) currentTime = duration
-            else currentTime += seekBy
-        })
-        keys.onKeys(["j"], () => {
-            const seekBy = 60
-            if (currentTime - seekBy < 0) currentTime = 0
-            else currentTime -= seekBy
-        })
-        keys.onKeys(["l"], () => {
-            const seekBy = 60
-            if (currentTime + seekBy > duration) currentTime = duration
-            else currentTime += seekBy
-        })
+        const seekBy = (seekBy: number) => {
+            showControls()
+            if (seekBy < 0) {
+                if (currentTime - seekBy < 0) currentTime = 0
+                else currentTime -= seekBy
+            } else {
+                if (currentTime + seekBy > duration) currentTime = duration
+                else currentTime += seekBy
+            }
+        }
+        keys.onKeys(["ArrowLeft"], () => seekBy(-15))
+        keys.onKeys(["ArrowRight"], () => seekBy(15))
+        keys.onKeys(["j"], () => seekBy(-60))
+        keys.onKeys(["l"], () => seekBy(60))
+        keys.onKeys(["PageUp"], () => seekBy(-Math.round(duration * 0.1)))
+        keys.onKeys(["PageDown"], () => seekBy(Math.round(duration * 0.1)))
 
         // This callback cleans up the observer
         return () => resizeObserver.unobserve(video)
@@ -122,6 +113,15 @@
 
     let { hideControls = $bindable(false) }: Props = $props()
 
+    let hideControlsTimer: NodeJS.Timeout
+    const showControls = () => {
+        hideControls = false
+        clearTimeout(hideControlsTimer)
+        hideControlsTimer = setTimeout(() => {
+            hideControls = true
+        }, 3000)
+    }
+
     //   TODO: reimplment this
     //   visibleMedium.subscribe(() => {
     //     disableSeeking = false
@@ -132,13 +132,14 @@
     let startedTouchingAtX = 0
 
     const ontouchstart = (e: TouchEvent) => {
+        showControls()
         if ($settings.mediaTouchAction !== "seek") return
-        hideControls = false
         startedTouchingAtTime = video.currentTime
         startedTouchingAtX = e.touches[0].clientX
     }
 
     const ontouchmove = (e: TouchEvent) => {
+        showControls()
         if ($settings.mediaTouchAction !== "seek") return
         const distanceMoved = e.touches[0].clientX - startedTouchingAtX
         const distanceMovedPercentage =
@@ -154,7 +155,6 @@
         if (Math.abs(distanceMoved) < 3) {
             paused = !paused
         }
-        hideControls = true
     }
 </script>
 
@@ -179,7 +179,11 @@
     >
         <track kind="captions" />
     </video>
-    <div class="controls" style="width: {videoElementWidth - 32}px">
+    <div
+        class="controls"
+        data-force-dark-mode
+        style="width: {videoElementWidth - 32}px"
+    >
         <Button
             transparentButton
             noMargin

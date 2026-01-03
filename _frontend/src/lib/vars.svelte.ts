@@ -16,9 +16,11 @@ class Vars {
     } | null = $state(null)
 
     // ========== Page Data ==========
+
     public collapsedTags: string[] = $state([])
 
     // ========== State for reader ==========
+
     public chaptersOfStory: string[] = $state([])
     public selectedChapterIndex: number = $state(0)
 
