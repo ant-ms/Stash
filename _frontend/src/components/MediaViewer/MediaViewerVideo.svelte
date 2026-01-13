@@ -53,8 +53,8 @@
         const seekBy = (seekBy: number) => {
             showControls()
             if (seekBy < 0) {
-                if (currentTime - seekBy < 0) currentTime = 0
-                else currentTime -= seekBy
+                if (currentTime + seekBy < 0) currentTime = 0
+                else currentTime += seekBy
             } else {
                 if (currentTime + seekBy > duration) currentTime = duration
                 else currentTime += seekBy
