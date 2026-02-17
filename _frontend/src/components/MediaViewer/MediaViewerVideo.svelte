@@ -44,10 +44,15 @@
         resizeObserver.observe(video)
 
         const keys = new PressedKeys()
+        keys.onKeys(["Enter"], () => {
+            showControls()
+        })
         keys.onKeys([" "], () => {
+            showControls()
             paused = !paused
         })
         keys.onKeys(["k"], () => {
+            showControls()
             paused = !paused
         })
         const seekBy = (seekBy: number) => {
