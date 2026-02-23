@@ -21,6 +21,22 @@ export const execute = async (job: Job) => {
 
     const filePath = path.join(mediaRoot, parsed.id);
 
+    const hasAudio = await checkForAudio(filePath);
+    if (!hasAudio) {
+      await prisma.media.update({
+        where: { id: parsed.id },
+        data: { suggestedVolumePercent: 100 },
+      });
+      await prisma.job.update({
+        where: { id: job.id },
+        data: {
+          status: "completed",
+          debugMessages: ["No audio stream found. Skipping loudness analysis."],
+        },
+      });
+      return;
+    }
+
     const loudnormJson = await analyzeLoudnorm(filePath);
     const suggestion = computeSuggestedVolumeFromLoudnorm(loudnormJson);
 
@@ -81,6 +97,18 @@ const parseAndValidate = async (job: Job): Promise<{ id: string }> => {
   }
 
   return { id };
+};
+
+const checkForAudio = (filePath: string): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    ffmpeg.ffprobe(filePath, (err, metadata) => {
+      if (err) return reject(err);
+      const audioStream = metadata?.streams?.find(
+        (s) => s.codec_type === "audio",
+      );
+      resolve(!!audioStream);
+    });
+  });
 };
 
 const analyzeLoudnorm = async (filePath: string): Promise<any> => {
