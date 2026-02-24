@@ -46,8 +46,9 @@
         const keys = new PressedKeys()
         keys.onKeys(["Enter"], () => {
             showControls()
+            paused = !paused
         })
-        keys.onKeys([" "], () => {
+        keys.onKeys(["Space"], () => {
             showControls()
             paused = !paused
         })

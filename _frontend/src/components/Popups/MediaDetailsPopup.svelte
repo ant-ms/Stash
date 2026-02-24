@@ -39,7 +39,7 @@
             <div>
                 <Icon name="mdiFormTextbox" />
                 <span>{mediaController.visibleMedium.name}</span>
-                {#if mediaController.visibleMedium.name.endsWith(".mp4")}
+                {#if mediaController.visibleMedium.type.startsWith("video")}
                     <Button
                         icon="mdiCreation"
                         noMargin

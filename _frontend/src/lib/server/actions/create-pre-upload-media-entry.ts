@@ -6,9 +6,11 @@ export const createPreUploadMediaEntry = async (p: {
     clusterName: string
     tagIds: number[]
 }) => {
+    const name = p.name.replace(/\.[^.]+$/, "")
+
     const { id: mediaId } = await prisma.media.create({
         data: {
-            name: p.name,
+            name,
             type: p.type,
             date: new Date(),
             height: 0,
