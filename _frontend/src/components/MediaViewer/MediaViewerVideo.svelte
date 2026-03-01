@@ -162,9 +162,13 @@
             paused = !paused
         }
     }
+
+    const onmousemove = () => {
+        showControls()
+    }
 </script>
 
-<main class:hide-controls={hideControls}>
+<main class:hide-controls={hideControls} {onmousemove}>
     <video
         onclick={() => {
             if ($settings.mediaTouchAction !== "seek") paused = !paused
@@ -340,7 +344,6 @@
                 }
 
                 &:not(:hover) {
-
                     & > video {
                         display: none;
                     }
