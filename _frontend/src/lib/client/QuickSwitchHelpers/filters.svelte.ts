@@ -65,6 +65,19 @@ const actions = async () => {
             }
         },
         {
+            icon:
+                varsSvelte.layout.viewMode == "table"
+                    ? "mdiViewGrid"
+                    : "mdiTable",
+            label: "/View Mode",
+            action: varsSvelte.layout.viewMode,
+            onEnter: () => {
+                varsSvelte.layout.viewMode =
+                    varsSvelte.layout.viewMode == "grid" ? "table" : "grid"
+                get(controller).setPopup(null)
+            }
+        },
+        {
             icon: "mdiCounter",
             label: "/Bulk edit subject counts",
             onEnter: () => {

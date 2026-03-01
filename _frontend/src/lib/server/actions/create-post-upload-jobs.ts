@@ -26,6 +26,13 @@ export const createPostUploadJobs = async (mediaId: string, type: string) => {
                 waitFor: "updateMediaMetadataFromFile"
             }
         })
+        await prisma.job.create({
+            data: {
+                name: "gatherPerceivedLoudness",
+                data: JSON.stringify({ id: mediaId }),
+                waitFor: "updateMediaMetadataFromFile"
+            }
+        })
     }
 
     // if (type.startsWith("image")) {

@@ -41,5 +41,9 @@
 <style>
     tr {
         position: relative;
+
+        th {
+            text-align: left;
+        }
     }
 </style>

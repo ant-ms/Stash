@@ -3,7 +3,6 @@ import type { Cookies } from "@sveltejs/kit"
 import { PAGE_SIZE } from "$lib/constants"
 import prisma from "$lib/server/prisma"
 
-import type { Media } from "../../../generated/prisma/client"
 import { sortingMethods } from "../../../types"
 import { protectEndpoint } from "../protect-endpoint"
 
@@ -50,6 +49,7 @@ export const media_query_from_database = async (
             "Media"."specialFilterAttributeGuess",
             "Media"."tagsGuess",
             "Media"."deleted",
+            "Media"."sizeBytes"::text,
             STRING_AGG ("Tags"."id"::text, ',') as tags
         FROM
             "Media"

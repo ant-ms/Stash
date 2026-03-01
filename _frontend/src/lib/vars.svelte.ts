@@ -6,6 +6,7 @@ class Layout {
     castVisible = $state(false)
     windowControlsSpacerVisible = $state(false)
     isFullscreen = $state(false)
+    viewMode: "grid" | "table" = $state("grid")
 }
 
 class Vars {

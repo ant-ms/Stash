@@ -17,6 +17,7 @@ export const updateMediaMetadataOfFile = async (
       data: {
         width: metadata.width,
         height: metadata.height,
+        duration: metadata.Duration,
         sizeBytes: fileSize,
         createdDate: await getCreatedDate(id, metadata),
       },
@@ -27,6 +28,7 @@ export const updateMediaMetadataOfFile = async (
       data: {
         width: metadata.width,
         height: metadata.height,
+        duration: metadata.Duration,
         sizeBytes: fileSize,
       },
     });

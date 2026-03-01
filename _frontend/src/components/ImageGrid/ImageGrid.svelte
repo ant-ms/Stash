@@ -2,12 +2,14 @@
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
+    import vars from "$lib/vars.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"
     import ImageGridCollection from "./ImageGrid_Collection.svelte"
     import ImageGridPage from "./ImageGrid_Page.svelte"
     import ImageGridStories from "./ImageGrid_Stories.svelte"
     import ImageGridStudios from "./ImageGrid_Studios.svelte"
+    import ImageGridTable from "./ImageGrid_Table.svelte"
 
     let pageData = $derived(page.data as PageData)
 </script>
@@ -61,7 +63,9 @@
         <section>
             {#each mediaController.pages as { hash, media }: { hash: string; media: MediaType[] }, i (hash)}
                 <div>
-                    {#if pageData.cluster.type == "withName"}
+                    {#if vars.layout.viewMode == "table"}
+                        <ImageGridTable {media} />
+                    {:else if pageData.cluster.type == "withName"}
                         <ImageGridStudios {media} {i} />
                     {:else}
                         <ImageGridPage {media} />
