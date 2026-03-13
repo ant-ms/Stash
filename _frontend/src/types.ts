@@ -26,6 +26,11 @@ export const sortingMethods: Array<{
         orderBy: `"Media"."date" DESC, "Media"."name" DESC, "Media"."id" DESC`,
         title: "Date (descending)"
     },
+    {
+        icon: "mdiSortDescending",
+        orderBy: `"Media"."sizeBytes" DESC, "Media"."name" DESC, "Media"."id" DESC`,
+        title: "Size (descending)"
+    },
     // TODO: Add a seed (so that no reload happens when I change a tag)
     {
         icon: "mdiSort",

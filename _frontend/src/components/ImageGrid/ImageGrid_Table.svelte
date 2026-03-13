@@ -41,7 +41,7 @@
             {formatBytes(entry.sizeBytes)}
         </td>
         <td>
-            {formatBytes(entry.sizeBytes / entry.duration)}
+            {formatBytes(entry.sizeBytes / entry.duration)} / s
         </td>
     {/snippet}
 </Table>
