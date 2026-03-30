@@ -34,8 +34,11 @@
 
 <style>
     section {
+        overflow-y: auto;
         display: grid;
         gap: 0.5em;
+
+        height: 500px;
         padding-top: 0.5em;
     }
 

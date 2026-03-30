@@ -72,7 +72,7 @@ export const prompts = {
     selectMultiple: (
         question: string,
         options: { name: string; value: string }[],
-        selected: string[]
+        selected: string[] = []
     ): Promise<string[] | null> =>
         new Promise(resolve => {
             const element = mount(SelectMultiplePromptPopup, {

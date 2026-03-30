@@ -16,6 +16,9 @@
     let transmission_stash_data_location = $derived(
         data.TRANSMISSION_STASH_DATA_LOCATION
     )
+    let transmission_stash_torrent_location = $derived(
+        data.TRANSMISSION_STASH_TORRENT_LOCATION
+    )
 
     const seedingTorrents = resource(
         () => ({
@@ -61,6 +64,19 @@
                     query("updateSettingsKeyValuePair", {
                         key: "TRANSMISSION_STASH_DATA_LOCATION",
                         value: transmission_stash_data_location
+                    })
+                }}
+            />
+        </div>
+        <div>
+            <span> Path to Stash Torrent folder </span>
+            <input
+                type="text"
+                bind:value={transmission_stash_torrent_location}
+                oninput={e => {
+                    query("updateSettingsKeyValuePair", {
+                        key: "TRANSMISSION_STASH_TORRENT_LOCATION",
+                        value: transmission_stash_torrent_location
                     })
                 }}
             />

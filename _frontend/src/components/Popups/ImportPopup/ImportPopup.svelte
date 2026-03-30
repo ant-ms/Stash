@@ -106,7 +106,7 @@
                     >
                         <Icon name={queueEntry.icon} size={0.9} />
                         <span>
-                            {queueEntry.filename}
+                            {queueEntry.name || queueEntry.filename}
                             {#if queueEntry.size}
                                 ({prettyBytes(queueEntry.size)})
                             {/if}
@@ -234,14 +234,17 @@
                 display: flex;
                 align-items: center;
 
+                max-width: 100%;
                 padding-left: 0.5rem;
                 border-radius: 5px;
 
                 transition: background 100ms;
 
                 span {
+                    overflow: hidden;
                     flex: 1;
                     padding-left: 3px;
+                    text-overflow: ellipsis;
                 }
 
                 &:hover {

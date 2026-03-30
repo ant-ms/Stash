@@ -12,3 +12,4 @@ export const PAGE_SIZE = 200
 // TODO: Make everything use these
 export const MEDIA_ROOT = "./media"
 export const THUMBNAIL_ROOT = "./thumbnails"
+export const TORRENT_ROOT = "/app/torrent"

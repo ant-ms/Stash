@@ -1,6 +1,6 @@
 import fs from "fs/promises"
 
-import { MEDIA_ROOT, THUMBNAIL_ROOT } from "$lib/constants"
+import { MEDIA_ROOT, THUMBNAIL_ROOT, TORRENT_ROOT } from "$lib/constants"
 
 import prisma from "../prisma"
 
@@ -91,4 +91,14 @@ export const removeTagsFromMedias = async (d: {
             })
         }
     }
+}
+
+export const createSymlinkFromTorrentsToMedia = async (d: {
+    torrentPath: string
+    mediaId: string
+}) => {
+    await fs.symlink(
+        `${TORRENT_ROOT}/${d.torrentPath}`,
+        `${MEDIA_ROOT}/${d.mediaId}`
+    )
 }

@@ -22,6 +22,15 @@ const getTransmissionStashDataLocation = async () =>
         })
     ).value
 
+const getTransmissionStashTorrentLocation = async () =>
+    (
+        await prisma.settingsKeyValuePairs.findUniqueOrThrow({
+            where: {
+                key: "TRANSMISSION_STASH_TORRENT_LOCATION"
+            }
+        })
+    ).value
+
 let transmissionSessionId = ""
 
 const make_request = async (body: object) => {
@@ -62,7 +71,14 @@ export const getAllCompletedTorrents = async (d: {}) => {
         (await make_request({
             method: "torrent-get",
             arguments: {
-                fields: ["id", "name", "files", "status", "downloadDir"]
+                fields: [
+                    "id",
+                    "name",
+                    "files",
+                    "status",
+                    "downloadDir",
+                    "addedDate"
+                ]
             }
         })) as {
             arguments: {
@@ -76,16 +92,18 @@ export const getAllCompletedTorrents = async (d: {}) => {
                     name: string
                     status: number
                     downloadDir: string
+                    addedDate: number
                 }>
             }
             result: string
         }
-    ).arguments.torrents.filter(
-        t =>
-            [0, 5, 6].includes(t.status) &&
-            t.files.length == 1 &&
-            t.downloadDir != transmissionStashDataLocation
-    )
+    ).arguments.torrents
+        .filter(
+            t =>
+                [0, 5, 6].includes(t.status) &&
+                t.downloadDir != transmissionStashDataLocation
+        )
+        .sort((a, b) => a.addedDate - b.addedDate)
 }
 
 export const transmissionCreatePreUploadMediaEntry = async (d: {
@@ -132,6 +150,19 @@ export const moveTorrentPath = async (d: { id: number }) => {
     })
 }
 
+export const moveTorrentPathToStashTorrentFolder = async (d: {
+    id: number
+}) => {
+    await make_request({
+        method: "torrent-set-location",
+        arguments: {
+            ids: [d.id],
+            location: await getTransmissionStashTorrentLocation(),
+            move: true
+        }
+    })
+}
+
 export const createPostMoveJobs = async (d: { mediaId: string }) => {
     const { type } = await prisma.media.findUniqueOrThrow({
         where: {
@@ -173,4 +204,19 @@ export const getAllSeedingTorrents = async (d: {}) => {
     ).arguments.torrents.filter(
         t => t.downloadDir == transmissionStashDataLocation
     )
+}
+
+export const setFilesWantedForTorrent = async (d: {
+    torrentId: number
+    fileIndicies: number[]
+}) => {
+    const result = await make_request({
+        method: "torrent-set",
+        arguments: {
+            ids: [d.torrentId],
+            "files-wanted": d.fileIndicies,
+            "files-unwanted": []
+        }
+    })
+    console.log("HEYHO", result, d.torrentId, d.fileIndicies)
 }

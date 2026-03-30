@@ -1,5 +1,6 @@
 import { page } from "$app/state"
 import query from "$lib/client/call"
+import { prompts } from "$lib/controllers/PromptController"
 import type { TagExtended } from "$lib/controllers/TagsController.svelte"
 import type { possibleIcons } from "$lib/possibleIcons"
 
@@ -15,18 +16,26 @@ export abstract class ImportSource {
     protected cleanup?(): Promise<void>
 
     filename: string
+    name?: string
     size: number
     progress = $state(0)
     error = $state("")
+    selected = $state<string[]>([])
 
     constructor(
         public params: {
             filename: string
             size?: number
+            name?: string
         }
     ) {
         this.filename = params.filename
         this.size = params.size || 0
+        this.name = params.name
+    }
+
+    async select(): Promise<void> {
+        this.selected = [this.filename]
     }
 
     async process(p: importParams): Promise<void> {
@@ -110,14 +119,49 @@ export class TransmissionImportSource extends ImportSource {
 
     private torrentId: number
     private downloadDir: string
+    private files: string[]
 
-    constructor(torrentId: number, filename: string, downloadDir: string) {
-        super({ filename })
+    constructor(
+        torrentId: number,
+        files: string[],
+        downloadDir: string,
+        name: string
+    ) {
+        if (files.length > 1) {
+            super({ filename: files[0], name })
+        } else {
+            super({ filename: files[0] })
+        }
         this.torrentId = torrentId
         this.downloadDir = downloadDir
+        this.files = files
+    }
+
+    async select(): Promise<void> {
+        if (this.files.length === 1) {
+            this.selected = this.files
+            return
+        }
+        const filesToImport = await prompts.selectMultiple(
+            "Select files to import",
+            this.files.map(f => ({ name: f, value: f }))
+        )
+        if (filesToImport) {
+            this.selected = filesToImport
+        }
     }
 
     async import(p: importParams): Promise<void> {
+        if (this.files.length === 1) {
+            return await this._import_single(p)
+        }
+
+        if (this.selected) {
+            return await this._import_multiple(p, this.selected)
+        }
+    }
+
+    async _import_single(p: importParams): Promise<void> {
         // Step 1: Generate file entry
         const mediaId = await query("transmissionCreatePreUploadMediaEntry", {
             name: this.filename,
@@ -142,5 +186,57 @@ export class TransmissionImportSource extends ImportSource {
         await query("createPostMoveJobs", {
             mediaId
         })
+    }
+
+    async _import_multiple(
+        p: importParams,
+        filesToImport: string[]
+    ): Promise<void> {
+        if (!this.name) {
+            window.alert(
+                "No name supplied to _import_multiple, this should never happen."
+            )
+            return
+        }
+
+        // Step 1: Move torrent to permanent seed location
+        await query("moveTorrentPathToStashTorrentFolder", {
+            id: this.torrentId
+        })
+
+        // Step 2: Disable all media files that were not selected
+        await query("setFilesWantedForTorrent", {
+            torrentId: this.torrentId,
+            fileIndicies: filesToImport.map(f => this.files.indexOf(f))
+        })
+
+        // Step 3: Delete all media files that were not selected
+        // TODO
+
+        for (const file of filesToImport) {
+            console.log("Importing", file, "...")
+
+            // Step 4: Create media database entry
+            const mediaId = await query(
+                "transmissionCreatePreUploadMediaEntry",
+                {
+                    name: file,
+                    clusterName: p.cluster,
+                    tagIds: p.tags.map(t => t.id),
+                    downloadDir: this.name
+                }
+            )
+
+            // Step 5: Create Symlinks for the selected files
+            await query("createSymlinkFromTorrentsToMedia", {
+                torrentPath: `${this.name}/${this.filename}`,
+                mediaId
+            })
+
+            // Step 6: Create post upload jobs for the selected files
+            await query("createPostMoveJobs", {
+                mediaId
+            })
+        }
     }
 }

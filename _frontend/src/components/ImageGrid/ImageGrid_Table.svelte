@@ -26,7 +26,7 @@
 <Table headers={["", "Name", "Size", "Bitrate"]} data={media}>
     {#snippet children({ entry })}
         <td
-            style="width: 100px; height: 100px; position: relative; display: block;"
+            style=" position: relative; display: block;width: 100px; height: 100px;"
         >
             <GridThumbnail
                 medium={entry}
@@ -49,8 +49,8 @@
 <style lang="scss">
     td {
         padding: 0.5rem;
-        vertical-align: middle;
         border-bottom: 1px solid var(--border-color-1);
+        vertical-align: middle;
 
         &.name {
             font-weight: 500;
