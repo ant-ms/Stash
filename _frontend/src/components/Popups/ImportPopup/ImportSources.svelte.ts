@@ -223,7 +223,7 @@ export class TransmissionImportSource extends ImportSource {
                     name: file,
                     clusterName: p.cluster,
                     tagIds: p.tags.map(t => t.id),
-                    downloadDir: ""
+                    downloadDir: this.name
                 }
             )
 
