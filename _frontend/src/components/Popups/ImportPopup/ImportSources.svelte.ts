@@ -199,41 +199,46 @@ export class TransmissionImportSource extends ImportSource {
             return
         }
 
-        // Step 1: Move torrent to permanent seed location
-        await query("moveTorrentPathToStashTorrentFolder", {
-            id: this.torrentId
-        })
-
-        // Step 2: Disable all media files that were not selected
-        await query("setFilesWantedForTorrent", {
-            torrentId: this.torrentId,
-            fileIndicies: filesToImport.map(f => this.files.indexOf(f))
-        })
-
-        // Step 3: Delete all media files that were not selected
-        // TODO
-
+        // Step 1: Create media database entries (MIME lookup uses old location)
+        const mediaIds: string[] = []
         for (const file of filesToImport) {
-            console.log("Importing", file, "...")
-
-            // Step 4: Create media database entry
+            console.log("Creating database entry for", file, "...")
             const mediaId = await query(
                 "transmissionCreatePreUploadMediaEntry",
                 {
                     name: file,
                     clusterName: p.cluster,
                     tagIds: p.tags.map(t => t.id),
-                    downloadDir: this.name
+                    downloadDir: this.downloadDir
                 }
             )
+            mediaIds.push(mediaId)
+        }
 
-            // Step 5: Create Symlinks for the selected files
+        // Step 2: Move torrent to permanent seed location
+        console.log("Moving torrent to permanent seed location...")
+        await query("moveTorrentPathToStashTorrentFolder", {
+            id: this.torrentId
+        })
+
+        // Step 3: Disable all media files that were not selected
+        console.log("Updating wanted files in Transmission...")
+        await query("setFilesWantedForTorrent", {
+            torrentId: this.torrentId,
+            fileIndicies: filesToImport.map(f => this.files.indexOf(f))
+        })
+
+        // Step 4: Create Symlinks and Post-move jobs
+        for (let i = 0; i < filesToImport.length; i++) {
+            const file = filesToImport[i]
+            const mediaId = mediaIds[i]
+
+            console.log("Creating symlink and jobs for", file, "...")
             await query("createSymlinkFromTorrentsToMedia", {
                 torrentPath: file,
                 mediaId
             })
 
-            // Step 6: Create post upload jobs for the selected files
             await query("createPostMoveJobs", {
                 mediaId
             })

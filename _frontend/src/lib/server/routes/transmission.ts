@@ -61,7 +61,12 @@ const make_request = async (body: object) => {
         )
     }
 
-    return await response.json()
+    const json = await response.json()
+    if (json.result !== "success") {
+        throw new Error(`Transmission API error: ${json.result}`)
+    }
+
+    return json
 }
 
 export const getAllCompletedTorrents = async (d: {}) => {
@@ -112,10 +117,11 @@ export const transmissionCreatePreUploadMediaEntry = async (d: {
     tagIds: Array<number>
     downloadDir: string
 }) => {
-    const type =
-        mime.lookup(
-            `${d.downloadDir.replace("/downloads", "/transmission")}/${d.name}`
-        ) || "Unknown"
+    const filePath = `${d.downloadDir}/${d.name}`.replace(
+        "/downloads/",
+        "/transmission/"
+    )
+    const type = mime.lookup(filePath) || "Unknown"
     return await createPreUploadMediaEntry({
         name: d.name,
         type: type,
@@ -210,13 +216,30 @@ export const setFilesWantedForTorrent = async (d: {
     torrentId: number
     fileIndicies: number[]
 }) => {
-    const result = await make_request({
+    const torrentData = (await make_request({
+        method: "torrent-get",
+        arguments: {
+            ids: [d.torrentId],
+            fields: ["files"]
+        }
+    })) as {
+        arguments: {
+            torrents: Array<{
+                files: Array<any>
+            }>
+        }
+    }
+
+    const totalFiles = torrentData.arguments.torrents[0].files.length
+    const allIndices = Array.from({ length: totalFiles }, (_, i) => i)
+    const filesUnwanted = allIndices.filter(i => !d.fileIndicies.includes(i))
+
+    await make_request({
         method: "torrent-set",
         arguments: {
             ids: [d.torrentId],
             "files-wanted": d.fileIndicies,
-            "files-unwanted": []
+            "files-unwanted": filesUnwanted
         }
     })
-    console.log("HEYHO", result, d.torrentId, d.fileIndicies)
 }
