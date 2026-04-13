@@ -159,7 +159,6 @@
         }
 
         @media (hover: hover) and (pointer: fine) {
-
             &:hover {
                 filter: brightness(110%);
             }
@@ -169,7 +168,7 @@
     .options {
         user-select: none;
 
-        position: absolute;
+        position: fixed;
         z-index: 999;
 
         display: grid;

@@ -128,6 +128,19 @@
             />
             <Button
                 size="large"
+                active={varsSvelte.layout.isFilterBarVisible}
+                card
+                icon={varsSvelte.layout.isFilterBarVisible
+                    ? "mdiFilter"
+                    : "mdiFilterOutline"}
+                onclick={() => {
+                    varsSvelte.layout.isFilterBarVisible =
+                        !varsSvelte.layout.isFilterBarVisible
+                }}
+                styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
+            />
+            <Button
+                size="large"
                 active={page.url.pathname.includes("settings")}
                 card
                 icon="mdiCog"

@@ -33,6 +33,17 @@
             allowMouseWheel
         />
         <Button
+            icon={vars.layout.isFilterBarVisible
+                ? "mdiFilter"
+                : "mdiFilterOutline"}
+            onclick={() => {
+                vars.layout.isFilterBarVisible = !vars.layout.isFilterBarVisible
+            }}
+            active={vars.layout.isFilterBarVisible}
+            noMargin
+            styleOverride="margin-left: 1rem"
+        />
+        <Button
             icon="mdiCog"
             href="/settings/general"
             oncontextmenu={e => {
@@ -41,7 +52,6 @@
             }}
             active={page.url.pathname.startsWith("/settings")}
             noMargin
-            styleOverride="margin-left: 1rem"
         />
     </div>
     <section>

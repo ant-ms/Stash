@@ -4,6 +4,7 @@ class Layout {
     isElectron = $state(false) as false | true | "fullscreen"
     hideSidebar = $state(false)
     castVisible = $state(false)
+    isFilterBarVisible = $state(false)
     windowControlsSpacerVisible = $state(false)
     isFullscreen = $state(false)
     viewMode: "grid" | "table" = $state("grid")

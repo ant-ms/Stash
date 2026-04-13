@@ -5,6 +5,7 @@
     import vars from "$lib/vars.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"
+    import FilterBar from "./FilterBar.svelte"
     import ImageGridCollection from "./ImageGrid_Collection.svelte"
     import ImageGridPage from "./ImageGrid_Page.svelte"
     import ImageGridStories from "./ImageGrid_Stories.svelte"
@@ -15,6 +16,9 @@
 </script>
 
 <main>
+    {#if vars.layout.isFilterBarVisible}
+        <FilterBar />
+    {/if}
     {#if pageData.cluster.type == "collection" && !mediaController.selectedTags.length}
         <ImageGridCollection />
     {:else if pageData.cluster.type == "stories"}
