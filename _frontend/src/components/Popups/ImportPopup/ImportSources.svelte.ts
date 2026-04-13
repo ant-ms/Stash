@@ -223,13 +223,13 @@ export class TransmissionImportSource extends ImportSource {
                     name: file,
                     clusterName: p.cluster,
                     tagIds: p.tags.map(t => t.id),
-                    downloadDir: this.name
+                    downloadDir: ""
                 }
             )
 
             // Step 5: Create Symlinks for the selected files
             await query("createSymlinkFromTorrentsToMedia", {
-                torrentPath: `${this.name}/${this.filename}`,
+                torrentPath: file,
                 mediaId
             })
 
