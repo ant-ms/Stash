@@ -109,17 +109,24 @@
     let seekVideo: HTMLVideoElement | null = $state(null)
     const processSeeking = (e: MouseEvent | TouchEvent) => {
         showSeekPreview = e.shiftKey
-        if (showSeekPreview && seekVideo) {
-            const startX = thumbElement.getBoundingClientRect().left
-            const endX = thumbElement.getBoundingClientRect().right
-            const playbackPercentage =
-                // @ts-ignore
-                (((e.clientX || e.touches[0].clientX) - startX) /
-                    (endX - startX)) *
-                100
+        if (showSeekPreview && seekVideo && isFinite(seekVideo.duration)) {
+            const rect = thumbElement.getBoundingClientRect()
+            const startX = rect.left
+            const endX = rect.right
+            const width = endX - startX
 
-            seekVideo.currentTime =
-                (seekVideo.duration / 100) * playbackPercentage
+            if (width > 0) {
+                // @ts-ignore
+                const clientX = e.clientX || e.touches?.[0]?.clientX
+                if (clientX !== undefined) {
+                    const playbackPercentage = ((clientX - startX) / width) * 100
+                    const newTime =
+                        (seekVideo.duration / 100) * playbackPercentage
+                    if (isFinite(newTime)) {
+                        seekVideo.currentTime = newTime
+                    }
+                }
+            }
         }
     }
 
