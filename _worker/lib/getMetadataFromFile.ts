@@ -1,9 +1,11 @@
 import { execSync } from "child_process";
+import { realpath } from "fs/promises";
 import type { MetadataType } from "./getMetadataFromFile.types";
 
 export default async (filename: string) => {
+  const absolutePath = await realpath(filename);
   const metadata = JSON.parse(
-    execSync(`exiftool -api LargeFileSupport=1 -j ${filename}`).toString()
+    execSync(`exiftool -api LargeFileSupport=1 -j "${absolutePath}"`).toString()
   )[0] as MetadataType;
 
   const height = parseInt((metadata as any)["ImageHeight"], 10);

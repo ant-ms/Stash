@@ -1,5 +1,6 @@
 import { Job } from "../../src/generated/prisma/client";
 import prisma from "../../prisma";
+import fs from "fs/promises";
 
 const mediaRoot = "./media";
 const thumbnailRoot = "./thumbnails";
@@ -7,6 +8,7 @@ import ffmpeg from "fluent-ffmpeg";
 
 export const execute = async (job: Job) => {
   const { id } = await parse(job.data, job);
+  const absolutePath = await fs.realpath(`${mediaRoot}/${id}`);
 
   await new Promise((resolve, reject) => {
     try {
@@ -14,7 +16,7 @@ export const execute = async (job: Job) => {
         .addOption("-hwaccel", "vaapi")
         .addOption("-hwaccel_device", "/dev/dri/renderD128")
         .addOption("-hwaccel_output_format", "vaapi")
-        .input(`${mediaRoot}/${id}`)
+        .input(absolutePath)
         .complexFilter([
           `scale=w=${250}:h=${250}:force_original_aspect_ratio=decrease,fps=1/10[v]`,
         ])

@@ -2,6 +2,7 @@ import { Job } from "../../src/generated/prisma/client";
 import generateThumbnailFromFile from "../../lib/generateThumbnailFromFile";
 import getMetadataFromFile from "../../lib/getMetadataFromFile";
 import prisma from "../../prisma";
+import fs from "fs/promises";
 
 const mediaRoot = "./media";
 const thumbnailRoot = "./thumbnails";
@@ -25,11 +26,14 @@ export const execute = async (job: Job) => {
     },
   });
 
+  const filePath = `${mediaRoot}/${id}`;
+  const absolutePath = await fs.realpath(filePath);
+
   let outputOptions: any[] = [];
 
   if (media.type.startsWith("video")) {
     // TODO: Store in database
-    const { duration } = await getMetadataFromFile(`${mediaRoot}/${id}`);
+    const { duration } = await getMetadataFromFile(absolutePath);
 
     let defaultDuration = 7;
     // TODO: make dynamic
@@ -53,7 +57,7 @@ export const execute = async (job: Job) => {
     outputOptions,
   );
   await generateThumbnailFromFile(
-    `${mediaRoot}/${id}`,
+    absolutePath,
     `${thumbnailRoot}/${id}.webp`,
     outputOptions,
   );

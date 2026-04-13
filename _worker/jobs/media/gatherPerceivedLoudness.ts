@@ -2,6 +2,7 @@ import { Job } from "../../src/generated/prisma/client";
 import prisma from "../../prisma";
 import ffmpeg from "fluent-ffmpeg";
 import path from "node:path";
+import fs from "node:fs/promises";
 
 const mediaRoot = "./media";
 
@@ -20,8 +21,9 @@ export const execute = async (job: Job) => {
     mediaId = parsed.id;
 
     const filePath = path.join(mediaRoot, parsed.id);
+    const absolutePath = await fs.realpath(filePath);
 
-    const hasAudio = await checkForAudio(filePath);
+    const hasAudio = await checkForAudio(absolutePath);
     if (!hasAudio) {
       await prisma.media.update({
         where: { id: parsed.id },
@@ -37,7 +39,7 @@ export const execute = async (job: Job) => {
       return;
     }
 
-    const loudnormJson = await analyzeLoudnorm(filePath);
+    const loudnormJson = await analyzeLoudnorm(absolutePath);
     const suggestion = computeSuggestedVolumeFromLoudnorm(loudnormJson);
 
     await prisma.media.update({
@@ -53,7 +55,7 @@ export const execute = async (job: Job) => {
           "Gathered perceived loudness",
           JSON.stringify({
             mediaId,
-            filePath,
+            filePath: absolutePath,
             suggestedVolumePercent: suggestion.suggestedVolumePercent,
             suggestedMultiplier: suggestion.suggestedMultiplier,
             clampPercent: { min: MIN_PERCENT, max: MAX_PERCENT },

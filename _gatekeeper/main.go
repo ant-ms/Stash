@@ -11,6 +11,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/gorilla/websocket"
@@ -73,8 +74,9 @@ func main() {
 		})
 	}
 
-	fs := http.FileServer(http.Dir("./media"))
-	http.Handle("/file/", authMiddleware(http.StripPrefix("/file", fs)))
+	http.Handle("/file/", authMiddleware(http.StripPrefix("/file", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fullPath := filepath.Join("./media", r.URL.Path); if resolved, err := filepath.EvalSymlinks(fullPath); err == nil { fullPath = resolved }; http.ServeFile(w, r, fullPath)
+	}))))
 
 	fs_seek := http.FileServer(http.Dir("./thumbnails"))
 	http.Handle("/thumb/", authMiddleware(http.StripPrefix("/thumb", fs_seek)))

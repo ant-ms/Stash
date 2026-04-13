@@ -8,8 +8,10 @@ export const updateMediaMetadataOfFile = async (
   id: string,
   initial = false,
 ) => {
-  const metadata = await getMetadataFromFile(`./media/${id}`);
-  const fileSize = await fs.stat(`./media/${id}`).then((stats) => stats.size);
+  const filePath = `./media/${id}`;
+  const absolutePath = await fs.realpath(filePath);
+  const metadata = await getMetadataFromFile(absolutePath);
+  const fileSize = await fs.stat(absolutePath).then((stats) => stats.size);
 
   if (initial)
     await prisma.media.update({
