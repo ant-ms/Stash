@@ -125,6 +125,10 @@
         padding: 0.5em 0.75em;
         border-radius: var(--border-radius);
 
+        @media (pointer: coarse) {
+            padding: 0.75em 1em;
+        }
+
         text-decoration: none;
 
         outline: 1px solid transparent;

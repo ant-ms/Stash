@@ -3,6 +3,7 @@
     import { presentationMode } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { settings } from "$lib/stores.svelte"
+    import vars from "$lib/vars.svelte"
 
     let mainElement: HTMLElement = $state() as any
     let imageElement: HTMLImageElement = $state() as any
@@ -98,7 +99,7 @@
         if (presentationMode.current) {
             return `https://picsum.photos/${mediaController.visibleMedium?.width}/${mediaController.visibleMedium?.height}?q=${mediaController.visibleMedium?.id}`
         }
-        return `${page.data.serverURL}/file/${mediaController.visibleMedium?.id}?session=${page.data.session}`
+        return `${page.data.serverURL}/file/${mediaController.visibleMedium?.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + '&' : '?'}session=${page.data.session}`
     })
 </script>
 

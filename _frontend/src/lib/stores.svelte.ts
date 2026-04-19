@@ -9,6 +9,6 @@ export let controller: Writable<Controller> = writable()
 export let selectedMediaIds: Writable<string[]> = writable([])
 
 export let settings = persisted("settings", {
-    mediaTouchAction: "zoom" as "zoom" | "navigate" | "seek",
+    mediaTouchAction: "zoom" as "zoom" | "navigate" | "seek" | "off",
     theme: "default" as "default" | "light" | "amoled"
 })

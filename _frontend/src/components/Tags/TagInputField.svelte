@@ -88,7 +88,15 @@
     {#if value?.length > 0 && focused}
         <div class="results">
             {#each results as result, i}
-                <div class:active={i == selectionIndex}>
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <div 
+                    class:active={i == selectionIndex}
+                    onmousedown={(e) => {
+                        e.preventDefault(); // Prevent input from losing focus immediately
+                        onselected(result);
+                        value = "";
+                    }}
+                >
                     {#if result.icon}
                         <Icon name={result.icon} />
                     {/if}

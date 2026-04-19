@@ -2,6 +2,7 @@
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
+    import { layout } from "$lib/context"
     import vars from "$lib/vars.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"
@@ -16,7 +17,7 @@
 </script>
 
 <main>
-    {#if vars.layout.isFilterBarVisible}
+    {#if vars.layout.isFilterBarVisible && layout.current != "mobile"}
         <FilterBar />
     {/if}
     {#if pageData.cluster.type == "collection" && !mediaController.selectedTags.length}

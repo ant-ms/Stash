@@ -12,6 +12,7 @@
     import { removeTagFromMedia } from "$lib/client/actions/removeTagFromMedia.svelte"
     import query from "$lib/client/call"
     import MediaViewer_replaceVideoThumbnail from "$lib/client/MediaViewer_replaceVideoThumbnail.svelte"
+    import { layout } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { controller } from "$lib/stores.svelte"
     import vars from "$lib/vars.svelte"
@@ -82,9 +83,11 @@
 {#if mediaController.visibleMedium}
     <main class:fullscreen={vars.layout.isFullscreen}>
         <section>
-            <button onclick={() => (mediaController.visibleMedium = null)}>
-                <Icon name="mdiClose" size={0.8} />
-            </button>
+            {#if layout.current != "mobile"}
+                <button onclick={() => (mediaController.visibleMedium = null)}>
+                    <Icon name="mdiClose" size={0.8} />
+                </button>
+            {/if}
         </section>
 
         <div>
@@ -141,7 +144,7 @@
         </div>
 
         <section>
-            {#if !hideControls}
+            {#if !hideControls && layout.current != "mobile"}
                 <button
                     onclick={() => {
                         vars.layout.isFullscreen = !vars.layout.isFullscreen

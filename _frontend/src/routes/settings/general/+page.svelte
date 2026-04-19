@@ -14,7 +14,8 @@
                 options={[
                     { value: "navigate", name: "Navigate" },
                     { value: "zoom", name: "Zoom" },
-                    { value: "seek", name: "Seek" }
+                    { value: "seek", name: "Seek" },
+                    { value: "off", name: "Off" }
                 ]}
                 bind:value={$settings.mediaTouchAction}
             />

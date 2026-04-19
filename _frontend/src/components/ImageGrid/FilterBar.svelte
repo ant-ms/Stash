@@ -14,51 +14,6 @@
 </script>
 
 <div class="filter-bar" class:mobile={layout.current == "mobile"}>
-    <div class="group toggles">
-        <Button
-            icon={mediaController.filters.favouritesOnly
-                ? "mdiStar"
-                : "mdiStarOutline"}
-            active={mediaController.filters.favouritesOnly}
-            onclick={() => {
-                mediaController.filters.favouritesOnly =
-                    !mediaController.filters.favouritesOnly
-                update()
-            }}
-            title="Favourites Only"
-            card
-            noMargin
-        />
-        <Button
-            icon={mediaController.filters.traverse
-                ? "mdiGraph"
-                : "mdiGraphOutline"}
-            active={mediaController.filters.traverse}
-            onclick={() => {
-                mediaController.filters.traverse =
-                    !mediaController.filters.traverse
-                update()
-            }}
-            title="Traverse"
-            card
-            noMargin
-        />
-        <Button
-            icon={mediaController.filters.includeTaggedTags
-                ? "mdiTagMultiple"
-                : "mdiTag"}
-            active={mediaController.filters.includeTaggedTags}
-            onclick={() => {
-                mediaController.filters.includeTaggedTags =
-                    !mediaController.filters.includeTaggedTags
-                update()
-            }}
-            title="Include Tagged Tags"
-            card
-            noMargin
-        />
-    </div>
-
     <div class="group">
         <Select
             value={mediaController.filters.mediaType}
@@ -142,6 +97,51 @@
             width={110}
         />
     </div>
+
+    <div class="group toggles">
+        <Button
+            icon={mediaController.filters.favouritesOnly
+                ? "mdiStar"
+                : "mdiStarOutline"}
+            active={mediaController.filters.favouritesOnly}
+            onclick={() => {
+                mediaController.filters.favouritesOnly =
+                    !mediaController.filters.favouritesOnly
+                update()
+            }}
+            title="Favourites Only"
+            card
+            noMargin
+        />
+        <Button
+            icon={mediaController.filters.traverse
+                ? "mdiGraph"
+                : "mdiGraphOutline"}
+            active={mediaController.filters.traverse}
+            onclick={() => {
+                mediaController.filters.traverse =
+                    !mediaController.filters.traverse
+                update()
+            }}
+            title="Traverse"
+            card
+            noMargin
+        />
+        <Button
+            icon={mediaController.filters.includeTaggedTags
+                ? "mdiTagMultiple"
+                : "mdiTag"}
+            active={mediaController.filters.includeTaggedTags}
+            onclick={() => {
+                mediaController.filters.includeTaggedTags =
+                    !mediaController.filters.includeTaggedTags
+                update()
+            }}
+            title="Include Tagged Tags"
+            card
+            noMargin
+        />
+    </div>
 </div>
 
 <style lang="scss">
@@ -174,24 +174,31 @@
             top: unset;
 
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 1.5rem; // Increased gap between groups
 
             margin-top: 0;
             margin-right: 0;
+            margin-bottom: 0;
             margin-left: 0;
-            border-radius: 0.75rem;
-            border: 1px solid var(--border-color-base);
+            border-radius: 0;
+            border: none;
+            background: transparent;
 
             .group {
                 width: 100%;
-                display: grid;
-                grid-auto-flow: column;
-                grid-auto-columns: 1fr;
-                gap: 0.5rem;
+                display: flex;
+                flex-direction: column; // Force groups to stack vertically
+                align-items: stretch;
+                gap: 0.75rem;
 
                 :global(main) {
                     width: 100% !important;
                 }
+            }
+
+            .group.toggles {
+                flex-direction: row; // Keep primary toggles together horizontally if they fit
+                justify-content: space-around;
             }
         }
     }
