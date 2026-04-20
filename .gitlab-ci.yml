@@ -115,3 +115,31 @@ build-symlinker:
     changes:
       - .gitlab-ci.yml
       - _symlinker/**/*
+
+
+publish-deno-library:
+  stage: build
+  image: denoland/deno:latest
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq curl
+  script:
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        version="latest"
+        echo "Running on default branch '$CI_DEFAULT_BRANCH': version = 'latest'"
+      else
+        version="$CI_COMMIT_REF_SLUG"
+        echo "Running on branch '$CI_COMMIT_BRANCH': version = $version"
+      fi
+    - cd _external_source_proxy_base
+    - deno check mod.ts
+    - cd "${CI_PROJECT_DIR}"
+    - tar -czf /tmp/external-source-proxy-base.tar.gz _external_source_proxy_base/
+    - |
+      curl --fail --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+           --upload-file /tmp/external-source-proxy-base.tar.gz \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/external-source-proxy-base/${version}/external-source-proxy-base.tar.gz"
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - _external_source_proxy_base/**/*
