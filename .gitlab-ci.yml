@@ -136,7 +136,7 @@ publish-deno-library:
     - cd "${CI_PROJECT_DIR}"
     - tar -czf /tmp/external-source-proxy-base.tar.gz _external_source_proxy_base/
     - |
-      curl --fail --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      curl --fail --header "PRIVATE-TOKEN: ${PACKAGE_REGISTRY_TOKEN}" \
            --upload-file /tmp/external-source-proxy-base.tar.gz \
            "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/external-source-proxy-base/${version}/external-source-proxy-base.tar.gz"
   only:
