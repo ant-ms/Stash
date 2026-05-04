@@ -28,6 +28,7 @@ services:
       - .env
     volumes:
       - "/data/stash:/app/media"
+      - "/data/stash-hierarchy:/app/hierarchy"
       - "/data/stash-torrents:/app/torrent"
       - "thumbnails:/app/thumbnails"
     group_add:
