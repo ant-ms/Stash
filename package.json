@@ -12,7 +12,8 @@
     "test:update-snapshots": "cd tests && npx playwright test --config playwright.config.ts --update-snapshots",
     "test:all": "bash tests/run.sh",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate deploy"
+    "db:migrate": "prisma migrate deploy",
+    "release": "changeset version && node .changeset/append-commits.mjs && git commit -am 'chore: release packages'"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",
