@@ -2,6 +2,7 @@
     import prettyBytes from "pretty-bytes"
     import { resource } from "runed"
 
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Table from "$components/elements/Table.svelte"
     import Toggle from "$components/elements/Toggle.svelte"
@@ -134,7 +135,7 @@
                                     icon="mdiOpenInNew"
                                     onclick={() => {
                                         window.open(
-                                            `https://stash.hera.lan/file/${entry.name}`,
+                                            `${page.data.serverURL}/file/${entry.name}`,
                                             "_blank"
                                         )
                                     }}

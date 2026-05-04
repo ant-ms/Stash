@@ -1,6 +1,7 @@
 <script lang="ts">
     import { ElementSize } from "runed"
 
+    import { page } from "$app/state"
     import {
         mediaController,
         type MediaType
@@ -54,7 +55,7 @@
             <div class="column">
                 {#each column.filter(m => m.type.startsWith("image")) as medium}
                     <img
-                        src="https://stash.hera.lan/file/{medium.id}"
+                        src="{page.data.serverURL}/file/{medium.id}"
                         width={columnWidth}
                         height={medium.height * (columnWidth / medium.width)}
                         alt={medium.name}

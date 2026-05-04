@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte"
 
+    import { page } from "$app/state"
     import FuzzyTemplate from "$components/FuzzyTemplate.svelte"
 
     import {
@@ -14,7 +15,7 @@
 
     onMount(async () => {
         data = (
-            await fetch(`https://stash.hera.lan/api/cluster/-1/import`)
+            await fetch(`${page.data.serverURL}/api/cluster/-1/import`)
                 .then(res => res.json())
                 .then(d => d as string[])
         ).filter(d => !queue.map(q => q.filename).includes(d))

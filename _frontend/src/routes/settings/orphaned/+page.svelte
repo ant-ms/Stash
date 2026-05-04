@@ -1,5 +1,6 @@
 <script lang="ts">
     import { invalidateAll } from "$app/navigation"
+    import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Table from "$components/elements/Table.svelte"
     import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
@@ -38,7 +39,7 @@
     <Table data={data.unimportedFiles}>
         {#snippet children({ entry })}
             <td>
-                <a href="https://stash.hera.lan/file/{entry}">{entry}</a>
+                <a href="{page.data.serverURL}/file/{entry}">{entry}</a>
                 {#each data.clusters as cluster}
                     <Button
                         noMargin

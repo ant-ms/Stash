@@ -1,3 +1,5 @@
+import { page } from "$app/state"
+
 import { OPCODE } from "./protocol.js"
 
 export type WebSocketEventHandler = {
@@ -17,10 +19,9 @@ export class WebSocketController {
         port = 46899,
         eventHandlers: WebSocketEventHandler = {}
     ) {
-        // Connect to the local proxy, assuming standard Vite port 5173.
-        // In a production environment, this URL would need to be configured differently.
-        // TODO
-        this.proxyUrl = `wss://stash.hera.lan/tcp/${ip}/${port}`
+        const url = new URL(page.data.serverURL as string)
+        const protocol = url.protocol === "https:" ? "wss:" : "ws:"
+        this.proxyUrl = `${protocol}//${url.host}/tcp/${ip}/${port}`
         this.eventHandlers = eventHandlers
         this.connect()
     }

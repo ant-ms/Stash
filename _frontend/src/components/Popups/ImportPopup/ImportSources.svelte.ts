@@ -102,7 +102,7 @@ export class ImportablesImportSource extends ImportSource {
 
     async import(p: importParams): Promise<void> {
         await fetch(
-            `https://stash.hera.lan/api/cluster/${page.data.cluster.name}/import`,
+            `${page.data.serverURL}/api/cluster/${page.data.cluster.name}/import`,
             {
                 method: "POST",
                 body: JSON.stringify({
