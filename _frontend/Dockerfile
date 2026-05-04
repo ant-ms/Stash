@@ -18,13 +18,16 @@ COPY _frontend/.*rc* ./_frontend/
 COPY _frontend/src ./_frontend/src
 
 WORKDIR /app/_frontend
-RUN pnpm run build && CI=true pnpm prune --prod
+RUN pnpm run build
+
+WORKDIR /app
+RUN pnpm deploy --prod --legacy --filter @stash/frontend /deploy
 
 # Stage 2: Final stage with optimized production image
 FROM node:22-alpine3.20
 
-WORKDIR /app/_frontend
-COPY --from=builder /app/_frontend ./
+WORKDIR /app
+COPY --from=builder /deploy ./
 
 ENV NODE_ENV=production
 CMD BODY_SIZE_LIMIT="Infinity" node build
