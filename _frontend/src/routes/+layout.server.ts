@@ -40,8 +40,11 @@ const getClusters = async (token: string) => {
 export const load: LayoutServerLoad = async ({ request, url, cookies }) => {
     console.log(new Date().toISOString(), "/+layout.server.ts1", url.pathname)
 
-    let serverURL = "https://stash.hera.lan"
-    if (url.hostname == "stash.any.gay") serverURL = "https://stash.any.gay"
+    let serverURL =
+        process.env.SERVER_URL ??
+        (url.hostname == "stash.any.gay"
+            ? "https://stash.any.gay"
+            : "https://stash.hera.lan")
     console.log(new Date().toISOString(), "/+layout.server.ts2", url.pathname)
 
     const session = cookies.get("session") || ""

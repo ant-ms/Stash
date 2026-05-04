@@ -1,8 +1,8 @@
 <script lang="ts">
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
-    import { mediaController } from "$lib/controllers/MediaController.svelte"
     import { layout } from "$lib/context"
+    import { mediaController } from "$lib/controllers/MediaController.svelte"
     import vars from "$lib/vars.svelte"
 
     import type { PageData } from "../../routes/[cluster]/$types"

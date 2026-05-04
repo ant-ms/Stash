@@ -20,7 +20,11 @@
 
     let mediaElement: HTMLElement | null = $state(null)
     let isZoomedIn = false
-    let { translateX = 0, isSwiping = false, showToolbarOnMobile = true } = $props()
+    let {
+        translateX = 0,
+        isSwiping = false,
+        showToolbarOnMobile = true
+    } = $props()
 
     const getPreloadedImageUrls = (visibleMedium: MediaType | null) => {
         if (!visibleMedium) return []
@@ -30,14 +34,18 @@
         )
 
         const output = []
-        
+
         // Preload previous medium
         if (mediaIndex > 0) {
             const prev = mediaController.media[mediaIndex - 1]
             if (prev.type.startsWith("image")) {
-                output.push(`${page.data.serverURL}/file/${prev.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + '&' : '?'}session=${page.data.session}`)
+                output.push(
+                    `${page.data.serverURL}/file/${prev.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + "&" : "?"}session=${page.data.session}`
+                )
             } else if (prev.type.startsWith("video")) {
-                output.push(`${page.data.serverURL}/api/media/${prev.id}/thumbnail?session=${page.data.session}`)
+                output.push(
+                    `${page.data.serverURL}/api/media/${prev.id}/thumbnail?session=${page.data.session}`
+                )
             }
         }
 
@@ -47,10 +55,12 @@
                 const next = mediaController.media[mediaIndex + i]
                 if (next.type.startsWith("image")) {
                     output.push(
-                        `${page.data.serverURL}/file/${next.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + '&' : '?'}session=${page.data.session}`
+                        `${page.data.serverURL}/file/${next.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + "&" : "?"}session=${page.data.session}`
                     )
                 } else if (next.type.startsWith("video")) {
-                    output.push(`${page.data.serverURL}/api/media/${next.id}/thumbnail?session=${page.data.session}`)
+                    output.push(
+                        `${page.data.serverURL}/api/media/${next.id}/thumbnail?session=${page.data.session}`
+                    )
                 }
             } else {
                 break
@@ -120,7 +130,8 @@
     <main
         class:fullscreen={vars.layout.isFullscreen}
         class:mobile={layout.current == "mobile"}
-        class:toolbar-hidden={layout.current == "mobile" && !showToolbarOnMobile}
+        class:toolbar-hidden={layout.current == "mobile" &&
+            !showToolbarOnMobile}
     >
         {#if layout.current == "mobile" ? showToolbarOnMobile : true}
             <div class="toolbar">
@@ -133,7 +144,11 @@
         {/if}
         <div
             id="media"
-            style="transform: {translateX ? `translateX(${translateX}px)` : 'none'}; transition: {isSwiping ? 'none' : 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)'}"
+            style="transform: {translateX
+                ? `translateX(${translateX}px)`
+                : 'none'}; transition: {isSwiping
+                ? 'none'
+                : 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)'}"
             bind:this={mediaElement}
             class:darkened={vars.layout.isFullscreen}
             class:isZoomedIn
@@ -151,13 +166,23 @@
         >
             {#if prevMedium && (translateX > 0 || isSwiping)}
                 <div class="swipe-preview prev">
-                    <img src="{prevMedium.type.startsWith('video') ? `${page.data.serverURL}/api/media/${prevMedium.id}/thumbnail?session=${page.data.session}` : `${page.data.serverURL}/file/${prevMedium.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + '&' : '?'}session=${page.data.session}`}" alt="Previous" />
+                    <img
+                        src={prevMedium.type.startsWith("video")
+                            ? `${page.data.serverURL}/api/media/${prevMedium.id}/thumbnail?session=${page.data.session}`
+                            : `${page.data.serverURL}/file/${prevMedium.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + "&" : "?"}session=${page.data.session}`}
+                        alt="Previous"
+                    />
                 </div>
             {/if}
 
             {#if nextMedium && (translateX < 0 || isSwiping)}
                 <div class="swipe-preview next">
-                    <img src="{nextMedium.type.startsWith('video') ? `${page.data.serverURL}/api/media/${nextMedium.id}/thumbnail?session=${page.data.session}` : `${page.data.serverURL}/file/${nextMedium.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + '&' : '?'}session=${page.data.session}`}" alt="Next" />
+                    <img
+                        src={nextMedium.type.startsWith("video")
+                            ? `${page.data.serverURL}/api/media/${nextMedium.id}/thumbnail?session=${page.data.session}`
+                            : `${page.data.serverURL}/file/${nextMedium.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + "&" : "?"}session=${page.data.session}`}
+                        alt="Next"
+                    />
                 </div>
             {/if}
 
@@ -194,16 +219,19 @@
         #media {
             position: relative;
             background: var(--color-lowest);
-            
+
             .swipe-preview {
+                pointer-events: none;
+
                 position: absolute;
                 top: 0;
-                width: 100%;
-                height: 100%;
+
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                pointer-events: none;
+
+                width: 100%;
+                height: 100%;
 
                 &.prev {
                     left: -100%;
@@ -224,22 +252,25 @@
         &.mobile {
             display: flex;
             flex-direction: column;
+
             width: 100vw !important;
             max-width: none !important;
+
             background: #000;
 
             .toolbar {
-                order: 2;
                 flex-shrink: 0;
+                order: 2;
             }
 
             #media {
-                order: 1;
                 flex-grow: 1;
+                order: 1;
                 background: #000;
             }
 
             &.toolbar-hidden {
+
                 .toolbar {
                     display: none;
                 }

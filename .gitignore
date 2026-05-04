@@ -5,3 +5,4 @@ $thumbnails
 */media
 */thumbnails
 .env
+tests/test-results

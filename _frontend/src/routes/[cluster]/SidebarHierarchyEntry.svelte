@@ -1,7 +1,6 @@
 <script lang="ts">
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
-    import { presentationMode } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import tagsController from "$lib/controllers/TagsController.svelte"
     import { type IconName } from "$lib/possibleIcons.svelte"
@@ -35,8 +34,7 @@
     })
 
     let showDropdown = $state(false)
-
-    const [icon, iconOpacity] = $derived.by(() => {
+    let [icon, iconOpacity] = $derived.by(() => {
         if (iconOverwrite) return [iconOverwrite, 1]
         if (tagsController.tagMap[tagId].icon)
             return [tagsController.tagMap[tagId].icon, 1]
@@ -46,20 +44,6 @@
             return ["mdiFolderHidden", 1]
         return ["mdiFolderOutline", 1]
     }) as [IconName, number]
-
-    function randomLoremChar(length: number) {
-        const lorem = "loremipsumdolorsitamet"
-        let result = ""
-        for (let i = 0; i < length; i++) {
-            const char = lorem[Math.floor(Math.random() * lorem.length)]
-            result += char
-        }
-        return result
-    }
-
-    function scrambleToLorem(input: string) {
-        return input.replace(/\S/g, () => randomLoremChar(1))
-    }
 </script>
 
 <main id="tag-{tagId}">
@@ -104,11 +88,7 @@
             t => t.id == tagsController.tagMap[tagId].id
         )}
     >
-        {#if presentationMode.current}
-            {scrambleToLorem(nameOverwrite || tagsController.tagMap[tagId].tag)}
-        {:else}
-            {nameOverwrite || tagsController.tagMap[tagId].tag}
-        {/if}
+        {nameOverwrite || tagsController.tagMap[tagId].tag}
     </Button>
 
     <Dropdown

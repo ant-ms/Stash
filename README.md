@@ -1,6 +1,6 @@
 # Stash
 
-Stash is a feature-rich, tag-based library web application designed to organize media into searchable collections. 
+Stash is a feature-rich, tag-based library web application designed to organize media into searchable collections.
 
 <div align="center">
   <img src=".assets/home.png" alt="Stash Screenshot" width="100%">
@@ -31,3 +31,31 @@ Stash is a feature-rich, tag-based library web application designed to organize 
 ```bash
 docker-compose up -d
 ```
+
+## Testing
+
+End-to-end tests use **Playwright** (Chromium) to navigate the app like a real user and
+capture screenshots for visual regression comparison.
+
+### Quick start
+
+```bash
+pnpm test:all          # full lifecycle: infra → seed → server → Playwright → cleanup
+```
+
+### Individual scripts
+
+| Script                       | Description                                           |
+| ---------------------------- | ----------------------------------------------------- |
+| `pnpm test:all`              | Run the full test suite (recommended)                 |
+| `pnpm test:infra:up`         | Start Postgres & Redis containers                     |
+| `pnpm test:infra:down`       | Stop test containers                                  |
+| `pnpm test:seed`             | Seed the test database (requires `TEST_DATABASE_URL`) |
+| `pnpm test:run`              | Run Playwright tests (requires a running server)      |
+| `pnpm test:update-snapshots` | Run tests and update baseline screenshots             |
+
+### Visual regression
+
+Screenshots are stored in `tests/snapshots/` (tracked via Git LFS). On the first run, use
+`pnpm test:update-snapshots` to create baselines. Subsequent `pnpm test:run` calls compare
+against these baselines with a 1% pixel diff tolerance.

@@ -168,7 +168,11 @@
     }
 </script>
 
-<main class:hide-controls={hideControls} class:mobile={layout.current == "mobile"} {onmousemove}>
+<main
+    class:hide-controls={hideControls}
+    class:mobile={layout.current == "mobile"}
+    {onmousemove}
+>
     <video
         onclick={() => {
             if ($settings.mediaTouchAction !== "seek") paused = !paused
@@ -294,9 +298,9 @@
             padding: 1rem;
 
             :global(main.mobile:not(.toolbar-hidden)) & {
+                padding-right: 0.5rem;
                 padding-bottom: 0;
                 padding-left: 0.5rem;
-                padding-right: 0.5rem;
             }
 
             .range {

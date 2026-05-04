@@ -2,8 +2,8 @@
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import Toggle from "$components/elements/Toggle.svelte"
-    import { type IconName } from "$lib/possibleIcons.svelte"
     import query from "$lib/client/call"
+    import { type IconName } from "$lib/possibleIcons.svelte"
 
     let {
         title,
@@ -62,10 +62,7 @@
 
     <div class="row">
         <span>Enabled</span>
-        <Toggle
-            bind:state={enabled}
-            toggle={saveEnabled}
-        />
+        <Toggle bind:state={enabled} toggle={saveEnabled} />
     </div>
 
     <div class="row">
@@ -112,18 +109,21 @@
         }
 
         .row {
+
             span {
                 flex-grow: 1;
             }
 
             input {
-                background: var(--color-dark-level-1);
+                width: 10rem;
+                padding: 0.2rem 0.4rem;
                 border: 1px solid var(--border-color-base);
                 border-radius: 3px;
-                color: inherit;
+
                 font-size: 0.85rem;
-                padding: 0.2rem 0.4rem;
-                width: 10rem;
+                color: inherit;
+
+                background: var(--color-dark-level-1);
 
                 &:disabled {
                     opacity: 0.4;

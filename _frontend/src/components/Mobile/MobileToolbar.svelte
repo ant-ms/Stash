@@ -29,20 +29,24 @@
                         {
                             method: "PUT",
                             body: JSON.stringify({
-                                favourited: !mediaController.visibleMedium?.favourited
+                                favourited:
+                                    !mediaController.visibleMedium?.favourited
                             })
                         }
                     )
                         .then(() => {
                             if (!mediaController.visibleMedium) return
                             const tmp = mediaController.visibleMedium
-                            tmp.favourited = !mediaController.visibleMedium.favourited
+                            tmp.favourited =
+                                !mediaController.visibleMedium.favourited
                             mediaController.visibleMedium = tmp
                         })
                         .catch(console.error)
                 }}
                 card
-                icon={mediaController.visibleMedium.favourited ? "mdiStar" : "mdiStarOutline"}
+                icon={mediaController.visibleMedium.favourited
+                    ? "mdiStar"
+                    : "mdiStarOutline"}
                 styleOverride="padding: 0.6rem; --outline-size: 2px; --border-radius: 12px"
             />
         </div>
@@ -69,7 +73,10 @@
                         oncontextmenu={() => {
                             if (!mediaController.visibleMedium)
                                 throw "Expected mediaController.visibleMedium to be defined"
-                            removeTagFromMedia([mediaController.visibleMedium], tag)
+                            removeTagFromMedia(
+                                [mediaController.visibleMedium],
+                                tag
+                            )
                         }}
                     />
                 {/each}
@@ -84,7 +91,9 @@
                 {/if}
             </div>
 
-            <hr style="width: 100%; margin: 0.5rem 0; border-color: var(--border-color-base); opacity: 0.5" />
+            <hr
+                style="width: 100%; margin: 0.5rem 0; border-color: var(--border-color-base); opacity: 0.5"
+            />
 
             <Button
                 icon="mdiInformationOutline"
@@ -131,19 +140,19 @@
         align-items: center;
         justify-content: space-between;
 
+        box-sizing: border-box;
         width: 100%;
         min-height: 48px;
         padding: 0.75rem 0.5rem;
-        box-sizing: border-box;
 
         background: transparent;
 
         .left-section {
             display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            flex-wrap: wrap;
             flex-grow: 1;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            align-items: center;
 
             :global(> a) {
                 border: 1px solid var(--border-color-2) !important;
@@ -153,8 +162,8 @@
 
         .right-section {
             display: flex;
-            align-items: center;
             flex-shrink: 0;
+            align-items: center;
             padding-left: 0.5rem;
 
             :global(> a) {
@@ -167,9 +176,10 @@
     .dropdown-content {
         display: flex;
         flex-direction: column;
-        padding: 0.5rem;
+
         width: 280px;
         max-width: calc(100vw - 32px);
+        padding: 0.5rem;
 
         .tags-section {
             display: flex;

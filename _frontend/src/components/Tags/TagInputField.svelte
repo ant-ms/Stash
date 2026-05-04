@@ -89,12 +89,12 @@
         <div class="results">
             {#each results as result, i}
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <div 
+                <div
                     class:active={i == selectionIndex}
-                    onmousedown={(e) => {
-                        e.preventDefault(); // Prevent input from losing focus immediately
-                        onselected(result);
-                        value = "";
+                    onmousedown={e => {
+                        e.preventDefault() // Prevent input from losing focus immediately
+                        onselected(result)
+                        value = ""
                     }}
                 >
                     {#if result.icon}

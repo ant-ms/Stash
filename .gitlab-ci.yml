@@ -8,6 +8,7 @@ build-frontend:
     entrypoint: [""]
   before_script:
     - cp schema.prisma _frontend/
+    - cp prisma.config.ts _frontend/
   script:
     - |
       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
@@ -30,6 +31,7 @@ build-frontend:
       - .gitlab-ci.yml
       - _frontend/**/*
       - schema.prisma
+      - prisma.config.ts
 
 build-worker:
   stage: build
@@ -38,6 +40,7 @@ build-worker:
     entrypoint: [""]
   before_script:
     - cp schema.prisma _worker/
+    - cp prisma.config.ts _worker/
   script:
     - |
       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
@@ -60,6 +63,7 @@ build-worker:
       - .gitlab-ci.yml
       - _worker/**/*
       - schema.prisma
+      - prisma.config.ts
 
 build-gatekeeper:
   stage: build

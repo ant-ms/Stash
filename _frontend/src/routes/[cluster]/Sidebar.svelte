@@ -3,7 +3,7 @@
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
     import Select from "$components/elements/Select.svelte"
-    import { layout, presentationMode } from "$lib/context"
+    import { layout } from "$lib/context"
     import { controller } from "$lib/stores.svelte"
     import vars from "$lib/vars.svelte"
 
@@ -26,7 +26,7 @@
             value={page.data.cluster.name}
             options={pageData.clusters.map(c => ({
                 value: c.name,
-                name: presentationMode.current ? "Lorem Ipsum" : c.name,
+                name: c.name,
                 icon: c.icon as any
             }))}
             width={-1}

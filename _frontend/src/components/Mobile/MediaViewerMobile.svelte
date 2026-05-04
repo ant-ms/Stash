@@ -1,7 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte"
 
-    import { goToNextMedia, goToPreviousMedia, mediaController } from "$lib/controllers/MediaController.svelte"
+    import {
+        goToNextMedia,
+        goToPreviousMedia,
+        mediaController
+    } from "$lib/controllers/MediaController.svelte"
     import { controller } from "$lib/stores.svelte"
     import varsSvelte from "$lib/vars.svelte"
 
@@ -29,7 +33,7 @@
         const currentY = e.touches[0].clientY
         const deltaX = currentX - startX
         const deltaY = currentY - startY
-        
+
         if (!direction) {
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
                 direction = "horizontal"
@@ -48,7 +52,7 @@
     function handleTouchEnd() {
         if (!isSwiping) return
         isSwiping = false
-        
+
         if (direction === "vertical") {
             if (translateY > 150) {
                 if (isToolbarVisible) {
@@ -110,17 +114,29 @@
 
 {#if !varsSvelte.layout.castVisible}
     <main
-        style="transform: translateY({translateY}px); opacity: {Math.max(0.2, 1 - Math.max(0, translateY) / 600)}; transition: {isSwiping ? 'none' : 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s'}"
+        style="transform: translateY({translateY}px); opacity: {Math.max(
+            0.2,
+            1 - Math.max(0, translateY) / 600
+        )}; transition: {isSwiping
+            ? 'none'
+            : 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s'}"
         ontouchstart={handleTouchStart}
         ontouchmove={handleTouchMove}
         ontouchend={handleTouchEnd}
     >
-        <MediaViewer {translateX} {isSwiping} showToolbarOnMobile={isToolbarVisible} />
+        <MediaViewer
+            {translateX}
+            {isSwiping}
+            showToolbarOnMobile={isToolbarVisible}
+        />
     </main>
 {/if}
 
 <style lang="scss">
     main {
+        touch-action: none;
+        will-change: transform, opacity;
+
         position: fixed;
         z-index: 200;
         top: 0;
@@ -130,7 +146,5 @@
         height: 100vh;
 
         background: #000;
-        touch-action: none;
-        will-change: transform, opacity;
     }
 </style>

@@ -29,10 +29,7 @@ export const prompts = {
             })
         }),
 
-    icon: (
-        question: string,
-        value = ""
-    ): Promise<IconName | null> =>
+    icon: (question: string, value = ""): Promise<IconName | null> =>
         new Promise(resolve => {
             const element = mount(IconPromptPopup, {
                 target: document.body,

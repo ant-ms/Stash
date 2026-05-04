@@ -18,7 +18,9 @@
         const name = await prompts.text("Icon Name (e.g. extraMyIcon)")
         if (!name) return
 
-        const svgData = await prompts.text("SVG Path/Data (e.g. <path d=\"...\" />)")
+        const svgData = await prompts.text(
+            'SVG Path/Data (e.g. <path d="..." />)'
+        )
         if (!svgData) return
 
         const response = await fetch("/api/icons", {
@@ -55,7 +57,8 @@
     }
 
     const deleteIcon = async (id: number) => {
-        if (!window.confirm("Are you sure you want to delete this icon?")) return
+        if (!window.confirm("Are you sure you want to delete this icon?"))
+            return
 
         const response = await fetch(`/api/icons/${id}`, {
             method: "DELETE"
@@ -72,12 +75,13 @@
 
 <SettingsPageContent title="Custom Icons">
     {#snippet headerActions()}
-        <Button card icon="mdiPlus" onclick={addIcon}>
-            Add new icon
-        </Button>
+        <Button card icon="mdiPlus" onclick={addIcon}>Add new icon</Button>
     {/snippet}
 
-    <Table headers={["Preview", "Name", "SVG Data", "Actions"]} data={data.customIcons}>
+    <Table
+        headers={["Preview", "Name", "SVG Data", "Actions"]}
+        data={data.customIcons}
+    >
         {#snippet children({ entry })}
             <td>
                 <Icon nameAlt={entry.name} />
@@ -98,11 +102,13 @@
 
 <style lang="scss">
     .svg-data {
-        max-width: 300px;
         overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+
+        max-width: 300px;
+
         font-family: monospace;
         font-size: 0.8rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 </style>

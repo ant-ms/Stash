@@ -6,7 +6,6 @@
     import imageRetry from "$lib/client/actions/imageRetry.svelte"
     import { setSpecialFilterAttribute } from "$lib/client/actions/mediaActions.svelte"
     import { SUBJECT_TYPES } from "$lib/constants"
-    import { presentationMode } from "$lib/context"
     import {
         mediaController,
         type MediaType
@@ -119,7 +118,8 @@
                 // @ts-ignore
                 const clientX = e.clientX || e.touches?.[0]?.clientX
                 if (clientX !== undefined) {
-                    const playbackPercentage = ((clientX - startX) / width) * 100
+                    const playbackPercentage =
+                        ((clientX - startX) / width) * 100
                     const newTime =
                         (seekVideo.duration / 100) * playbackPercentage
                     if (isFinite(newTime)) {
@@ -146,25 +146,20 @@
         }
     }
 
-    let src = $derived.by(() => {
-        if (presentationMode.current) {
-            return `https://picsum.photos/${medium.width}/${medium.height}?q=${medium.id}`
-        }
-        return `${page.data.serverURL}/thumb/${medium.id}.webp?session=${page.data.session}${suffix}`
-    })
+    let src = $derived(
+        `${page.data.serverURL}/thumb/${medium.id}.webp?session=${page.data.session}${suffix}`
+    )
 </script>
 
 <svelte:document onkeydown={captureKeydownEventWhenHovering} />
 
 <svelte:head>
-    {#if !presentationMode.current}
-        <link
-            rel="preload"
-            as="image"
-            href="{page.data.serverURL}/thumb/{medium.id}.webp?session={page
-                .data.session}"
-        />
-    {/if}
+    <link
+        rel="preload"
+        as="image"
+        href="{page.data.serverURL}/thumb/{medium.id}.webp?session={page.data
+            .session}"
+    />
 </svelte:head>
 
 <IntersectionObserver

@@ -147,26 +147,26 @@
 <style lang="scss">
     .filter-bar {
         position: sticky;
-        top: 0;
         z-index: 10;
+        top: 0;
 
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem;
 
-        padding: 0.5rem;
-        background: var(--color-dark-level-1);
-        border-bottom: 1px solid var(--border-color-base);
-
         margin-top: -1em;
         margin-right: -1em;
         margin-bottom: 1rem;
         margin-left: -1em;
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--border-color-base);
+
+        background: var(--color-dark-level-1);
 
         .group {
             display: flex;
-            align-items: center;
             gap: 0.5rem;
+            align-items: center;
         }
 
         &.mobile {
@@ -180,16 +180,18 @@
             margin-right: 0;
             margin-bottom: 0;
             margin-left: 0;
-            border-radius: 0;
             border: none;
+            border-radius: 0;
+
             background: transparent;
 
             .group {
-                width: 100%;
                 display: flex;
                 flex-direction: column; // Force groups to stack vertically
-                align-items: stretch;
                 gap: 0.75rem;
+                align-items: stretch;
+
+                width: 100%;
 
                 :global(main) {
                     width: 100% !important;

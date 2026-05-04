@@ -125,10 +125,6 @@
         padding: 0.5em 0.75em;
         border-radius: var(--border-radius);
 
-        @media (pointer: coarse) {
-            padding: 0.75em 1em;
-        }
-
         text-decoration: none;
 
         outline: 1px solid transparent;
@@ -199,13 +195,6 @@
             animation: spin 0.7s linear infinite;
         }
 
-        @keyframes spin {
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
         &.highlighted {
             background: var(--color-dark-level-3);
             outline: 1px solid var(--border-color-1);
@@ -261,6 +250,10 @@
             outline-offset: calc(var(--outline-size) * -1);
         }
 
+        @media (pointer: coarse) {
+            padding: 0.75em 1em;
+        }
+
         @media (hover: hover) and (pointer: fine) {
 
             &:hover {
@@ -274,6 +267,13 @@
                 &.transparentButton {
                     transform: scale(1.1);
                 }
+            }
+        }
+
+        @keyframes spin {
+
+            to {
+                transform: rotate(360deg);
             }
         }
     }

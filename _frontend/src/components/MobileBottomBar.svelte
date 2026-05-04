@@ -95,14 +95,15 @@
     )
 
     const activeCluster = $derived(
-        clusterOptions.find((c: any) => page.url.pathname.includes(c.value))?.value
+        clusterOptions.find((c: any) => page.url.pathname.includes(c.value))
+            ?.value
     )
 </script>
 
-<svelte:window 
-    ontouchstart={handleTouchStart} 
-    ontouchmove={handleTouchMove} 
-    ontouchend={handleTouchEnd} 
+<svelte:window
+    ontouchstart={handleTouchStart}
+    ontouchmove={handleTouchMove}
+    ontouchend={handleTouchEnd}
 />
 
 <main>
@@ -128,14 +129,17 @@
     {#if leftPanelOpen || rightPanelOpen}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
-        <div 
-            class="overlay" 
-            onclick={() => { leftPanelOpen = false; rightPanelOpen = false; }}
+        <div
+            class="overlay"
+            onclick={() => {
+                leftPanelOpen = false
+                rightPanelOpen = false
+            }}
         ></div>
     {/if}
 
     <!-- Floating Navigation Bar -->
-    <div 
+    <div
         class="navbar-container"
         ontouchstart={handleNavbarTouchStart}
         ontouchmove={handleNavbarTouchMove}
@@ -143,10 +147,10 @@
     >
         <div class="navbar-pill">
             <!-- Tags Indicator -->
-            <div 
-                class="indicator left" 
+            <div
+                class="indicator left"
                 class:active={leftPanelOpen}
-                onclick={() => leftPanelOpen = !leftPanelOpen}
+                onclick={() => (leftPanelOpen = !leftPanelOpen)}
             >
                 <Icon name="mdiTag" size={0.8} />
             </div>
@@ -179,7 +183,8 @@
                     card
                     icon="mdiCast"
                     onclick={() => {
-                        varsSvelte.layout.castVisible = !varsSvelte.layout.castVisible
+                        varsSvelte.layout.castVisible =
+                            !varsSvelte.layout.castVisible
                     }}
                     styleOverride="padding: 0.75rem; --outline-size: 3px; --border-radius: 13px"
                 />
@@ -195,12 +200,15 @@
             </div>
 
             <!-- Filters Indicator -->
-            <div 
-                class="indicator right" 
+            <div
+                class="indicator right"
                 class:active={rightPanelOpen}
-                onclick={() => rightPanelOpen = !rightPanelOpen}
+                onclick={() => (rightPanelOpen = !rightPanelOpen)}
             >
-                <Icon name={rightPanelOpen ? "mdiFilter" : "mdiFilterOutline"} size={0.8} />
+                <Icon
+                    name={rightPanelOpen ? "mdiFilter" : "mdiFilterOutline"}
+                    size={0.8}
+                />
             </div>
         </div>
     </div>
@@ -208,57 +216,61 @@
 
 <style lang="scss">
     main {
+        touch-action: none;
         position: relative;
         z-index: 100;
-        touch-action: none;
     }
 
     .navbar-container {
         position: fixed;
+        z-index: 110;
+        right: 0;
         bottom: 1rem;
         left: 0;
-        right: 0;
-        
+
         display: flex;
-        justify-content: center;
         align-items: center;
-        
+        justify-content: center;
+
         padding: 0 1rem;
-        z-index: 110;
 
         -webkit-tap-highlight-color: transparent;
     }
 
     .navbar-pill {
         display: flex;
-        align-items: center;
         gap: 0.25rem;
-        
+        align-items: center;
+
         width: 100%;
         max-width: 450px;
         height: 60px;
-        
         padding: 0 0.25rem;
-        
-        background-color: var(--color-dark-level-1);
         border: 1px solid var(--border-color-1);
         border-radius: 16px;
-        
+
+        background-color: var(--color-dark-level-1);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-        
+
         .indicator {
             display: flex;
-            align-items: center;
             gap: 2px;
-            padding: 0 0.5rem;
+            align-items: center;
+
             height: 100%;
+            padding: 0 0.5rem;
+
             color: var(--color-text);
+
             opacity: 0.6;
-            transition: opacity 0.2s, transform 0.2s;
+
+            transition:
+                opacity 0.2s,
+                transform 0.2s;
 
             &.active {
-                opacity: 1;
                 color: var(--accent);
+                opacity: 1;
             }
 
             &:active {
@@ -267,17 +279,17 @@
         }
 
         :global(> main) {
-            border-radius: 13px !important;
-            padding: 0.75rem !important;
-            height: auto !important;
             box-sizing: border-box;
+            height: auto !important;
             margin: 0.25em;
+            padding: 0.75rem !important;
+            border-radius: 13px !important;
         }
 
         .right-actions {
             display: flex;
-            align-items: center;
             gap: 0.1rem;
+            align-items: center;
         }
 
         .spacer {
@@ -288,23 +300,27 @@
 
     .side-panel {
         position: fixed;
-        bottom: calc(60px + 2rem);
-        max-height: calc(100vh - 60px - 3rem);
-        width: 85vw;
-        max-width: 400px;
-        background-color: var(--color-dark-level-1);
-        border: 1px solid var(--border-color-1);
-        border-radius: 16px;
         z-index: 102;
+        bottom: calc(60px + 2rem);
+
         display: flex;
         flex-direction: column;
-        transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+
+        width: 85vw;
+        max-width: 400px;
+        max-height: calc(100vh - 60px - 3rem);
+        border: 1px solid var(--border-color-1);
+        border-radius: 16px;
+
+        background-color: var(--color-dark-level-1);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+        transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
 
         &.left {
             left: 1rem;
             transform: translateX(calc(-100% - 2rem));
-            
+
             &.open {
                 transform: translateX(0);
             }
@@ -313,16 +329,16 @@
         &.right {
             right: 1rem;
             transform: translateX(calc(100% + 2rem));
-            
+
             &.open {
                 transform: translateX(0);
             }
         }
 
         .panel-content {
-            flex-grow: 1;
             overflow-y: auto;
             overscroll-behavior-y: contain;
+            flex-grow: 1;
             padding: 0.5rem;
 
             &.filters {
@@ -333,12 +349,13 @@
 
     .overlay {
         position: fixed;
+        z-index: 101;
         top: 0;
-        left: 0;
         right: 0;
         bottom: 0;
+        left: 0;
+
         background-color: rgba(0, 0, 0, 0.6);
-        z-index: 101;
         backdrop-filter: blur(4px);
     }
 </style>
