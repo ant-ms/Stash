@@ -152,3 +152,11 @@ model SettingsKeyValuePairs {
   key String @id
   value String
 }
+
+model ScheduledJob {
+  id             Int       @id @default(autoincrement())
+  name           String    @unique
+  enabled        Boolean   @default(false)
+  cronExpression String    @default("0 * * * *")
+  lastRunAt      DateTime?
+}

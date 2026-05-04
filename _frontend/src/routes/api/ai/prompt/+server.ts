@@ -1,32 +1,28 @@
-import { Mistral } from "@mistralai/mistralai"
+import { createOpenRouter } from "@openrouter/ai-sdk-provider"
 import { error } from "@sveltejs/kit"
+import { generateText } from "ai"
 
 import { env } from "$env/dynamic/private"
 
 import type { RequestHandler } from "./$types"
-
-const client = new Mistral({
-    apiKey: env["MISTRAL_API_KEY"]
-})
 
 export const POST: RequestHandler = async ({ request }) => {
     let { prompt, model } = await request.json()
 
     if (!prompt) throw error(400)
 
-    if (!model) model = "mistral-small"
+    if (!model) model = env.RENAME_AI_MODEL || "google/gemini-pro-vision"
 
-    const chatResponse = await client.chat.complete({
-        model,
-        messages: [{ role: "user", content: prompt }]
+    const openrouter = createOpenRouter({
+        apiKey: env["OPENROUTER_API_KEY"]
     })
 
-    return new Response(
-        (chatResponse.choices &&
-            chatResponse.choices[0].message.content?.toString()) ||
-            "",
-        {
-            status: 200
-        }
-    )
+    const { text } = await generateText({
+        model: openrouter.chat(model),
+        prompt: prompt
+    })
+
+    return new Response(text || "", {
+        status: 200
+    })
 }
