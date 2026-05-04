@@ -1,6 +1,6 @@
 {
     "name": "@stash/frontend",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "scripts": {
         "dev": "source ../.env && vite dev",
         "build": "svelte-kit sync && vite build",
