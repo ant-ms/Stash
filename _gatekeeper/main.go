@@ -30,9 +30,9 @@ type ClientMessage struct {
 
 func main() {
 	// Load environment variables
-	dbURL := os.Getenv("DB_URL")
+	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		log.Fatal("DB_URL environment variable is not set")
+		log.Fatal("DATABASE_URL environment variable is not set")
 	}
 
 	proxyTargetURL := os.Getenv("PROXY_TARGET_URL")
@@ -75,7 +75,11 @@ func main() {
 	}
 
 	http.Handle("/file/", authMiddleware(http.StripPrefix("/file", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fullPath := filepath.Join("./media", r.URL.Path); if resolved, err := filepath.EvalSymlinks(fullPath); err == nil { fullPath = resolved }; http.ServeFile(w, r, fullPath)
+		fullPath := filepath.Join("./media", r.URL.Path)
+		if resolved, err := filepath.EvalSymlinks(fullPath); err == nil {
+			fullPath = resolved
+		}
+		http.ServeFile(w, r, fullPath)
 	}))))
 
 	fs_seek := http.FileServer(http.Dir("./thumbnails"))
