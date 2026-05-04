@@ -6,9 +6,6 @@ build-frontend:
   image:
     name: gcr.io/kaniko-project/executor:v1.14.0-debug
     entrypoint: [""]
-  before_script:
-    - cp schema.prisma _frontend/
-    - cp prisma.config.ts _frontend/
   script:
     - |
       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
@@ -19,7 +16,7 @@ build-frontend:
         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
       fi
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}/_frontend"
+      --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/_frontend/Dockerfile"
       --destination "cr.hera.lan/stash:${tag}"
       --skip-tls-verify-registry "cr.hera.lan"
