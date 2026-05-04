@@ -62,15 +62,5 @@
         "svelte-markdown": "^0.4.1",
         "turndown": "^7.2.2",
         "vite": "^7.3.2"
-    },
-    "pnpm": {
-        "onlyBuiltDependencies": [
-            "@parcel/watcher",
-            "@prisma/client",
-            "@prisma/engines",
-            "esbuild",
-            "prisma",
-            "svelte-preprocess"
-        ]
     }
 }

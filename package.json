@@ -30,8 +30,12 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@prisma/client",
       "@prisma/engines",
-      "prisma"
+      "esbuild",
+      "prisma",
+      "svelte-preprocess"
     ]
   }
 }
