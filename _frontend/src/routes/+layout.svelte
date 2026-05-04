@@ -73,13 +73,11 @@
             keys.onKeys(["ArrowLeft"], () => navigateInDirection("left"))
             keys.onKeys(["ArrowRight"], () => navigateInDirection("right"))
             keys.onKeys(["Enter"], () => {
-                console.log("enter")
                 if (document.querySelector("[data-selected]")) {
                     const element = document.querySelector(
                         "[data-selected]"
                     ) as Element
                     element.click()
-                    console.log(element.click)
                 }
             })
         }

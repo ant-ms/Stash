@@ -36,7 +36,6 @@ export const refreshFilters = (value: string = previousValue) => {
     else if (value.startsWith("#")) promises = [gatherAllTags]
 
     Promise.all(promises.map(fn => fn())).then(data => {
-        console.log("refreshed filters")
         updateSearcher(data.flat())
     })
 }
@@ -255,7 +254,6 @@ const gatherAllFilters = async () =>
                         .id == "Random"
                 ) {
                     mediaController.filters.seed = Math.random()
-                    console.log("seed")
                 } else {
                     mediaController.filters.activeSortingMethod = i
                     refreshFilters()

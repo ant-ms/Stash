@@ -254,7 +254,7 @@
                                             attributesToTransfer[
                                                 j
                                             ].selectedIndex = i
-                                            console.log(attributesToTransfer[j])
+
                                         }}
                                         disable={() => {
                                             attributesToTransfer[

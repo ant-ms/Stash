@@ -42,5 +42,5 @@ export const execute = async (_job: Job) => {
     await symlink(targetPath, symlinkPath);
   }
 
-  console.log("Symlinks rebuilt successfully");
+
 };

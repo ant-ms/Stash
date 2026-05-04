@@ -27,10 +27,6 @@
         else if (!mediaController.visibleMedium && client) client.stop()
     })
 
-    $effect(() => {
-        console.log(client?.playbackState)
-    })
-
     function handleSliderKeyDown(e: KeyboardEvent) {
         if (!client || !client.playbackTime) return
 

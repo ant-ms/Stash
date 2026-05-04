@@ -202,7 +202,6 @@ export class TransmissionImportSource extends ImportSource {
         // Step 1: Create media database entries (MIME lookup uses old location)
         const mediaIds: string[] = []
         for (const file of filesToImport) {
-            console.log("Creating database entry for", file, "...")
             const mediaId = await query(
                 "transmissionCreatePreUploadMediaEntry",
                 {
@@ -216,13 +215,11 @@ export class TransmissionImportSource extends ImportSource {
         }
 
         // Step 2: Move torrent to permanent seed location
-        console.log("Moving torrent to permanent seed location...")
         await query("moveTorrentPathToStashTorrentFolder", {
             id: this.torrentId
         })
 
         // Step 3: Disable all media files that were not selected
-        console.log("Updating wanted files in Transmission...")
         await query("setFilesWantedForTorrent", {
             torrentId: this.torrentId,
             fileIndicies: filesToImport.map(f => this.files.indexOf(f))
@@ -233,7 +230,6 @@ export class TransmissionImportSource extends ImportSource {
             const file = filesToImport[i]
             const mediaId = mediaIds[i]
 
-            console.log("Creating symlink and jobs for", file, "...")
             await query("createSymlinkFromTorrentsToMedia", {
                 torrentPath: file,
                 mediaId

@@ -28,7 +28,6 @@ try {
     }
   }
 
-  console.log("Migration completed successfully.");
 } catch (error) {
   console.error("Error during migration:", error);
 } finally {

@@ -22,7 +22,6 @@ class MediaController {
     private alreadyInitialized = false
     public init = () => {
         if (this.alreadyInitialized) {
-            console.log("MediaController already initialized!")
             return
         }
 

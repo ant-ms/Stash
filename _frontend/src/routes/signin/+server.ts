@@ -1,14 +1,11 @@
 import type { RequestHandler } from "@sveltejs/kit"
 import { bcrypt } from "hash-wasm"
+import crypto from "node:crypto"
 
 import prisma from "$lib/server/prisma"
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
     const { username, password } = await request.json()
-
-    //   const salt =
-    //     (Math.random() + 1).toString(36).substring(4) +
-    //     (Math.random() + 1).toString(36).substring(4)
 
     const match = await prisma.credentials.findFirst({
         where: {
@@ -23,7 +20,6 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     }
 
     const hash = await bcrypt({ costFactor: 10, password, salt: match.salt })
-    console.log(hash, match.hash)
 
     if (match.hash !== hash) {
         return new Response("Invalid username or password", {

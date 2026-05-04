@@ -22,7 +22,6 @@ export const updateSearcher = (data: ResultsType) => {
 }
 
 export const executeSearch = (query: string) => {
-    console.log("executeSearch", searcher)
     if (!searcher) return []
 
     return searcher

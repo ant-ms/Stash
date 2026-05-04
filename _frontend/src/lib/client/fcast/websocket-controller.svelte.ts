@@ -41,8 +41,6 @@ export class WebSocketController {
     }
 
     public sendPacket(opcode: OPCODE, payload?: object): void {
-        console.log("Sending WebSocket packet:", opcode, payload)
-
         const message = {
             opcode,
             body: payload
@@ -59,7 +57,6 @@ export class WebSocketController {
     }
 
     private onWebSocketOpen = (): void => {
-        console.log("WebSocket connection opened to proxy")
         this.eventHandlers.onOpen?.()
     }
 
@@ -69,7 +66,6 @@ export class WebSocketController {
     }
 
     private onWebSocketClose = (event: CloseEvent): void => {
-        console.log("WebSocket proxy connection closed:", event.reason)
         // Attempt to reconnect after a short delay
         setTimeout(() => this.reconnect(), 1000)
         this.eventHandlers.onClose?.(event)

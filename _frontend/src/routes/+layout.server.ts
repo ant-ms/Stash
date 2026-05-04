@@ -38,10 +38,7 @@ const getClusters = async (token: string) => {
 }
 
 export const load: LayoutServerLoad = async ({ request, url, cookies }) => {
-    console.log(new Date().toISOString(), "/+layout.server.ts1", url.pathname)
-
     let serverURL = process.env.SERVER_URL ?? url.origin
-    console.log(new Date().toISOString(), "/+layout.server.ts2", url.pathname)
 
     const session = cookies.get("session") || ""
 

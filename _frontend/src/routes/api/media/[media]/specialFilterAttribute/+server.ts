@@ -5,16 +5,14 @@ import type { RequestHandler } from "./$types"
 export const PUT: RequestHandler = async ({ request, params }) => {
     const { specialFilterAttribute } = await request.json()
 
-    console.log(
-        await prisma.media.update({
-            where: {
-                id: params.media
-            },
-            data: {
-                specialFilterAttribute
-            }
-        })
-    )
+    await prisma.media.update({
+        where: {
+            id: params.media
+        },
+        data: {
+            specialFilterAttribute
+        }
+    })
 
     return new Response()
 }

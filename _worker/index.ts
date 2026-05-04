@@ -7,8 +7,6 @@ import { Job, JobStatus } from "./src/generated/prisma/client";
 
 const registeredJobs = await importAllTsFiles();
 
-console.log("Started...");
-
 while (true) {
   const blockingNames = (
     await prisma.job.findMany({
@@ -36,7 +34,6 @@ while (true) {
   for (const job of openJobs) {
     for (const registeredJob of registeredJobs) {
       if (job.name === registeredJob.name) {
-        console.log(`Running job: ${job.name}`);
         await prisma.job.update({
           where: {
             id: job.id,
@@ -121,7 +118,6 @@ async function checkScheduledJobs() {
     });
 
     if (!existing) {
-      console.log(`Scheduling job ${scheduledJob.name} (cron: ${scheduledJob.cronExpression})`);
       await prisma.job.create({
         data: { name: scheduledJob.name, data: "{}", priority: 0 },
       });

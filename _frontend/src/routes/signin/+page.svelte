@@ -3,7 +3,6 @@
     import Popup from "$reusables/Popup.svelte"
 
     const login = async () => {
-        console.log("Logging in...")
         const request = await fetch(`/signin`, {
             method: "POST",
             headers: {
@@ -20,10 +19,8 @@
         })
 
         if (request.ok) {
-            console.log("Logged in!")
             window.location.href = "/Secret"
         } else {
-            console.error("Failed to log in!")
             window.alert(await request.text())
         }
     }

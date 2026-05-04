@@ -87,7 +87,6 @@
                     ...toBeSelected
                 ]
 
-                console.log(varsSvelte.selectedMedias)
             }
         } else {
             varsSvelte.selectedMedias = []

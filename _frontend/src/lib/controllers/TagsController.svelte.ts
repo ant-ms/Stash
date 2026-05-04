@@ -30,7 +30,6 @@ export class TagsController {
 
     public init = () => {
         if (this.alreadyInitialized) {
-            console.log("TagsController already initialized!")
             return
         }
 
@@ -38,12 +37,9 @@ export class TagsController {
         // this.updateTags()
 
         $effect(() => {
-            console.log(
-                "updating with ",
-                vars.clusterName,
-                mediaController.filters.favouritesOnly,
-                vars.mediaTypeFilter
-            )
+            vars.clusterName
+            mediaController.filters.favouritesOnly
+            vars.mediaTypeFilter
             this.updateTags()
         })
     }

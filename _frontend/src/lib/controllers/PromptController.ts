@@ -93,7 +93,6 @@ export const prompts = {
         value = ""
     ): Promise<string | null> =>
         new Promise(resolve => {
-            console.log(target)
             const element = mount(SelectPromptDropdown, {
                 target,
                 props: {

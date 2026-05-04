@@ -25,8 +25,6 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     const type = mime.lookup(`${importFolderPath}/${filename}`) || "Unknown"
 
-    console.log("found mime type of file ")
-
     const mediaId = await createPreUploadMediaEntry({
         name: filename,
         type,

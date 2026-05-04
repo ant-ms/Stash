@@ -119,8 +119,6 @@ const gd_fetch = async (parsedURL: URL) => {
         console.error(error)
     }
 
-    console.log(chapterContents)
-
     return {
         title: title.innerText,
         source: parsedURL.toString(),

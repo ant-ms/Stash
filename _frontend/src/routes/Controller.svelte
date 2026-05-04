@@ -31,7 +31,6 @@
     onMount(() => {
         mediaController.init()
         tagsController.init()
-        console.log("%cControllers mounted", "color: grey")
         if (browser) {
             // @ts-ignore
             window.mediaController = mediaController

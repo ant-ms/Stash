@@ -22,7 +22,6 @@
 
     onMount(async () => {
         data = await query("getAllCompletedTorrents", {})
-        console.log(data)
     })
 </script>
 

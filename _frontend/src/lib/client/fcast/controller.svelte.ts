@@ -150,7 +150,6 @@ export class FCastController {
     }
 
     private onWebSocketOpen = (): void => {
-        console.log("[fcast] WebSocket connection opened")
         this.connected = true
 
         // Send version message as required by protocol v3
@@ -165,7 +164,6 @@ export class FCastController {
     }
 
     private onWebSocketClose = (event: CloseEvent): void => {
-        console.log("[fcast] WebSocket connection closed:", event.reason)
         this.connected = false
     }
 
