@@ -1,0 +1,4 @@
+packages:
+  - "_frontend"
+  - "_worker"
+  - "_desktop_client"

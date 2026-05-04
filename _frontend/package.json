@@ -1,5 +1,5 @@
 {
-    "name": "stash",
+    "name": "@stash/frontend",
     "version": "0.0.1",
     "scripts": {
         "dev": "source ../.env && vite dev",
