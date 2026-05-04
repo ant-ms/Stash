@@ -103,10 +103,8 @@ publish-deno-library:
         version="$CI_COMMIT_REF_SLUG"
         echo "Running on branch '$CI_COMMIT_BRANCH': version = $version"
       fi
-    - cd _external_source_proxy_base
-    - deno check mod.ts
     - cd "${CI_PROJECT_DIR}"
-    - tar -czf /tmp/external-source-proxy-base.tar.gz _external_source_proxy_base/
+    - tar -czf /tmp/external-source-proxy-base.tar.gz/
     - |
       curl --fail --header "PRIVATE-TOKEN: ${PACKAGE_REGISTRY_TOKEN}" \
            --upload-file /tmp/external-source-proxy-base.tar.gz \
@@ -114,4 +112,3 @@ publish-deno-library:
   only:
     changes:
       - .gitlab-ci.yml
-      - _external_source_proxy_base/**/*
