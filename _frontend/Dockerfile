@@ -1,5 +1,5 @@
 # Stage 1: Builder
-FROM node:20-alpine3.20 as builder
+FROM node:22-alpine3.20 as builder
 WORKDIR /app
 
 RUN npm install -g pnpm
@@ -8,8 +8,8 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY _frontend/package.json ./_frontend/package.json
 RUN pnpm install --frozen-lockfile --filter @stash/frontend
 
-COPY schema.prisma .
-RUN pnpx prisma generate
+COPY schema.prisma ./_frontend/schema.prisma
+RUN cd _frontend && pnpx prisma generate
 
 COPY _frontend/static ./_frontend/static
 COPY _frontend/tsconfig.json _frontend/mdi-svelte.d.ts ./_frontend/
@@ -21,7 +21,7 @@ WORKDIR /app/_frontend
 RUN pnpm run build && CI=true pnpm prune --prod
 
 # Stage 2: Final stage with optimized production image
-FROM node:20-alpine3.20
+FROM node:22-alpine3.20
 
 WORKDIR /app/_frontend
 COPY --from=builder /app/_frontend ./
