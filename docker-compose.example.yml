@@ -1,0 +1,81 @@
+version: "3.8"
+
+volumes:
+  thumbnails:
+  database:
+
+services:
+  app:
+    image: localhost:5000/stash:latest
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - "/data/stash:/app/media"
+      - "/data/stash-torrents:/app/torrent"
+      - "/data/_misc/downloads/_importables:/app/importables"
+      - "thumbnails:/app/thumbnails"
+      - "thumbnails:/app/thumb"
+    group_add:
+      - "488"
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+
+  worker:
+    image: localhost:5000/stash-worker:latest
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - "/data/stash:/app/media"
+      - "/data/stash-torrents:/app/torrent"
+      - "thumbnails:/app/thumbnails"
+    group_add:
+      - "488"
+    devices:
+      - /dev/dri:/dev/dri
+
+  gatekeeper:
+    image: localhost:5000/stash-gatekeeper:latest
+    restart: always
+    ports:
+      - 3069:80
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db/postgres"
+      PROXY_TARGET_URL: "http://app:3000"
+    volumes:
+      - "/data/stash:/media:ro"
+      - "/data/stash-torrents:/app/torrent:ro"
+      - "thumbnails:/thumbnails:ro"
+
+  db:
+    image: postgres:15
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+    command: ["postgres", "-c", "log_statement=none"]
+
+  # Optional Redis service for logging SQL queries.
+  # Make sure to update the environment variables in `.env` if you choose to enable it.
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    tmpfs:
+      - /data:size=512m,mode=1777
+    command: >
+      redis-server
+      --dir /data
+      --save ""
+      --appendonly no
+      --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
