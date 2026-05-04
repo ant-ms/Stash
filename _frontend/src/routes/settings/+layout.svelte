@@ -52,9 +52,6 @@
             <Button icon="mdiDatabaseSearch" href="/settings/queries"
                 >Queries</Button
             >
-            <Button icon="mdiImageMultiple" href="/settings/icon-packs">
-                Icon Packs
-            </Button>
         </SidebarSection>
 
         <SidebarSection title="Integrations">
