@@ -1,5 +1,5 @@
 {
-  "name": "stash",
+  "name": "stash-root",
   "private": true,
   "packageManager": "pnpm@10.29.2",
   "scripts": {
@@ -21,8 +21,10 @@
     "mime-types": "3.0.2"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.0",
     "@playwright/test": "^1.52.0",
     "@types/mime-types": "^3.0.1",
+    "prettier": "^3.8.3",
     "prisma": "^7.2.0"
   },
   "pnpm": {
