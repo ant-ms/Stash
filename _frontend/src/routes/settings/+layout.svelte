@@ -49,9 +49,6 @@
             <Button icon="mdiPassport" href="/settings/credentials">
                 Credentials
             </Button>
-            <Button icon="mdiDatabaseSearch" href="/settings/queries"
-                >Queries</Button
-            >
         </SidebarSection>
 
         <SidebarSection title="Integrations">

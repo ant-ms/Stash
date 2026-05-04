@@ -60,23 +60,3 @@ services:
       POSTGRES_PASSWORD: postgres
     command: ["postgres", "-c", "log_statement=none"]
 
-  # Optional Redis service for logging SQL queries.
-  # Make sure to update the environment variables in `.env` if you choose to enable it.
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    tmpfs:
-      - /data:size=512m,mode=1777
-    command: >
-      redis-server
-      --dir /data
-      --save ""
-      --appendonly no
-      --loglevel warning
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5

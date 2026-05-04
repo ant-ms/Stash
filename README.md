@@ -48,7 +48,7 @@ pnpm test:all          # full lifecycle: infra → seed → server → Playwrigh
 | Script                       | Description                                           |
 | ---------------------------- | ----------------------------------------------------- |
 | `pnpm test:all`              | Run the full test suite (recommended)                 |
-| `pnpm test:infra:up`         | Start Postgres & Redis containers                     |
+| `pnpm test:infra:up`         | Start Postgres container                              |
 | `pnpm test:infra:down`       | Stop test containers                                  |
 | `pnpm test:seed`             | Seed the test database (requires `TEST_DATABASE_URL`) |
 | `pnpm test:run`              | Run Playwright tests (requires a running server)      |

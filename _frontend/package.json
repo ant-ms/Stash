@@ -54,7 +54,6 @@
         "fuzzy-search": "^3.2.1",
         "mdi-svelte": "^1.1.2",
         "mime-types": "3.0.2",
-        "redis": "^5.11.0",
         "runed": "^0.37.1",
         "select-files": "^1.0.1",
         "svelte-dropzone": "^1.0.6",

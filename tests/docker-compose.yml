@@ -11,21 +11,3 @@ services:
       POSTGRES_PASSWORD: postgres
     command: ["postgres", "-c", "log_statement=none"]
 
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    ports:
-      - "6380:6379"
-    tmpfs:
-      - /data:size=512m,mode=1777
-    command: >
-      redis-server
-      --dir /data
-      --save ""
-      --appendonly no
-      --loglevel warning
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
