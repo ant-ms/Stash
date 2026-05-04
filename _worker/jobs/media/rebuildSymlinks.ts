@@ -36,7 +36,8 @@ export const execute = async (_job: Job) => {
     const dirPath = join(hierarchyRoot, `${row.tagName}_${row.tagId}`);
     await mkdir(dirPath, { recursive: true });
 
-    const symlinkPath = join(dirPath, `${row.mediaName}_${row.mediaId}.mp4`);
+    const safeName = row.mediaName.replace(/\//g, " - ");
+    const symlinkPath = join(dirPath, `${safeName}_${row.mediaId}.mp4`);
     const targetPath = join(mediaRoot, row.mediaId);
     await symlink(targetPath, symlinkPath);
   }
