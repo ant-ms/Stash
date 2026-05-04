@@ -8,7 +8,7 @@ import SelectPromptDropdown from "$components/Popups/Prompts/SelectPromptDropdow
 import SelectPromptPopup from "$components/Popups/Prompts/SelectPromptPopup.svelte"
 import TagSearchPromptPopup from "$components/Popups/Prompts/TagSearchPromptPopup.svelte"
 import TextPromptPopup from "$components/Popups/Prompts/TextPromptPopup.svelte"
-import type { possibleIcons } from "$lib/possibleIcons"
+import { type IconName } from "$lib/possibleIcons.svelte"
 
 import type { TagExtended } from "./TagsController.svelte"
 
@@ -32,7 +32,7 @@ export const prompts = {
     icon: (
         question: string,
         value = ""
-    ): Promise<keyof typeof possibleIcons | null> =>
+    ): Promise<IconName | null> =>
         new Promise(resolve => {
             const element = mount(IconPromptPopup, {
                 target: document.body,

@@ -1,6 +1,6 @@
 <script lang="ts">
     import Icon from "$components/elements/Icon.svelte"
-    import type { possibleIcons } from "$lib/possibleIcons"
+    import { type IconName } from "$lib/possibleIcons.svelte"
 
     type T = $$Generic<Record>
 
@@ -8,7 +8,7 @@
         options: {
             value: T
             name?: string
-            icon?: keyof typeof possibleIcons
+            icon?: IconName
             disabled?: boolean
         }[]
         value?: T

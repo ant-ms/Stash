@@ -9,12 +9,19 @@
     import { navigateInDirection } from "$lib/client/keyboard-navigation"
     import { layout } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
+    import { possibleIcons } from "$lib/possibleIcons.svelte"
     import { controller, settings } from "$lib/stores.svelte"
     import vars from "$lib/vars.svelte"
 
     import Controller from "./Controller.svelte"
 
-    let { children } = $props()
+    let { data, children } = $props()
+
+    if (data.customIcons) {
+        for (const icon of data.customIcons) {
+            possibleIcons[icon.name] = icon.svgData
+        }
+    }
 
     const recreateNavigationPoint = () => {
         if (!document.querySelector("[data-selected]")) {

@@ -1,7 +1,7 @@
 import { page } from "$app/state"
 import query from "$lib/client/call"
 import assembleTagHierarchyMap from "$lib/helpers/assembleTagHierarchyMap"
-import type { possibleIcons } from "$lib/possibleIcons"
+import { type IconName } from "$lib/possibleIcons.svelte"
 import vars from "$lib/vars.svelte"
 
 import { mediaController } from "./MediaController.svelte"
@@ -10,7 +10,7 @@ import { prompts } from "./PromptController"
 export type TagBase = {
     id: number
     tag: string
-    icon: keyof typeof possibleIcons | null
+    icon: IconName | null
     collapsed: boolean
     parentId: number | null
     count: number
@@ -20,7 +20,7 @@ export type TagBase = {
 export type TagExtended = TagBase & {
     children: TagExtended[]
     indirectCount: number
-    indirectIcon: keyof typeof possibleIcons | null
+    indirectIcon: IconName | null
 }
 
 export class TagsController {

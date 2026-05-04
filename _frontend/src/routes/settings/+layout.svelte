@@ -36,6 +36,9 @@
                 Clusters
             </Button>
             <Button icon="mdiTagMultiple" href="/settings/tags">Tags</Button>
+            <Button icon="mdiVectorPolyline" href="/settings/icons"
+                >Custom Icons</Button
+            >
         </SidebarSection>
 
         <SidebarSection title="Administration">

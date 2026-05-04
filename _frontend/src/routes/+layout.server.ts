@@ -1,4 +1,4 @@
-import type { possibleIcons } from "$lib/possibleIcons"
+import { type IconName } from "$lib/possibleIcons.svelte"
 import prisma from "$lib/server/prisma"
 
 import type { LayoutServerLoad } from "./$types"
@@ -49,6 +49,7 @@ export const load: LayoutServerLoad = async ({ request, url, cookies }) => {
     return {
         userAgent: request.headers.get("user-agent") || "Unknown",
         clusters: await getClusters(session),
+        customIcons: await prisma.customIcon.findMany(),
         serverURL,
         session
     }

@@ -2,7 +2,7 @@ import { page } from "$app/state"
 import query from "$lib/client/call"
 import { prompts } from "$lib/controllers/PromptController"
 import type { TagExtended } from "$lib/controllers/TagsController.svelte"
-import type { possibleIcons } from "$lib/possibleIcons"
+import { type IconName } from "$lib/possibleIcons.svelte"
 
 interface importParams {
     cluster: string
@@ -10,7 +10,7 @@ interface importParams {
 }
 
 export abstract class ImportSource {
-    abstract icon: keyof typeof possibleIcons
+    abstract icon: IconName
 
     protected abstract import(p: importParams): Promise<void>
     protected cleanup?(): Promise<void>

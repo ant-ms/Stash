@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { possibleIcons } from "$lib/possibleIcons"
+    import { type IconName } from "$lib/possibleIcons.svelte"
     import Dropdown from "$reusables/Dropdown.svelte"
 
     import Button from "./elements/Button.svelte"
@@ -8,7 +8,7 @@
         children,
         elements = [] as {
             label: string
-            icon: keyof typeof possibleIcons
+            icon: IconName
             action: () => void
         }[]
     } = $props()

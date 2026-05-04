@@ -1,9 +1,9 @@
 import Fuse from "fuse.js"
 
-import type { possibleIcons } from "$lib/possibleIcons"
+import { type IconName } from "$lib/possibleIcons.svelte"
 
 export type ResultsType = {
-    icon: keyof typeof possibleIcons
+    icon: IconName
     label: string
     action?: number | string
     submenu?: ResultsType

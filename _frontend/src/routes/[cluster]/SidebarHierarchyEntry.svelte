@@ -4,7 +4,7 @@
     import { presentationMode } from "$lib/context"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
     import tagsController from "$lib/controllers/TagsController.svelte"
-    import type { possibleIcons } from "$lib/possibleIcons"
+    import { type IconName } from "$lib/possibleIcons.svelte"
     import { selectedMediaIds } from "$lib/stores.svelte"
     import Dropdown from "$reusables/Dropdown.svelte"
 
@@ -19,7 +19,7 @@
         tagId: number
         indent?: number
         nameOverwrite?: string
-        iconOverwrite?: keyof typeof possibleIcons | null
+        iconOverwrite?: IconName | null
     } = $props()
 
     $effect(() => {
@@ -45,7 +45,7 @@
         if (tagsController.tagMap[tagId].collapsed)
             return ["mdiFolderHidden", 1]
         return ["mdiFolderOutline", 1]
-    }) as [keyof typeof possibleIcons, number]
+    }) as [IconName, number]
 
     function randomLoremChar(length: number) {
         const lorem = "loremipsumdolorsitamet"

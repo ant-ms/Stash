@@ -4,7 +4,7 @@
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import ProgressBar from "$components/elements/ProgressBar.svelte"
-    import type { possibleIcons } from "$lib/possibleIcons"
+    import { type IconName } from "$lib/possibleIcons.svelte"
 
     type T = $$Generic<Record>
 
@@ -18,7 +18,7 @@
         countApplicable
     }: {
         title: string
-        icon: keyof typeof possibleIcons
+        icon: IconName
         onCreate: (itemsToProcess: T[]) => Promise<void>
         itemsAwaitingProcessing: Promise<T[]>
         countProcessed: Promise<number>

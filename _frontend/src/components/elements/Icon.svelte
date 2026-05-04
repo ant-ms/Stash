@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { possibleIcons } from "$lib/possibleIcons"
+    import { possibleIcons, type IconName } from "$lib/possibleIcons.svelte"
 
     const possibleIconsAlt = possibleIcons as any
 
     interface Props {
-        name?: keyof typeof possibleIcons | null
+        name?: IconName | null
         nameAlt?: string
         size?: number | string
         color?: any
@@ -43,11 +43,11 @@
     let style = $derived(getStyles(size, color))
 </script>
 
-{#if (name || nameAlt).startsWith("mdi")}
+{#if (name || nameAlt)?.startsWith("mdi")}
     <svg style:opacity viewBox="0 0 24 24" {style}>
         <path d={possibleIconsAlt[name || nameAlt]} />
     </svg>
-{:else if (name || nameAlt).startsWith("extra")}
+{:else if possibleIconsAlt[name || nameAlt]}
     <svg
         style:opacity
         style="position: absolute; width: 0; height: 0"
@@ -65,7 +65,7 @@
         <use xlink:href="#{name || nameAlt}" stroke="#FFF" />
     </svg>
 {:else}
-    INVALID ICON
+    INVALID ICON ({name || nameAlt})
 {/if}
 
 <style>

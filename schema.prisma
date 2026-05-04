@@ -160,3 +160,9 @@ model ScheduledJob {
   cronExpression String    @default("0 * * * *")
   lastRunAt      DateTime?
 }
+
+model CustomIcon {
+  id      Int    @id @default(autoincrement())
+  name    String @unique
+  svgData String
+}

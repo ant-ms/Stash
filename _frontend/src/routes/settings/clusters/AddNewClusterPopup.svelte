@@ -1,7 +1,7 @@
 <script lang="ts">
     import { invalidateAll } from "$app/navigation"
     import Button from "$components/elements/Button.svelte"
-    import { possibleIcons } from "$lib/possibleIcons"
+    import { possibleIcons } from "$lib/possibleIcons.svelte"
     import Popup from "$reusables/Popup.svelte"
 
     interface Props {

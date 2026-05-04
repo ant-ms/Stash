@@ -4,10 +4,10 @@
     import { page } from "$app/state"
     import Icon from "$components/elements/Icon.svelte"
     import Key from "$components/elements/Key.svelte"
-    import type { possibleIcons } from "$lib/possibleIcons"
+    import { type IconName } from "$lib/possibleIcons.svelte"
 
     let {
-        icon = null as keyof typeof possibleIcons | null,
+        icon = null as IconName | null,
         iconNoTyping = null as string | null,
         iconOpacity = 1,
         count = null as number | null,

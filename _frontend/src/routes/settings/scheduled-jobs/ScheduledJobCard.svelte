@@ -2,7 +2,7 @@
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
     import Toggle from "$components/elements/Toggle.svelte"
-    import type { possibleIcons } from "$lib/possibleIcons"
+    import { type IconName } from "$lib/possibleIcons.svelte"
     import query from "$lib/client/call"
 
     let {
@@ -14,7 +14,7 @@
         onRun
     }: {
         title: string
-        icon: keyof typeof possibleIcons
+        icon: IconName
         jobName: string
         initialEnabled: boolean
         initialCron: string

@@ -9,7 +9,7 @@ import {
     default as tagsController,
     type TagExtended
 } from "$lib/controllers/TagsController.svelte"
-import type { possibleIcons } from "$lib/possibleIcons"
+import { type IconName } from "$lib/possibleIcons.svelte"
 import { controller } from "$lib/stores.svelte"
 import varsSvelte from "$lib/vars.svelte"
 
@@ -129,8 +129,8 @@ const gatherAllTags = async () => {
         const [icon, iconOpacity] = (() => {
             if (tag.icon) return [tag.icon, 1]
             if (tag.indirectIcon) return [tag.indirectIcon, 0.35]
-            return ["mdiFolderOutline" as keyof typeof possibleIcons, 1]
-        })() as [keyof typeof possibleIcons, number]
+            return ["mdiFolderOutline" as IconName, 1]
+        })() as [IconName, number]
 
         tags.push({
             icon,
@@ -276,7 +276,7 @@ const gatherAllFilters = async () =>
                 { res: 2160, icon: "mdiVideo4kBox" }
             ].map(({ res, icon }) => ({
                 label: `@minResolution/${res}`,
-                icon: icon as keyof typeof possibleIcons,
+                icon: icon as IconName,
                 onEnter: () => {
                     mediaController.filters.minResolution = res
                     refreshFilters()
@@ -303,7 +303,7 @@ const gatherAllFilters = async () =>
                 { value: 3, name: "3", icon: "mdiNumeric3" }
             ].map(({ value, name, icon }) => ({
                 label: `@numberOfTags/${name}`,
-                icon: icon as keyof typeof possibleIcons,
+                icon: icon as IconName,
                 onEnter: () => {
                     mediaController.filters.countOfTags = value
                     refreshFilters()

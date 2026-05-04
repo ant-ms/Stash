@@ -8,7 +8,7 @@
     import Table from "$components/elements/Table.svelte"
     import SettingsPageContent from "$components/Layouts/SettingsPageContent.svelte"
     import { prompts } from "$lib/controllers/PromptController"
-    import { possibleIcons } from "$lib/possibleIcons"
+    import { possibleIcons } from "$lib/possibleIcons.svelte"
 
     import type { PageData } from "./$types"
     import AddNewClusterPopup from "./AddNewClusterPopup.svelte"

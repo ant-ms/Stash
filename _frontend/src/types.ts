@@ -1,7 +1,7 @@
-import type { possibleIcons } from "$lib/possibleIcons"
+import { type IconName } from "$lib/possibleIcons.svelte"
 
 export const sortingMethods: Array<{
-    icon: keyof typeof possibleIcons
+    icon: IconName
     orderBy?: string
     id?: string
     title: string
@@ -42,7 +42,7 @@ export const sortingMethods: Array<{
 
 export const setMethods: Array<{
     title: "OR" | "AND"
-    icon: keyof typeof possibleIcons
+    icon: IconName
 }> = [
     {
         title: "OR",

@@ -4,7 +4,7 @@
 
     import Button from "$components/elements/Button.svelte"
     import Icon from "$components/elements/Icon.svelte"
-    import { possibleIcons } from "$lib/possibleIcons"
+    import { possibleIcons, type IconName } from "$lib/possibleIcons.svelte"
 
     import PromptFramework from "./_PromptFramework.svelte"
 
@@ -20,13 +20,11 @@
 
     let _value = $state(value)
 
-    const searcher = new FuzzySearch(
-        Object.keys(possibleIcons) as (keyof typeof possibleIcons)[],
-        [],
-        {
+    const searcher = $derived(
+        new FuzzySearch(Object.keys(possibleIcons) as IconName[], [], {
             caseSensitive: false,
             sort: true
-        }
+        })
     )
 
     let inputElement: HTMLInputElement
@@ -40,7 +38,7 @@
         }
     }
 
-    let results: (keyof typeof possibleIcons)[] = $derived.by(() => {
+    let results: IconName[] = $derived.by(() => {
         if (!_value) return []
         return searcher.search(_value).slice(0, 20)
     })
