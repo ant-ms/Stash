@@ -1,4 +1,4 @@
-import { rm, mkdir, symlink } from "fs/promises";
+import { rm, mkdir, symlink, readdir } from "fs/promises";
 import { join } from "path";
 import { type Job } from "../../src/generated/prisma/client";
 import prisma from "../../prisma";
@@ -8,8 +8,11 @@ const mediaRoot = "./media";
 
 export const execute = async (_job: Job) => {
   // Remove old hierarchy
-  await rm(hierarchyRoot, { recursive: true, force: true });
   await mkdir(hierarchyRoot, { recursive: true });
+  const entries = await readdir(hierarchyRoot);
+  for (const entry of entries) {
+    await rm(join(hierarchyRoot, entry), { recursive: true, force: true });
+  }
 
   const rows = await prisma.$queryRaw<
     {
