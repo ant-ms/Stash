@@ -1,4 +1,4 @@
-FROM oven/bun:1.1.21 as builder
+FROM oven/bun:1 as builder
 
 RUN apt-get update && \
     apt-get install -y ffmpeg exiftool && \
@@ -7,7 +7,7 @@ COPY --from=node:20 /usr/local/bin/node /usr/local/bin/node
 
 WORKDIR /app
 
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 COPY schema.prisma .
 RUN bunx prisma generate
