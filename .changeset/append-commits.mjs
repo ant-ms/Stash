@@ -10,7 +10,7 @@ const getTag = () => {
 };
 
 const tag = getTag();
-['_frontend', '_worker', '_desktop_client'].forEach(pkg => {
+['_frontend', '_worker', '_desktop_client', '_gatekeeper'].forEach(pkg => {
   const f = path.join(root, pkg, 'CHANGELOG.md');
   if (!fs.existsSync(f)) return;
 
