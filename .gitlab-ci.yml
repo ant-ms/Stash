@@ -89,34 +89,6 @@ build-gatekeeper:
       - _gatekeeper/**/*
       - schema.prisma
 
-build-symlinker:
-  stage: build
-  image:
-    name: gcr.io/kaniko-project/executor:v1.14.0-debug
-    entrypoint: [""]
-  script:
-    - |
-      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
-        tag="latest"
-        echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
-      else
-        tag="$CI_COMMIT_REF_SLUG"
-        echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
-      fi
-    - /kaniko/executor
-      --context "${CI_PROJECT_DIR}/_symlinker"
-      --dockerfile "${CI_PROJECT_DIR}/_symlinker/Dockerfile"
-      --destination "cr.hera.lan/stash-symlinker:${tag}"
-      --skip-tls-verify-registry "cr.hera.lan"
-      --cache=true
-      --cache-run-layers
-      --cache-copy-layers
-  only:
-    changes:
-      - .gitlab-ci.yml
-      - _symlinker/**/*
-
-
 publish-deno-library:
   stage: build
   image: denoland/deno:latest

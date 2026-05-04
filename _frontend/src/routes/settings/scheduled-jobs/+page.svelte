@@ -5,12 +5,21 @@
 
     import type { PageData } from "./$types"
     import JobCard from "./JobCard.svelte"
+    import ScheduledJobCard from "./ScheduledJobCard.svelte"
 
     let { data }: { data: PageData } = $props()
 </script>
 
 <SettingsPageContent title="Scheduled Jobs">
     <main>
+        <ScheduledJobCard
+            title="Rebuild Symlinks"
+            icon="mdiLinkVariant"
+            jobName="rebuildSymlinks"
+            initialEnabled={data.rebuildSymlinks.enabled}
+            initialCron={data.rebuildSymlinks.cronExpression}
+        />
+
         <JobCard
             title="Automatic Tag Suggestions"
             icon="mdiTagMultiple"

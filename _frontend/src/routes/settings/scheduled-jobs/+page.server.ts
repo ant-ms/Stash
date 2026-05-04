@@ -23,7 +23,15 @@ export const load: PageServerLoad = async () => {
         }
     })
 
+    const rebuildSymlinksJob = await prisma.scheduledJob.findUnique({
+        where: { name: "rebuildSymlinks" }
+    })
+
     return {
+        rebuildSymlinks: {
+            enabled: rebuildSymlinksJob?.enabled ?? false,
+            cronExpression: rebuildSymlinksJob?.cronExpression ?? "0 * * * *"
+        },
         aiTagMatching: {
             idsStillUnprocessed: prisma.media.findMany({
                 where: {
