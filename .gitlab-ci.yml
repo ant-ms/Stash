@@ -1,5 +1,20 @@
 stages:
+  - renovate
   - build
+
+renovate:
+  stage: renovate
+  image: renovate/renovate:latest
+  variables:
+    RENOVATE_PLATFORM: gitlab
+    RENOVATE_ENDPOINT: https://gitlab.com/api/v4
+    RENOVATE_TOKEN: $RENOVATE_TOKEN
+    RENOVATE_EXTRA_FLAGS: --autodiscover=false
+    LOG_LEVEL: info
+  script:
+    - renovate $CI_PROJECT_PATH
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
 
 build-frontend:
   stage: build
