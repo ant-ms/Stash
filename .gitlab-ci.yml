@@ -38,12 +38,14 @@ build-frontend:
       --cache=true
       --cache-run-layers
       --cache-copy-layers
-  only:
-    changes:
-      - .gitlab-ci.yml
-      - _frontend/**/*
-      - schema.prisma
-      - prisma.config.ts
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - changes:
+        - .gitlab-ci.yml
+        - _frontend/**/*
+        - schema.prisma
+        - prisma.config.ts
 
 build-worker:
   stage: build
@@ -67,12 +69,14 @@ build-worker:
       --cache=true
       --cache-run-layers
       --cache-copy-layers
-  only:
-    changes:
-      - .gitlab-ci.yml
-      - _worker/**/*
-      - schema.prisma
-      - prisma.config.ts
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - changes:
+        - .gitlab-ci.yml
+        - _worker/**/*
+        - schema.prisma
+        - prisma.config.ts
 
 build-gatekeeper:
   stage: build
@@ -96,8 +100,10 @@ build-gatekeeper:
       --cache=true
       --cache-run-layers
       --cache-copy-layers
-  only:
-    changes:
-      - .gitlab-ci.yml
-      - _gatekeeper/**/*
-      - schema.prisma
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - changes:
+        - .gitlab-ci.yml
+        - _gatekeeper/**/*
+        - schema.prisma
