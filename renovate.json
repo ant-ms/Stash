@@ -8,6 +8,9 @@
   "labels": ["dependencies"],
   "rangeStrategy": "replace",
   "schedule": ["before 6am on saturday"],
+  "postUpdateOptions": [
+    "pnpmDedupe"
+  ],
   "packageRules": [
     {
       "description": "Group all non-major updates and automerge",

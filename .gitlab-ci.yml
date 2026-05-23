@@ -9,11 +9,13 @@ renovate:
     RENOVATE_PLATFORM: gitlab
     RENOVATE_AUTODISCOVER: "false"
     LOG_LEVEL: debug
+    COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
   script:
     - echo "Token length:$(printenv RENOVATE_TOKEN | wc -c)"
     - renovate $CI_PROJECT_PATH
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "web"
 
 build-frontend:
   stage: build
@@ -45,6 +47,9 @@ build-frontend:
         - _frontend/**/*
         - schema.prisma
         - prisma.config.ts
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
 
 build-worker:
   stage: build
@@ -76,6 +81,9 @@ build-worker:
         - _worker/**/*
         - schema.prisma
         - prisma.config.ts
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
 
 build-gatekeeper:
   stage: build
@@ -106,3 +114,6 @@ build-gatekeeper:
         - .gitlab-ci.yml
         - _gatekeeper/**/*
         - schema.prisma
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
