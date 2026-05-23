@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     const session = await prisma.session.create({
         data: {
-            token: (Math.random() + 1).toString(36).substring(2),
+            token: crypto.randomUUID(),
             credential: {
                 connect: {
                     id: match.id
