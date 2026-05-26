@@ -20,7 +20,7 @@ renovate:
 build-frontend:
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    name: gcr.io/kaniko-project/executor:v1.24.0-debug
     entrypoint: [""]
   script:
     - |
@@ -54,7 +54,7 @@ build-frontend:
 build-worker:
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    name: gcr.io/kaniko-project/executor:v1.24.0-debug
     entrypoint: [""]
   script:
     - |
@@ -88,7 +88,7 @@ build-worker:
 build-gatekeeper:
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    name: gcr.io/kaniko-project/executor:v1.24.0-debug
     entrypoint: [""]
   script:
     - |

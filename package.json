@@ -1,7 +1,7 @@
 {
   "name": "stash-root",
   "private": true,
-  "packageManager": "pnpm@10.29.2",
+  "packageManager": "pnpm@10.33.4",
   "scripts": {
     "test:infra:up": "docker-compose -f tests/docker-compose.yml up -d && sleep 5",
     "test:infra:down": "docker-compose -f tests/docker-compose.yml down",
