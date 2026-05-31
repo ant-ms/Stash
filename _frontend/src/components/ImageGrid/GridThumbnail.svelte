@@ -86,7 +86,6 @@
                     ...varsSvelte.selectedMedias,
                     ...toBeSelected
                 ]
-
             }
         } else {
             varsSvelte.selectedMedias = []

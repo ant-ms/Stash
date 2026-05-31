@@ -8,6 +8,7 @@
   "labels": ["dependencies"],
   "rangeStrategy": "replace",
   "schedule": ["before 6am on saturday"],
+  "skipInstalls": false,
   "postUpdateOptions": [
     "pnpmDedupe"
   ],
