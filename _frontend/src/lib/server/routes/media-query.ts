@@ -17,7 +17,8 @@ export const media_query_from_database = async (
         activeSortingMethod: number
         countOfTags: number
         minResolution: number | null
-        mediaType: "all" | "image" | "video"
+        durationMin: number
+        durationMax: number
         traverse: boolean
         includeTaggedTags: boolean
     },
@@ -50,6 +51,7 @@ export const media_query_from_database = async (
             "Media"."tagsGuess",
             "Media"."deleted",
             "Media"."sizeBytes"::text,
+            "Media"."duration",
             STRING_AGG ("Tags"."id"::text, ',') as tags
         FROM
             "Media"
@@ -62,7 +64,7 @@ export const media_query_from_database = async (
             ${assembleFavouritesOnlyFilter(d.favouritesOnly)}
             ${assembleSpecialFilterAttributeFilter(d.specialFilterAttribute)}
             ${assembleMinResultionFilter(d.minResolution)}
-            ${assembleMediaTypeFilter(d.mediaType)}
+            ${assembleDurationFilter(d.durationMin, d.durationMax)}
         GROUP BY
             "Media"."id"
         ${assembleCountOfTagsFilter(d.countOfTags)}
@@ -184,9 +186,21 @@ const assembleCountOfTagsFilter = (countOfTags: number) => {
     `
 }
 
-const assembleMediaTypeFilter = (mediaType: "all" | "image" | "video") => {
-    if (mediaType === "all") return ""
+const assembleDurationFilter = (durationMin: number, durationMax: number) => {
+    if (durationMin === 0 && durationMax === 60) return ""
+    if (durationMin === 0 && durationMax === 0)
+        return /*sql*/ `
+        AND "Media"."type" LIKE 'image%'
+    `
+    if (durationMin === 0)
+        return /*sql*/ `
+        AND ("Media"."type" LIKE 'image%' OR ("Media"."type" LIKE 'video%' AND "Media"."duration" <= ${durationMax * 60}))
+    `
+    if (durationMax === 60)
+        return /*sql*/ `
+        AND "Media"."type" LIKE 'video%' AND "Media"."duration" >= ${durationMin * 60}
+    `
     return /*sql*/ `
-        AND "Media"."type" LIKE '${mediaType}%'
+        AND "Media"."type" LIKE 'video%' AND "Media"."duration" >= ${durationMin * 60} AND "Media"."duration" <= ${durationMax * 60}
     `
 }

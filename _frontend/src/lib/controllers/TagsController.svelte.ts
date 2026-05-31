@@ -39,7 +39,8 @@ export class TagsController {
         $effect(() => {
             vars.clusterName
             mediaController.filters.favouritesOnly
-            vars.mediaTypeFilter
+            mediaController.filters.durationMin
+            mediaController.filters.durationMax
             this.updateTags()
         })
     }
@@ -48,7 +49,8 @@ export class TagsController {
         const data: TagBase[] = await query("tags_query_from_database", {
             cluster: vars.clusterName || null,
             favouritesOnly: mediaController.filters.favouritesOnly,
-            mediaTypeFilter: vars.mediaTypeFilter
+            durationMin: mediaController.filters.durationMin,
+            durationMax: mediaController.filters.durationMax
         })
 
         const tmpTagMap = assembleTagHierarchyMap(data)

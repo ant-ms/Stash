@@ -1,6 +1,7 @@
+import crypto from "node:crypto"
+
 import type { RequestHandler } from "@sveltejs/kit"
 import { bcrypt } from "hash-wasm"
-import crypto from "node:crypto"
 
 import prisma from "$lib/server/prisma"
 

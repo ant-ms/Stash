@@ -6,18 +6,24 @@ import { protectEndpoint } from "../protect-endpoint"
 export const tags_query_from_database = async (
     d: {
         cluster: string | null
-        mediaTypeFilter: string
+        durationMin: number
+        durationMax: number
         favouritesOnly: boolean
     },
     cookies: Cookies
 ) => {
     await protectEndpoint(d.cluster || "", cookies)
 
-    const typeFilter = d.mediaTypeFilter
-        ? /*sql*/ `
-        AND "Media"."type" LIKE '${d.mediaTypeFilter}%'
-    `
-        : ""
+    const durationFilter = (() => {
+        if (d.durationMin === 0 && d.durationMax === 60) return ""
+        if (d.durationMin === 0 && d.durationMax === 0)
+            return /*sql*/ `AND "Media"."type" LIKE 'image%'`
+        if (d.durationMin === 0)
+            return /*sql*/ `AND ("Media"."type" LIKE 'image%' OR ("Media"."type" LIKE 'video%' AND "Media"."duration" <= ${d.durationMax * 60}))`
+        if (d.durationMax === 60)
+            return /*sql*/ `AND "Media"."type" LIKE 'video%' AND "Media"."duration" >= ${d.durationMin * 60}`
+        return /*sql*/ `AND "Media"."type" LIKE 'video%' AND "Media"."duration" >= ${d.durationMin * 60} AND "Media"."duration" <= ${d.durationMax * 60}`
+    })()
 
     const favouriteFilter = d.favouritesOnly
         ? /*sql*/ `

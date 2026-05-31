@@ -42,10 +42,6 @@ class MediaController {
             this.updateMedia(vars.clusterName)
         })
 
-        $effect(() => {
-            this.filters.mediaType = vars.mediaTypeFilter || "all"
-        })
-
         const keys = new PressedKeys()
         keys.onKeys([","], goToPreviousMedia)
         keys.onKeys(["."], goToNextMedia)
@@ -64,7 +60,8 @@ class MediaController {
         activeSortingMethod: 3,
         seed: Math.random(),
         minResolution: null as number | null,
-        mediaType: "all" as "all" | "image" | "video",
+        durationMin: 0 as number,
+        durationMax: 60 as number,
         traverse: false,
         includeTaggedTags: true
     })

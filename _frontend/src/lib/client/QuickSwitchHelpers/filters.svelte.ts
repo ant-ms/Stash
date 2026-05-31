@@ -260,9 +260,25 @@ const gatherAllFilters = async () =>
                 }
             }
         })),
-        createBasicFilterAction("mediaType", "all", "mdiMultimedia", "type"),
-        createBasicFilterAction("mediaType", "image", "mdiImage", "type"),
-        createBasicFilterAction("mediaType", "video", "mdiVideo", "type"),
+        createBasicFilterAction("durationMin", 0, "mdiImage", "duration"),
+        createBasicFilterAction(
+            "durationMax",
+            0,
+            "mdiImage",
+            "duration/images"
+        ),
+        createBasicFilterAction(
+            "durationMin",
+            1,
+            "mdiVideo",
+            "duration/videos"
+        ),
+        createBasicFilterAction(
+            "durationMax",
+            60,
+            "mdiAllInclusive",
+            "duration/all"
+        ),
         {
             icon: "mdiPound",
             label: "@minResolution",

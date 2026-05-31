@@ -1,5 +1,6 @@
 <script lang="ts">
     import Button from "$components/elements/Button.svelte"
+    import RangeSlider from "$components/elements/RangeSlider.svelte"
     import Select from "$components/elements/Select.svelte"
     import { refreshFilters } from "$lib/client/QuickSwitchHelpers/filters.svelte"
     import { SUBJECT_TYPES } from "$lib/constants"
@@ -8,6 +9,16 @@
 
     import { sortingMethods } from "../../types"
 
+    const durationMarks = [
+        { value: 0, label: "0" },
+        { value: 1, label: "1m" },
+        { value: 3, label: "3m" },
+        { value: 7, label: "7m" },
+        { value: 15, label: "15m" },
+        { value: 30, label: "30m" },
+        { value: 60, label: "60+" }
+    ]
+
     const update = () => {
         refreshFilters()
     }
@@ -15,18 +26,14 @@
 
 <div class="filter-bar" class:mobile={layout.current == "mobile"}>
     <div class="group">
-        <Select
-            value={mediaController.filters.mediaType}
-            options={[
-                { value: "all", name: "All Types", icon: "mdiMultimedia" },
-                { value: "image", name: "Images", icon: "mdiImage" },
-                { value: "video", name: "Videos", icon: "mdiVideo" }
-            ]}
-            onchange={v => {
-                mediaController.filters.mediaType = v
-                update()
+        <RangeSlider
+            marks={durationMarks}
+            min={mediaController.filters.durationMin}
+            max={mediaController.filters.durationMax}
+            onchange={(min, max) => {
+                mediaController.filters.durationMin = min
+                mediaController.filters.durationMax = max
             }}
-            width={130}
         />
         <Select
             value={mediaController.filters.activeSortingMethod}

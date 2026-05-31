@@ -10,7 +10,8 @@ export const load = (async ({ cookies }) => {
         {
             cluster: null,
             favouritesOnly: false,
-            mediaTypeFilter: ""
+            durationMin: 0,
+            durationMax: 60
         },
         cookies
     )

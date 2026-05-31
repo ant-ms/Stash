@@ -30,7 +30,6 @@ class Vars {
 
     public selectedMedias: MediaType[] = $state([])
     public imageSuffixParameter = $state("")
-    public mediaTypeFilter: "video" | "image" | "" = $state("")
     public videoElement: HTMLVideoElement | null = $state(null)
 
     // ========== Global modes ==========
