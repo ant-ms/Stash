@@ -23,6 +23,18 @@ export const execute = async (job: Job) => {
   let downloadedViaYtDlp = false;
 
   try {
+    const ytdlpTitle = Bun.spawn(
+      [ytdlpPath, "--print", "title", "--no-playlist", url],
+      { stdout: "pipe", stderr: "pipe" }
+    );
+    const titleText = await new Response(ytdlpTitle.stdout).text();
+    if (titleText.trim() && titleText.trim() !== media.name) {
+      await prisma.media.update({
+        where: { id },
+        data: { name: titleText.trim() }
+      });
+    }
+
     const ytdlp = Bun.spawn(
       [ytdlpPath, "-o", tmpTemplate, "--no-playlist", url],
       { stdout: "pipe", stderr: "pipe" }

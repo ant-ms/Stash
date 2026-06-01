@@ -1,6 +1,4 @@
-import { execFile } from "child_process"
 import fs from "fs/promises"
-import { promisify } from "util"
 
 import { MEDIA_ROOT, THUMBNAIL_ROOT, TORRENT_ROOT } from "$lib/constants"
 
@@ -111,25 +109,8 @@ export const urlCreatePreUploadMediaEntry = async (d: {
     clusterName: string
     tagIds: number[]
 }) => {
-    let name = d.url
-    try {
-        const ytdlpPath = process.env.YTDLP_PATH ?? "yt-dlp"
-        const execFileAsync = promisify(execFile)
-        const { stdout } = await execFileAsync(ytdlpPath, [
-            "--print",
-            "title",
-            "--no-playlist",
-            d.url
-        ])
-        if (stdout.trim()) {
-            name = stdout.trim()
-        }
-    } catch (e) {
-        console.error("Failed to extract title with yt-dlp:", e)
-    }
-
     return await createPreUploadMediaEntry({
-        name,
+        name: d.url,
         type: "Unknown",
         clusterName: d.clusterName,
         tagIds: d.tagIds

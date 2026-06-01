@@ -89,7 +89,9 @@
                     card
                     icon="mdiLink"
                     onclick={async () => {
-                        const url = await prompts.text("Enter URL to import from")
+                        const url = await prompts.text(
+                            "Enter URL to import from"
+                        )
                         if (url) {
                             queue.push(new UrlImportSource(url))
                         }
@@ -235,7 +237,7 @@
 <style lang="scss">
     .sidebar {
         flex-grow: 1;
-        width: 314px;
+        width: 396px;
 
         .sidebar-header {
             display: flex;
@@ -243,7 +245,6 @@
         }
 
         .sidebar-queue-entries {
-
             .sidebar-queue-entry {
                 display: flex;
                 align-items: center;
