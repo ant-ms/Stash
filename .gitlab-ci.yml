@@ -36,9 +36,6 @@ build-frontend:
       --dockerfile "${CI_PROJECT_DIR}/_frontend/Dockerfile"
       --destination "cr.hera.lan/stash:${tag}"
       --skip-tls-verify-registry "cr.hera.lan"
-      --cache=true
-      --cache-run-layers
-      --cache-copy-layers
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
@@ -70,9 +67,6 @@ build-worker:
       --dockerfile "${CI_PROJECT_DIR}/_worker/Dockerfile"
       --destination "cr.hera.lan/stash-worker:${tag}"
       --skip-tls-verify-registry "cr.hera.lan"
-      --cache=true
-      --cache-run-layers
-      --cache-copy-layers
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
@@ -104,9 +98,6 @@ build-gatekeeper:
       --dockerfile "${CI_PROJECT_DIR}/_gatekeeper/Dockerfile"
       --destination "cr.hera.lan/stash-gatekeeper:${tag}"
       --skip-tls-verify-registry "cr.hera.lan"
-      --cache=true
-      --cache-run-layers
-      --cache-copy-layers
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
