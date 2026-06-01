@@ -48,7 +48,9 @@ export const execute = async (job: Job) => {
       const downloaded = tmpFiles.find((f) => f.startsWith(tmpId));
 
       if (downloaded) {
-        await fs.rename(path.join(tmpDir, downloaded), destPath);
+        const sourcePath = path.join(tmpDir, downloaded);
+        await fs.copyFile(sourcePath, destPath);
+        await fs.unlink(sourcePath);
         downloadedViaYtDlp = true;
 
         // Detect type from extension
@@ -75,8 +77,12 @@ export const execute = async (job: Job) => {
           media.type = detectedType;
         }
       }
+    } else {
+      const errorText = await new Response(ytdlp.stderr).text();
+      console.error("yt-dlp failed with exit code", exitCode, "stderr:", errorText);
     }
-  } catch {
+  } catch (err) {
+    console.error("yt-dlp execution threw an error:", err);
     // yt-dlp not available or failed — fall through to direct fetch
   }
 
@@ -95,6 +101,17 @@ export const execute = async (job: Job) => {
     }
 
     const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("text/html")) {
+      await prisma.job.update({
+        where: { id: job.id },
+        data: {
+          status: "failed",
+          debugMessages: ["URL returned an HTML page instead of a media file. yt-dlp might have failed."],
+        },
+      });
+      throw new Error("Cannot import an HTML page as media.");
+    }
+
     if (contentType && contentType !== media.type) {
       const baseType = contentType.split(";")[0].trim();
       await prisma.media.update({
