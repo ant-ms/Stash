@@ -51,7 +51,7 @@
     {#snippet children({ intersecting })}
         {#if intersecting}
             <main class:isMobile={layout.current == "mobile"}>
-                {#each getProcessedMedia(media) as medium}
+                {#each getProcessedMedia(media) as medium (medium.id)}
                     <ImageGridStudiosThumbnail
                         {medium}
                         onclick={() => (medium.expanded = !medium.expanded)}
@@ -60,7 +60,7 @@
 
                     {#if medium.groupedIntoNamesId != null && medium.expanded}
                         <div style="grid-column: 1/-1;"></div>
-                        {#each getSortedMatchingMedia(medium) as subMedium}
+                        {#each getSortedMatchingMedia(medium) as subMedium (subMedium.id)}
                             <ImageGridStudiosThumbnail sub medium={subMedium} />
                         {/each}
                         <div style="grid-column: 1/-1;"></div>

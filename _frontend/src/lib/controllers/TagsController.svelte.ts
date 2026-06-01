@@ -103,7 +103,7 @@ export class TagsController {
             }
         })
 
-        // this.updateTags()
+        await this.updateTags()
     }
 }
 

@@ -61,7 +61,7 @@
     bind:startX
     bind:endX
 >
-    {#each getProcessedMedia(media) as medium}
+    {#each getProcessedMedia(media) as medium (medium.id)}
         {#if medium.groupedIntoNamesId == null}
             <GridThumbnail {medium} />
         {:else}

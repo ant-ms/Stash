@@ -66,7 +66,7 @@
       {/if} -->
 
         <section>
-            {#each mediaController.pages as { hash, media }: { hash: string; media: MediaType[] }, i (hash)}
+            {#each mediaController.pages as { hash, media }: { hash: string; media: MediaType[] }, i (i)}
                 <div>
                     {#if vars.layout.viewMode == "table"}
                         <ImageGridTable {media} />

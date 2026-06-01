@@ -30,7 +30,7 @@
         </thead>
     {/if}
     <tbody>
-        {#each data as entry, i}
+        {#each data as entry, i (entry.id ?? i)}
             <tr>
                 {@render children?.({ entry, i })}
             </tr>
