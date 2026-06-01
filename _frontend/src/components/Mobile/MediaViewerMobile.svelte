@@ -102,6 +102,13 @@
 
     onMount(() => {
         window.history.pushState({ popupOpened: true }, "")
+
+        const originalOverscroll = document.body.style.overscrollBehaviorY
+        document.body.style.overscrollBehaviorY = "none"
+
+        return () => {
+            document.body.style.overscrollBehaviorY = originalOverscroll
+        }
     })
 
     const onPopState = (event: PopStateEvent) => {

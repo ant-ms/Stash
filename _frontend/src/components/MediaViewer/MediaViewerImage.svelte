@@ -115,6 +115,7 @@
     main {
         position: relative;
         overflow: scroll;
+        overscroll-behavior: none;
         width: 100%;
         height: 100%;
 
