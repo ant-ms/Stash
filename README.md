@@ -6,6 +6,8 @@ Stash is a feature-rich, tag-based library web application designed to organize 
   <img src=".assets/home.png" alt="Stash Screenshot" width="100%">
 </div>
 
+> Disclaimer: This is a hobby project. As a result quality and support are not priorities. Use at your own risk.
+
 ## Features
 
 - **Media Support:** Supports images, videos, and markdown stories with a built-in reader.
@@ -63,4 +65,3 @@ against these baselines with a 1% pixel diff tolerance.
 ## Versioning & Releasing
 
 This project uses `@changesets/cli` for versioning and releases. For instructions on how to create changesets and cut a new release, please see [.changeset/README.md](.changeset/README.md).
-
