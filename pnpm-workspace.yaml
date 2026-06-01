@@ -3,3 +3,11 @@ packages:
   - "_worker"
   - "_desktop_client"
   - "_gatekeeper"
+
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - "@prisma/client"
+  - "@prisma/engines"
+  - esbuild
+  - prisma
+  - svelte-preprocess
