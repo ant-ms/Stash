@@ -9,6 +9,7 @@
     import TagInputField from "$components/Tags/TagInputField.svelte"
     import query from "$lib/client/call"
     import { mediaController } from "$lib/controllers/MediaController.svelte"
+    import { prompts } from "$lib/controllers/PromptController"
     import type { TagExtended } from "$lib/controllers/TagsController.svelte"
     import { controller } from "$lib/stores.svelte"
     import Popup from "$reusables/Popup.svelte"
@@ -17,6 +18,7 @@
     import ImportPopupTransmissionSection from "./ImportPopupTransmissionSection.svelte"
     import {
         UploadImportSource,
+        UrlImportSource,
         type ImportSource
     } from "./ImportSources.svelte"
 
@@ -82,6 +84,18 @@
                     }}
                 >
                     Import
+                </Button>
+                <Button
+                    card
+                    icon="mdiLink"
+                    onclick={async () => {
+                        const url = await prompts.text("Enter URL to import from")
+                        if (url) {
+                            queue.push(new UrlImportSource(url))
+                        }
+                    }}
+                >
+                    URL
                 </Button>
                 <Button
                     card

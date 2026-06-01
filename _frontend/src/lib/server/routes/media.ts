@@ -1,7 +1,10 @@
+import { execFile } from "child_process"
 import fs from "fs/promises"
+import { promisify } from "util"
 
 import { MEDIA_ROOT, THUMBNAIL_ROOT, TORRENT_ROOT } from "$lib/constants"
 
+import { createPreUploadMediaEntry } from "../actions/create-pre-upload-media-entry"
 import prisma from "../prisma"
 
 export const markMediaAsDeleted = async (d: { mediaId: string }) => {
@@ -101,4 +104,34 @@ export const createSymlinkFromTorrentsToMedia = async (d: {
         `${TORRENT_ROOT}/${d.torrentPath}`,
         `${MEDIA_ROOT}/${d.mediaId}`
     )
+}
+
+export const urlCreatePreUploadMediaEntry = async (d: {
+    url: string
+    clusterName: string
+    tagIds: number[]
+}) => {
+    let name = d.url
+    try {
+        const ytdlpPath = process.env.YTDLP_PATH ?? "yt-dlp"
+        const execFileAsync = promisify(execFile)
+        const { stdout } = await execFileAsync(ytdlpPath, [
+            "--print",
+            "title",
+            "--no-playlist",
+            d.url
+        ])
+        if (stdout.trim()) {
+            name = stdout.trim()
+        }
+    } catch (e) {
+        console.error("Failed to extract title with yt-dlp:", e)
+    }
+
+    return await createPreUploadMediaEntry({
+        name,
+        type: "Unknown",
+        clusterName: d.clusterName,
+        tagIds: d.tagIds
+    })
 }

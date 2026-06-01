@@ -241,3 +241,27 @@ export class TransmissionImportSource extends ImportSource {
         }
     }
 }
+
+export class UrlImportSource extends ImportSource {
+    public icon = "mdiLink" as const
+
+    constructor(url: string) {
+        super({ filename: url })
+    }
+
+    async import(p: importParams): Promise<void> {
+        // Step 1: Generate file entry
+        const mediaId = await query("urlCreatePreUploadMediaEntry", {
+            url: this.filename,
+            clusterName: p.cluster,
+            tagIds: p.tags.map(t => t.id)
+        })
+
+        // Step 2: Create post upload jobs
+        await query("createJob", {
+            name: "importFromUrl",
+            data: JSON.stringify({ id: mediaId, url: this.filename }),
+            priority: 15
+        })
+    }
+}
