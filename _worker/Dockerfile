@@ -1,9 +1,9 @@
 FROM oven/bun:1 as builder
 
 RUN apt-get update && \
-    apt-get install -y ffmpeg exiftool python3 curl && \
-    curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp && \
-    chmod a+rx /usr/local/bin/yt-dlp && \
+    apt-get install -y --no-install-recommends ffmpeg exiftool python3 curl ca-certificates wget && \
+    wget -O /usr/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp && \
+    chmod a+rx /usr/bin/yt-dlp && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=node:20 /usr/local/bin/node /usr/local/bin/node
 
