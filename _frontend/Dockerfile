@@ -3,7 +3,7 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY _frontend/package.json ./_frontend/package.json
 RUN pnpm install --frozen-lockfile --filter @stash/frontend
 
