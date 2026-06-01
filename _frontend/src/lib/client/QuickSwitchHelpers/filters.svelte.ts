@@ -260,6 +260,9 @@ const gatherAllFilters = async () =>
                 }
             }
         })),
+        createBasicFilterAction("orientation", "both", "mdiAllInclusive", "format"),
+        createBasicFilterAction("orientation", "vertical", "mdiCropPortrait", "format"),
+        createBasicFilterAction("orientation", "horizontal", "mdiCropLandscape", "format"),
         createBasicFilterAction("durationMin", 0, "mdiImage", "duration"),
         createBasicFilterAction(
             "durationMax",

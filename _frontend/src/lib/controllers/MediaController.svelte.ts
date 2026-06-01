@@ -63,7 +63,8 @@ class MediaController {
         durationMin: 0 as number,
         durationMax: 60 as number,
         traverse: false,
-        includeTaggedTags: true
+        includeTaggedTags: true,
+        orientation: "both" as string
     })
     private _filtersOverrides: typeof this.filters | null = null
 

@@ -88,6 +88,20 @@
             width={130}
         />
         <Select
+            value={mediaController.filters.orientation}
+            prefix="Format"
+            options={[
+                { value: "both", name: "Any", icon: "mdiAllInclusive" },
+                { value: "vertical", name: "Vertical", icon: "mdiCropPortrait" },
+                { value: "horizontal", name: "Horizontal", icon: "mdiCropLandscape" }
+            ]}
+            onchange={v => {
+                mediaController.filters.orientation = v
+                update()
+            }}
+            width={130}
+        />
+        <Select
             value={mediaController.filters.countOfTags}
             prefix="Tags"
             options={[

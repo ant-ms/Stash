@@ -21,6 +21,7 @@ export const media_query_from_database = async (
         durationMax: number
         traverse: boolean
         includeTaggedTags: boolean
+        orientation: string
     },
     cookies: Cookies
 ) => {
@@ -65,6 +66,7 @@ export const media_query_from_database = async (
             ${assembleSpecialFilterAttributeFilter(d.specialFilterAttribute)}
             ${assembleMinResultionFilter(d.minResolution)}
             ${assembleDurationFilter(d.durationMin, d.durationMax)}
+            ${assembleOrientationFilter(d.orientation)}
         GROUP BY
             "Media"."id"
         ${assembleCountOfTagsFilter(d.countOfTags)}
@@ -203,4 +205,16 @@ const assembleDurationFilter = (durationMin: number, durationMax: number) => {
     return /*sql*/ `
         AND "Media"."type" LIKE 'video%' AND "Media"."duration" >= ${durationMin * 60} AND "Media"."duration" <= ${durationMax * 60}
     `
+}
+
+const assembleOrientationFilter = (orientation: string) => {
+    if (orientation === "vertical")
+        return /*sql*/ `
+            AND "Media"."height" >= "Media"."width"
+        `
+    if (orientation === "horizontal")
+        return /*sql*/ `
+            AND "Media"."width" >= "Media"."height"
+        `
+    return ""
 }
