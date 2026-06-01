@@ -2,6 +2,15 @@
     import Icon from "$components/elements/Icon.svelte"
     import { type IconName } from "$lib/possibleIcons.svelte"
 
+    function portal(node: HTMLElement) {
+        document.body.appendChild(node)
+        return {
+            destroy() {
+                node.remove()
+            }
+        }
+    }
+
     type T = $$Generic<Record>
 
     type Props = {
@@ -92,6 +101,7 @@
 {#if open}
     <div
         class="options"
+        use:portal
         style:top="{top}px"
         style:left="{left}px"
         style:width="{width}px"
@@ -183,6 +193,7 @@
             padding: 5px;
 
             text-wrap: nowrap;
+            cursor: pointer;
 
             background: var(--color-dark-level-base);
             outline: 1px solid var(--border-color-base);
