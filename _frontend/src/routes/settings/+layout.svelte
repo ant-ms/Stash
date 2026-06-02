@@ -55,6 +55,9 @@
             <Button icon="mdiTransmissionTower" href="/settings/transmission">
                 Transmission
             </Button>
+            <Button icon="mdiWeb" href="/settings/media-sources">
+                Media Sources
+            </Button>
         </SidebarSection>
 
         <SidebarSection title="Tasks">

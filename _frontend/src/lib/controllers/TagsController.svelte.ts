@@ -15,6 +15,7 @@ export type TagBase = {
     parentId: number | null
     count: number
     description?: string
+    isAutomatic?: boolean
 }
 
 export type TagExtended = TagBase & {

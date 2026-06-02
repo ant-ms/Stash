@@ -18,12 +18,18 @@ export const load = (async ({ cookies }) => {
 
     const tmpTagMap = assembleTagHierarchyMap(data)
 
-    const tags: (TagExtended & { tagBeforePrefix: string })[] = []
+    const smartTags = await prisma.smartTag.findMany({
+        include: { mediaSource: true }
+    })
+
+    const tags: (TagExtended & { tagBeforePrefix: string; smartTag?: any })[] =
+        []
 
     const addTags = (tag: TagExtended, prefix: string | null = null) => {
         const tagBeforePrefix = prefix ? `${prefix}/${tag.tag}` : tag.tag
 
-        tags.push({ ...tag, tagBeforePrefix })
+        const smartTag = smartTags.find(st => st.tagId === tag.id)
+        tags.push({ ...tag, tagBeforePrefix, smartTag })
 
         tag.children.forEach(c => addTags(c, tagBeforePrefix))
     }
@@ -63,9 +69,14 @@ export const load = (async ({ cookies }) => {
         }
     })
 
+    const mediaSources = await prisma.mediaSource.findMany({
+        orderBy: { id: "asc" }
+    })
+
     return {
         tags,
         tagClusterMappings,
-        tagToTagMappings
+        tagToTagMappings,
+        mediaSources
     }
 }) satisfies PageServerLoad

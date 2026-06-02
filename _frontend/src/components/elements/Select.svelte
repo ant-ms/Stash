@@ -189,11 +189,12 @@
         box-shadow: 0 0.2rem 0.5rem 0 hsl(var(--dropdown-shadow-color) / 0.4);
 
         span {
+            cursor: pointer;
+
             margin-top: 1px;
             padding: 5px;
 
             text-wrap: nowrap;
-            cursor: pointer;
 
             background: var(--color-dark-level-base);
             outline: 1px solid var(--border-color-base);

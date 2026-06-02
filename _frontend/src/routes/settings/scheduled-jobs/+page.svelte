@@ -20,6 +20,14 @@
             initialCron={data.rebuildSymlinks.cronExpression}
         />
 
+        <ScheduledJobCard
+            title="Smart Tag Syncs"
+            icon="mdiCloudDownload"
+            jobName="triggerSmartTagSyncs"
+            initialEnabled={data.triggerSmartTagSyncs.enabled}
+            initialCron={data.triggerSmartTagSyncs.cronExpression}
+        />
+
         <JobCard
             title="Automatic Tag Suggestions"
             icon="mdiTagMultiple"

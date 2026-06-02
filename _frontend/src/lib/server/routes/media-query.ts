@@ -33,6 +33,17 @@ export const media_query_from_database = async (
         d.includeTaggedTags
     )
 
+    let isPool = false
+    if (d.tags.length > 0) {
+        const poolCheck = await prisma.smartTag.findFirst({
+            where: {
+                tagId: { in: d.tags },
+                isPool: true
+            }
+        })
+        if (poolCheck) isPool = true
+    }
+
     return await prisma.$queryRawUnsafe(/*sql*/ `
         ${tagsFilterParts.cte}
         SELECT
@@ -70,7 +81,7 @@ export const media_query_from_database = async (
         GROUP BY
             "Media"."id"
         ${assembleCountOfTagsFilter(d.countOfTags)}
-        ${await assembleOrderBy(d)}
+        ${await assembleOrderBy(d, isPool)}
         LIMIT ${PAGE_SIZE}
         OFFSET ${d.offset}
     `)
@@ -168,16 +179,28 @@ const assembleSpecialFilterAttributeFilter = (
     `
 }
 
-const assembleOrderBy = async (d: {
-    seed: number
-    activeSortingMethod: number
-}) => {
-    if (sortingMethods[d.activeSortingMethod].icon === "mdiSort")
+const assembleOrderBy = async (
+    d: {
+        seed: number
+        activeSortingMethod: number
+    },
+    isPool: boolean
+) => {
+    let method = d.activeSortingMethod
+    if (isPool) {
+        // Find the index for Date (ascending)
+        const ascIndex = sortingMethods.findIndex(
+            m => m.icon === "mdiSortCalendarAscending"
+        )
+        if (ascIndex !== -1) method = ascIndex
+    }
+
+    if (sortingMethods[method].icon === "mdiSort")
         await prisma.$executeRawUnsafe(/*sql*/ `
         SELECT setseed(${d.seed});
       `)
     return /*sql*/ `
-      ORDER BY ${sortingMethods[d.activeSortingMethod].orderBy}
+      ORDER BY ${sortingMethods[method].orderBy}
     `
 }
 

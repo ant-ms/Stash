@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { mount, unmount } from "svelte"
+
     import { invalidateAll } from "$app/navigation"
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
@@ -10,6 +12,7 @@
     import { prompts } from "$lib/controllers/PromptController.js"
 
     import type { PageData } from "./$types.js"
+    import EditSmartTagPopup from "./EditSmartTagPopup.svelte"
 
     let { data } = $props()
 </script>
@@ -22,6 +25,7 @@
             "Tag",
             "Description",
             "Tags",
+            "Smart Tag",
             "Media count",
             "Clusters"
         ]}
@@ -141,6 +145,32 @@
                                 })
                                 invalidateAll()
                             }
+                        }}
+                    />
+                </div>
+            </td>
+            <td>
+                {#if entry.smartTag}
+                    <span style="color: var(--accent-foreground)"
+                        >{entry.smartTag.mediaSource.name}: {entry.smartTag
+                            .query}</span
+                    >
+                {:else}
+                    <span style="opacity: 0.5;">None</span>
+                {/if}
+                <div class="floating">
+                    <Button
+                        icon="mdiPencil"
+                        onclick={() => {
+                            const element = mount(EditSmartTagPopup, {
+                                target: document.body,
+                                props: {
+                                    tagId: entry.id,
+                                    initialSmartTag: entry.smartTag,
+                                    mediaSources: data.mediaSources,
+                                    close: () => unmount(element)
+                                }
+                            })
                         }}
                     />
                 </div>

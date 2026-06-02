@@ -39,6 +39,9 @@
         {#if _tag?.icon && show != "name-only"}
             <Icon name={_tag?.icon} size={compact ? 0.9 : 1} />
         {/if}
+        {#if _tag?.isAutomatic}
+            <Icon name="mdiRobotOutline" size={compact ? 0.9 : 1} />
+        {/if}
         {#if show != "icon-prefered" || !_tag?.icon || _tag?.parentId}
             {_tag?.tag}
         {/if}

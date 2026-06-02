@@ -99,10 +99,12 @@ export const tags_query_from_database = async (
             )
         SELECT
             "Tags".*,
-            COALESCE(TagsWithMedia.media_count, 0) AS count
+            COALESCE(TagsWithMedia.media_count, 0) AS count,
+            CASE WHEN "SmartTag"."id" IS NOT NULL THEN true ELSE false END AS "isAutomatic"
         FROM
             "Tags"
         LEFT JOIN TagsWithMedia ON "Tags"."id" = TagsWithMedia.tag_id
+        LEFT JOIN "SmartTag" ON "SmartTag"."tagId" = "Tags"."id"
         WHERE "Tags"."id" IN (SELECT "id" FROM AllRelatedTags);
     `)) as any
 }
@@ -206,5 +208,33 @@ export const changeClustersOfTag = async (d: {
                 })
             }
         }
+    })
+}
+
+export const SmartTagUpdate = async (d: {
+    tagId: number
+    mediaSourceId: number
+    query: string
+    isPool: boolean
+}) => {
+    await prisma.smartTag.upsert({
+        where: { tagId: d.tagId },
+        update: {
+            mediaSourceId: d.mediaSourceId,
+            query: d.query,
+            isPool: d.isPool
+        },
+        create: {
+            tagId: d.tagId,
+            mediaSourceId: d.mediaSourceId,
+            query: d.query,
+            isPool: d.isPool
+        }
+    })
+}
+
+export const SmartTagDelete = async (d: { tagId: number }) => {
+    await prisma.smartTag.delete({
+        where: { tagId: d.tagId }
     })
 }

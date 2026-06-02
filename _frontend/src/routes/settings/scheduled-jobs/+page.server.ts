@@ -27,10 +27,19 @@ export const load: PageServerLoad = async () => {
         where: { name: "rebuildSymlinks" }
     })
 
+    const triggerSmartTagSyncsJob = await prisma.scheduledJob.findUnique({
+        where: { name: "triggerSmartTagSyncs" }
+    })
+
     return {
         rebuildSymlinks: {
             enabled: rebuildSymlinksJob?.enabled ?? false,
             cronExpression: rebuildSymlinksJob?.cronExpression ?? "0 * * * *"
+        },
+        triggerSmartTagSyncs: {
+            enabled: triggerSmartTagSyncsJob?.enabled ?? false,
+            cronExpression:
+                triggerSmartTagSyncsJob?.cronExpression ?? "0 0 * * *"
         },
         aiTagMatching: {
             idsStillUnprocessed: prisma.media.findMany({
