@@ -50,7 +50,7 @@ const isAlreadyProcessed = async (mediaSourceId: number, sourceId: string) => {
 const ensurePoolTag = async (
   poolId: string,
   parentTagId: number,
-  smartTag: any,
+  smartTag: Awaited<ReturnType<typeof fetchSmartTag>>,
 ) => {
   const existing = await prisma.smartTag.findFirst({
     where: {
@@ -83,6 +83,9 @@ const ensurePoolTag = async (
     data: {
       tag: poolName,
       parentId: parentTagId,
+      clusters: {
+        connect: smartTag.tag.clusters.map((c: any) => ({ id: c.id })),
+      },
       smartTag: {
         create: {
           mediaSourceId: smartTag.mediaSourceId,
