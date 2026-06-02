@@ -125,7 +125,7 @@ const getMediaType = (ext: string): string => {
 
 const createLocalMedia = async (
   remoteMedia: SourceMedia,
-  smartTag: ReturnType<typeof fetchSmartTag>,
+  smartTag: Awaited<ReturnType<typeof fetchSmartTag>>,
   tagsToAssign: number[],
 ) => {
   let media = remoteMedia.md5
@@ -136,7 +136,7 @@ const createLocalMedia = async (
 
   if (!media) {
     // TODO: This should be made more reliable
-    const clustersId = (await smartTag).tag.clusters[0].id;
+    const clustersId = smartTag.tag.clusters[0].id;
 
     media = await prisma.media.create({
       data: {
@@ -145,6 +145,7 @@ const createLocalMedia = async (
         width: remoteMedia.width,
         height: remoteMedia.height,
         content_hash: remoteMedia.md5 || null,
+        date: remoteMedia.createdAt,
         clustersId,
       },
     });
