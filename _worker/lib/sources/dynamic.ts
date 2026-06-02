@@ -62,10 +62,20 @@ const parseMapping = (configMapping: string): MappingConfig => {
 };
 
 export const createSourceFetcher = (config: any) => ({
-  fetchMedia: async (query: string, options: { isPool?: boolean } = {}): Promise<SourceMedia[]> => {
+  fetchMedia: async (query: string, options: { isPool?: boolean; page?: number } = {}): Promise<SourceMedia[]> => {
+    const mapping = parseMapping(config.mapping);
     const url = new URL(`${config.baseUrl}${config.searchEndpoint}`);
+    
     if (config.queryParam) {
       url.searchParams.append(config.queryParam, options.isPool ? `pool:${query}` : query);
+    }
+    
+    if (mapping.pageParam) {
+      url.searchParams.append(mapping.pageParam, String(options.page ?? (mapping.pageStart ?? 1)));
+    }
+    
+    if (mapping.limitParam && mapping.limit) {
+      url.searchParams.append(mapping.limitParam, String(mapping.limit));
     }
 
     const response = await fetch(url.toString(), { headers: buildHeaders(config) });
@@ -81,7 +91,6 @@ export const createSourceFetcher = (config: any) => ({
       throw new Error("Failed to parse JSON response");
     }
 
-    const mapping = parseMapping(config.mapping);
     const postsRaw = mapping.dataPath ? getValueByPath(data, mapping.dataPath) : data;
 
     if (!Array.isArray(postsRaw)) return [];

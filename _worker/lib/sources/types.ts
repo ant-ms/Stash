@@ -22,7 +22,10 @@ export interface MappingConfig {
   md5Path?: string;
   widthPath?: string;
   heightPath?: string;
-  createdAtPath?: string;
   poolNameEndpoint?: string;
   poolNamePath?: string;
+  pageParam?: string;
+  pageStart?: number;
+  limitParam?: string;
+  limit?: number;
 }
