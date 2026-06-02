@@ -12,6 +12,7 @@ export type TagBase = {
     tag: string
     icon: IconName | null
     collapsed: boolean
+    hidden: boolean
     parentId: number | null
     count: number
     description?: string
@@ -82,6 +83,20 @@ export class TagsController {
             if (!res.ok) {
                 console.error("Failed to toggle tag: ", await res.text())
                 callback(tag.collapsed)
+            }
+        })
+    }
+
+    public toggleHidden = (tag: TagBase, callback: (hidden: boolean) => {}) => {
+        callback(!tag.hidden)
+
+        fetch(`/api/tags/${tag.id}`, {
+            method: "PATCH",
+            body: JSON.stringify({ hidden: !tag.hidden })
+        }).then(async res => {
+            if (!res.ok) {
+                console.error("Failed to toggle hidden state: ", await res.text())
+                callback(tag.hidden)
             }
         })
     }

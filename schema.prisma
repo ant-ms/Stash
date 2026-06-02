@@ -39,6 +39,7 @@ model Tags {
   tag         String
   icon        String?
   collapsed   Boolean @default(false)
+  hidden      Boolean @default(false)
   description String?
 
   clusters Clusters[]
