@@ -12,6 +12,7 @@ Stash is a feature-rich, tag-based library web application designed to organize 
 
 - **Media Support:** Supports images, videos, and markdown stories with a built-in reader.
 - **Hierarchical Tags:** A linked and hierarchical tag system for precise media organization and search.
+- **Smart Tags:** Define dynamic media sources via custom JSON mappings to automatically ingest and tag media based on search queries, including automated pagination and pool generation.
 - **AI Tagging:** Automatically tags images using LLMs (via OpenRouter) based on user-defined tag descriptions.
 - **Importing:** Supports direct browser uploads, local server directory imports, and integration with Transmission.
 

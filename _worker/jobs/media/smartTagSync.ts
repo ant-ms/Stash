@@ -1,4 +1,4 @@
-import { Job } from "../../src/generated/prisma/client";
+import { Job, SmartTag } from "../../src/generated/prisma/client";
 import prisma from "../../prisma";
 import { getSource } from "../../lib/sources";
 import { SourceMedia } from "../../lib/sources/types";
@@ -14,7 +14,14 @@ const getSmartTagId = (jobData: string): number => {
 const fetchSmartTag = async (id: number) => {
   const smartTag = await prisma.smartTag.findUnique({
     where: { id },
-    include: { tag: true, mediaSource: true },
+    include: {
+      tag: {
+        include: {
+          clusters: true,
+        },
+      },
+      mediaSource: true,
+    },
   });
   if (!smartTag) throw new Error("SmartTag not found");
   return smartTag;
@@ -23,24 +30,37 @@ const fetchSmartTag = async (id: number) => {
 const setSyncStatus = async (id: number, status: string, error?: string) => {
   await prisma.smartTag.update({
     where: { id },
-    data: { status, lastError: error || null, ...(status === "idle" && { lastSyncAt: new Date() }) },
+    data: {
+      status,
+      lastError: error || null,
+      ...(status === "idle" && { lastSyncAt: new Date() }),
+    },
   });
 };
 
 const isAlreadyProcessed = async (mediaSourceId: number, sourceId: string) => {
   const ref = await prisma.mediaSourceReference.findUnique({
-    where: { mediaSourceId_sourceMediaId: { mediaSourceId, sourceMediaId: sourceId } },
+    where: {
+      mediaSourceId_sourceMediaId: { mediaSourceId, sourceMediaId: sourceId },
+    },
   });
   return !!ref;
 };
 
-const ensurePoolTag = async (poolId: string, parentTagId: number, smartTag: any) => {
+const ensurePoolTag = async (
+  poolId: string,
+  parentTagId: number,
+  smartTag: any,
+) => {
   const existing = await prisma.smartTag.findFirst({
-    where: { mediaSourceId: smartTag.mediaSourceId, query: poolId, isPool: true, tag: { parentId: parentTagId } },
+    where: {
+      mediaSourceId: smartTag.mediaSourceId,
+      query: poolId,
+      isPool: true,
+      tag: { parentId: parentTagId },
+    },
     include: { tag: true },
   });
-
-  const parentTag = await prisma.tags.findUnique({ where: { id: parentTagId } });
 
   if (existing) {
     if (existing.tag.tag.includes(" - Pool")) {
@@ -49,13 +69,13 @@ const ensurePoolTag = async (poolId: string, parentTagId: number, smartTag: any)
       if (poolName !== existing.tag.tag) {
         await prisma.tags.update({
           where: { id: existing.tagId },
-          data: { tag: poolName }
+          data: { tag: poolName },
         });
       }
     }
     return existing.tagId;
   }
-  
+
   const source = getSource(smartTag.mediaSource);
   const poolName = await source.resolvePoolName(poolId);
 
@@ -63,7 +83,13 @@ const ensurePoolTag = async (poolId: string, parentTagId: number, smartTag: any)
     data: {
       tag: poolName,
       parentId: parentTagId,
-      smartTag: { create: { mediaSourceId: smartTag.mediaSourceId, query: poolId, isPool: true } },
+      smartTag: {
+        create: {
+          mediaSourceId: smartTag.mediaSourceId,
+          query: poolId,
+          isPool: true,
+        },
+      },
     },
   });
 
@@ -94,20 +120,11 @@ const getMediaType = (ext: string): string => {
   return typeMap[ext.toLowerCase()] || "image/jpeg";
 };
 
-const getClusterIdForMedia = async (smartTag: any) => {
-  if (smartTag.tag.clusters && smartTag.tag.clusters.length > 0) {
-    return smartTag.tag.clusters[0].id;
-  }
-  const cluster = await prisma.clusters.findFirst({ orderBy: { id: "asc" } });
-  if (cluster) return cluster.id;
-
-  const newCluster = await prisma.clusters.create({
-    data: { name: "Default", icon: "fa-solid fa-folder", type: "normal" },
-  });
-  return newCluster.id;
-};
-
-const createLocalMedia = async (remoteMedia: SourceMedia, smartTag: any, tagsToAssign: number[]) => {
+const createLocalMedia = async (
+  remoteMedia: SourceMedia,
+  smartTag: ReturnType<typeof fetchSmartTag>,
+  tagsToAssign: number[],
+) => {
   let media = remoteMedia.md5
     ? await prisma.media.findFirst({ where: { content_hash: remoteMedia.md5 } })
     : null;
@@ -115,6 +132,9 @@ const createLocalMedia = async (remoteMedia: SourceMedia, smartTag: any, tagsToA
   const isNew = !media;
 
   if (!media) {
+    // TODO: This should be made more reliable
+    const clustersId = (await smartTag).tag.clusters[0].id;
+
     media = await prisma.media.create({
       data: {
         name: `${smartTag.mediaSource.name} - ${remoteMedia.sourceId}`,
@@ -122,7 +142,7 @@ const createLocalMedia = async (remoteMedia: SourceMedia, smartTag: any, tagsToA
         width: remoteMedia.width,
         height: remoteMedia.height,
         content_hash: remoteMedia.md5 || null,
-        clustersId: await getClusterIdForMedia(smartTag),
+        clustersId,
       },
     });
   }
@@ -151,13 +171,6 @@ const createLocalMedia = async (remoteMedia: SourceMedia, smartTag: any, tagsToA
   }
 };
 
-const processMedia = async (remoteMedia: SourceMedia, smartTag: any) => {
-  if (await isAlreadyProcessed(smartTag.mediaSourceId, remoteMedia.sourceId)) return;
-
-  const tagsToAssign = await resolveTagsToAssign(remoteMedia, smartTag);
-  await createLocalMedia(remoteMedia, smartTag, tagsToAssign);
-};
-
 export const execute = async (job: Job) => {
   const smartTagId = getSmartTagId(job.data);
   const smartTag = await fetchSmartTag(smartTagId);
@@ -168,7 +181,7 @@ export const execute = async (job: Job) => {
     if (poolName !== smartTag.tag.tag) {
       await prisma.tags.update({
         where: { id: smartTag.tagId },
-        data: { tag: poolName }
+        data: { tag: poolName },
       });
       smartTag.tag.tag = poolName;
     }
@@ -178,22 +191,32 @@ export const execute = async (job: Job) => {
 
   try {
     const source = getSource(smartTag.mediaSource);
-    
+
     let mapping: any = {};
-    try { mapping = JSON.parse(smartTag.mediaSource.mapping); } catch {}
-    
+    try {
+      mapping = JSON.parse(smartTag.mediaSource.mapping);
+    } catch {}
+
     let page = mapping.pageStart ?? 1;
     let keepFetching = true;
 
     while (keepFetching) {
-      const mediaList = await source.fetchMedia(smartTag.query, { isPool: smartTag.isPool, page });
+      const mediaList = await source.fetchMedia(smartTag.query, {
+        isPool: smartTag.isPool,
+        page,
+      });
       if (mediaList.length === 0) break;
 
       let anyNewProcessed = false;
 
       // Process sequentially to maintain order and detect if we already have them
       for (const remoteMedia of mediaList) {
-        if (!(await isAlreadyProcessed(smartTag.mediaSourceId, remoteMedia.sourceId))) {
+        if (
+          !(await isAlreadyProcessed(
+            smartTag.mediaSourceId,
+            remoteMedia.sourceId,
+          ))
+        ) {
           anyNewProcessed = true;
           const tagsToAssign = await resolveTagsToAssign(remoteMedia, smartTag);
           await createLocalMedia(remoteMedia, smartTag, tagsToAssign);
@@ -204,7 +227,7 @@ export const execute = async (job: Job) => {
         keepFetching = false;
       } else {
         page += 1;
-        await new Promise(r => setTimeout(r, 1000)); // Be nice to APIs
+        await new Promise((r) => setTimeout(r, 1000)); // Be nice to APIs
       }
     }
 

@@ -4,8 +4,8 @@ import prisma from "../../prisma";
 export const execute = async (job: Job) => {
   const smartTags = await prisma.smartTag.findMany({
     where: {
-      mediaSource: { enabled: true }
-    }
+      mediaSource: { enabled: true },
+    },
   });
 
   for (const smartTag of smartTags) {
@@ -13,8 +13,8 @@ export const execute = async (job: Job) => {
       where: {
         name: "smartTagSync",
         status: { in: ["created", "running"] },
-        data: { contains: `"smartTagId":${smartTag.id}` }
-      }
+        data: { contains: `"smartTagId":${smartTag.id}` },
+      },
     });
 
     if (!existing) {
@@ -22,8 +22,8 @@ export const execute = async (job: Job) => {
         data: {
           name: "smartTagSync",
           data: JSON.stringify({ smartTagId: smartTag.id }),
-          priority: 0
-        }
+          priority: 0,
+        },
       });
     }
   }
