@@ -23,4 +23,6 @@ export interface MappingConfig {
   widthPath?: string;
   heightPath?: string;
   createdAtPath?: string;
+  poolNameEndpoint?: string;
+  poolNamePath?: string;
 }

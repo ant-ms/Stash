@@ -90,4 +90,20 @@ export const createSourceFetcher = (config: any) => ({
       .map((p) => mapPost(p, mapping))
       .filter((p): p is SourceMedia => p !== null);
   },
+  resolvePoolName: async (poolId: string): Promise<string> => {
+    const mapping = parseMapping(config.mapping);
+    if (!mapping.poolNameEndpoint || !mapping.poolNamePath) return poolId;
+
+    const url = new URL(`${config.baseUrl}${mapping.poolNameEndpoint.replace("{id}", poolId)}`);
+    try {
+      const response = await fetch(url.toString(), { headers: buildHeaders(config) });
+      if (!response.ok) return poolId;
+      
+      const data = await response.json();
+      const name = getValueByPath(data, mapping.poolNamePath);
+      return name ? String(name).replace(/_/g, " ") : poolId;
+    } catch {
+      return poolId;
+    }
+  }
 });
