@@ -1,8 +1,8 @@
 // This is your Prisma schema file, learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider      = "prisma-client"
-  output     = "./src/generated/prisma"
+  provider = "prisma-client"
+  output   = "./src/generated/prisma"
 }
 
 datasource db {
@@ -46,12 +46,14 @@ model Tags {
 
   // parent-child hierarchy
   parentId Int?
-  parent   Tags?      @relation("ParentChildTags", fields: [parentId], references: [id])
-  children Tags[]     @relation("ParentChildTags")
+  parent   Tags?  @relation("ParentChildTags", fields: [parentId], references: [id])
+  children Tags[] @relation("ParentChildTags")
 
   // many-to-many self-relation
-  tagged  Tags[] @relation("TagToTag")  // tags that this tag tags
+  tagged   Tags[] @relation("TagToTag") // tags that this tag tags
   taggedBy Tags[] @relation("TagToTag") // tags that tag this tag
+
+  smartTag SmartTag?
 }
 
 model Media {
@@ -85,9 +87,11 @@ model Media {
   visualAiMatchingVersion     Int      @default(0) @db.SmallInt
   specialFilterAttributeGuess String?
   tagsGuess                   String[]
-  suggestedVolumePercent Int?
+  suggestedVolumePercent      Int?
 
   deleted Boolean @default(false)
+
+  sourceReferences MediaSourceReference[]
 
   @@index([id, clustersId, tags_old])
 }
@@ -149,7 +153,7 @@ model Job {
 }
 
 model SettingsKeyValuePairs {
-  key String @id
+  key   String @id
   value String
 }
 
@@ -165,4 +169,57 @@ model CustomIcon {
   id      Int    @id @default(autoincrement())
   name    String @unique
   svgData String
+}
+
+model MediaSource {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  
+  // API Request Config
+  baseUrl         String
+  searchEndpoint  String
+  queryParam      String   @default("tags")
+  pageParam       String   @default("page")
+  limitParam      String   @default("limit")
+  
+  authType        String?  // e.g., "basic", "query", "header"
+  username        String?
+  apiKey          String?
+  
+  // API Response Field Mapping (JSON String)
+  mapping         String   @default("{}")
+  
+  enabled         Boolean  @default(true)
+  
+  smartTags       SmartTag[]
+  references      MediaSourceReference[]
+}
+
+model SmartTag {
+  id    Int  @id @default(autoincrement())
+  tagId Int  @unique
+  tag   Tags @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  mediaSourceId Int
+  mediaSource   MediaSource @relation(fields: [mediaSourceId], references: [id], onDelete: Cascade)
+
+  query  String
+  isPool Boolean @default(false)
+
+  lastSyncAt DateTime?
+  status     String    @default("idle")
+  lastError  String?
+}
+
+model MediaSourceReference {
+  id      Int    @id @default(autoincrement())
+  mediaId String
+  media   Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  mediaSourceId Int
+  mediaSource   MediaSource @relation(fields: [mediaSourceId], references: [id], onDelete: Cascade)
+
+  sourceMediaId String
+
+  @@unique([mediaSourceId, sourceMediaId])
 }
