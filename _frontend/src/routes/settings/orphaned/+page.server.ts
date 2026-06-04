@@ -6,8 +6,8 @@ import type { PageServerLoad } from "./$types"
 
 export const load: PageServerLoad = async () => {
     // Start reading the directory and querying the database in parallel
-    const [fileNames, mediaRecords] = await Promise.all([
-        fs.readdir("./media/"),
+    const [filesInMedia, mediaRecords] = await Promise.all([
+        fs.readdir("./media/", { withFileTypes: true }),
         prisma.media.findMany({
             select: { id: true }
         })
@@ -18,8 +18,9 @@ export const load: PageServerLoad = async () => {
 
     return {
         // Filter files that are not in the mediaIdSet
-        unimportedFiles: fileNames
-            .map(fileName => fileName.split(".")[0])
+        unimportedFiles: filesInMedia
+            .filter(file => file.isFile())
+            .map(file => file.name.split(".")[0])
             .filter(fileName => !mediaIdSet.has(fileName))
             .slice(0, 10)
     }

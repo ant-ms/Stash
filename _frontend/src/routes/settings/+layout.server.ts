@@ -5,10 +5,12 @@ import prisma from "$lib/server/prisma"
 import type { LayoutServerLoad } from "./$types"
 
 export const load: LayoutServerLoad = async () => {
-    const [filesInMedia, mediaInDatabase] = await Promise.all([
+    const [filesInMedia, mediaRecords] = await Promise.all([
         fs.readdir("./media/", { withFileTypes: true }),
-        prisma.media.count()
+        prisma.media.findMany({ select: { id: true } })
     ])
+
+    const mediaIdSet = new Set(mediaRecords.map(record => record.id))
 
     return {
         duplicates_count: (
@@ -21,9 +23,10 @@ export const load: LayoutServerLoad = async () => {
                     AND "clustersId" != 3
             `) as any
         )[0].count as number,
-        unimported_count: Math.abs(
-            filesInMedia.filter(file => file.isFile()).length - mediaInDatabase
-        ),
+        unimported_count: filesInMedia
+            .filter(file => file.isFile())
+            .filter(file => !mediaIdSet.has(file.name.split(".")[0]))
+            .length,
         trash_count: await prisma.media.count({
             where: {
                 deleted: true
