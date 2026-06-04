@@ -132,6 +132,32 @@ export const load: PageServerLoad = async () => {
                     name: "createMediaThumbnail"
                 }
             })
+        },
+
+        updateMediaMetadataFromFile: {
+            idsStillUnprocessed: prisma.media.findMany({
+                where: {
+                    OR: [
+                        { type: "" },
+                        { type: "Unknown" }
+                    ]
+                },
+                select: { id: true }
+            }),
+            countProcessed: prisma.media.count({
+                where: {
+                    NOT: [
+                        { type: "" },
+                        { type: "Unknown" }
+                    ]
+                }
+            }),
+            countApplicable: countTotalMedia,
+            countScheduled: prisma.job.count({
+                where: {
+                    name: "updateMediaMetadataFromFile"
+                }
+            })
         }
     }
 }

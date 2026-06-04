@@ -90,6 +90,25 @@
             }}
         />
 
+        <JobCard
+            title="Update Media Metadata"
+            icon="mdiFileDocumentEdit"
+            itemsAwaitingProcessing={data.updateMediaMetadataFromFile
+                .idsStillUnprocessed}
+            countProcessed={data.updateMediaMetadataFromFile.countProcessed}
+            countScheduled={data.updateMediaMetadataFromFile.countScheduled}
+            countApplicable={data.updateMediaMetadataFromFile.countApplicable}
+            onCreate={async idsToProcess => {
+                for (const { id } of idsToProcess) {
+                    await query("createJob", {
+                        name: "updateMediaMetadataFromFile",
+                        data: JSON.stringify({ id, initial: true }),
+                        priority: -10
+                    })
+                }
+            }}
+        />
+
         <!-- <span>Regenerate all media Data</span>
         <Button
             card

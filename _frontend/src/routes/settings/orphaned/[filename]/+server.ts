@@ -4,6 +4,7 @@ import { json } from "@sveltejs/kit"
 import mime from "mime-types"
 
 import prisma from "$lib/server/prisma"
+import { createPostUploadJobs } from "$lib/server/actions/create-post-upload-jobs"
 
 import type { RequestHandler } from "./$types"
 
@@ -14,11 +15,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
     if (!id || !cluster)
         return json({ error: "Missing parameters" }, { status: 400 })
 
+    const type = mime.lookup(`./media/${id}`) || "Unknown"
+
     await prisma.media.create({
         data: {
             id,
             name: "Unknown",
-            type: mime.lookup(`./media/${id}`) || "Unknown",
+            type,
             date: new Date(),
             height: 0,
             width: 0,
@@ -30,21 +33,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         }
     })
 
-    await prisma.job.create({
-        data: {
-            name: "updateMediaMetadataFromFile",
-            data: JSON.stringify({ id: id, initial: true }),
-            priority: 15
-        }
-    })
-
-    await prisma.job.create({
-        data: {
-            name: "createMediaThumbnail",
-            data: JSON.stringify({ id: id }),
-            priority: 10
-        }
-    })
+    await createPostUploadJobs(id, type)
 
     return new Response()
 }
