@@ -1,7 +1,5 @@
 <script lang="ts">
     import type { Media } from "@prisma/client/wasm"
-    import { run } from "svelte/legacy"
-
     import { goto, invalidateAll } from "$app/navigation"
     import { page } from "$app/state"
     import Button from "$components/elements/Button.svelte"
@@ -70,7 +68,7 @@
         ].map(s => JSON.parse(s))
     )
 
-    run(() => {
+    $effect.pre(() => {
         const oldestIndex = data.duplicate_media.reduce((oldestIdx, currentMedia, currentIdx) => {
             let oldestDate = new Date(data.duplicate_media[oldestIdx].createdDate || data.duplicate_media[oldestIdx].date);
             let currentDate = new Date(currentMedia.createdDate || currentMedia.date);
