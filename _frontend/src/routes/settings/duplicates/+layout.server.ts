@@ -18,6 +18,6 @@ export const load: LayoutServerLoad = async () => ({
         content_hash
     HAVING
         COUNT(*) > 1
-    LIMIT 7
+    LIMIT 10
   `) as { content_hash: string; media_ids: string[] }[]
 })

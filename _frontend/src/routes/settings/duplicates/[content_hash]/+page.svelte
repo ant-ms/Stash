@@ -60,13 +60,15 @@
         }
     ])
 
-    let tags = [
-        ...new Set(
-            data.duplicate_media
-                .flatMap(m => m.tags.map(t => ({ id: t.id, tag: t.tag })))
-                .map(o => JSON.stringify(o))
-        )
-    ].map(s => JSON.parse(s))
+    let tags = $derived(
+        [
+            ...new Set(
+                data.duplicate_media
+                    .flatMap(m => m.tags.map(t => ({ id: t.id, tag: t.tag })))
+                    .map(o => JSON.stringify(o))
+            )
+        ].map(s => JSON.parse(s))
+    )
 
     run(() => {
         const oldestIndex = data.duplicate_media.reduce((oldestIdx, currentMedia, currentIdx) => {
