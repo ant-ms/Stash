@@ -7,45 +7,59 @@ import { Job, JobStatus } from "./src/generated/prisma/client";
 
 const registeredJobs = await importAllTsFiles();
 
-while (true) {
-  const blockingNames = (
-    await prisma.job.findMany({
-      where: {
-        status: {
-          in: [JobStatus.created, JobStatus.running],
-        },
-      },
-      select: {
-        name: true,
-      },
-    })
-  ).map((job) => job.name);
+const MAX_CONCURRENT_JOBS = process.env.MAX_CONCURRENT_JOBS
+  ? parseInt(process.env.MAX_CONCURRENT_JOBS)
+  : 5;
 
-  const openJobs = await prisma.job.findMany({
+while (true) {
+  const runningJobsCount = await prisma.job.count({
     where: {
-      status: "created",
-      OR: [{ waitFor: null }, { waitFor: { notIn: blockingNames } }],
-    },
-    orderBy: {
-      priority: "desc",
+      status: JobStatus.running,
     },
   });
 
-  for (const job of openJobs) {
-    for (const registeredJob of registeredJobs) {
-      if (job.name === registeredJob.name) {
-        await prisma.job.update({
-          where: {
-            id: job.id,
+  const availableSlots = MAX_CONCURRENT_JOBS - runningJobsCount;
+
+  if (availableSlots > 0) {
+    const blockingNames = (
+      await prisma.job.findMany({
+        where: {
+          status: {
+            in: [JobStatus.created, JobStatus.running],
           },
-          data: {
-            status: "running",
-          },
-        });
-        try {
-          await registeredJob
-            .execute(job)
-            .then(async () => {
+        },
+        select: {
+          name: true,
+        },
+      })
+    ).map((job) => job.name);
+
+    const openJobs = await prisma.job.findMany({
+      where: {
+        status: "created",
+        OR: [{ waitFor: null }, { waitFor: { notIn: blockingNames } }],
+      },
+      orderBy: {
+        priority: "desc",
+      },
+      take: availableSlots,
+    });
+
+    for (const job of openJobs) {
+      for (const registeredJob of registeredJobs) {
+        if (job.name === registeredJob.name) {
+          await prisma.job.update({
+            where: {
+              id: job.id,
+            },
+            data: {
+              status: "running",
+            },
+          });
+
+          (async () => {
+            try {
+              await registeredJob.execute(job);
               await prisma.job.update({
                 where: {
                   id: job.id,
@@ -54,8 +68,7 @@ while (true) {
                   status: "completed",
                 },
               });
-            })
-            .catch(async (error: Error) => {
+            } catch (error: any) {
               console.trace(error.message, error.stack);
               await prisma.job.update({
                 where: {
@@ -68,23 +81,15 @@ while (true) {
                   },
                 },
               });
-            });
-        } catch (error: any) {
-          await prisma.job.update({
-            where: {
-              id: job.id,
-            },
-            data: {
-              status: "failed",
-              debugMessages: {
-                push: [error.message],
-              },
-            },
-          });
+            }
+          })();
+
+          break;
         }
       }
     }
   }
+
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   await checkScheduledJobs();
