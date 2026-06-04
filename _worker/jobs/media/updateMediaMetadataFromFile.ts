@@ -12,11 +12,13 @@ export const updateMediaMetadataOfFile = async (
   const absolutePath = await fs.realpath(filePath);
   const metadata = await getMetadataFromFile(absolutePath);
   const fileSize = await fs.stat(absolutePath).then((stats) => stats.size);
+  const type = metadata.MIMEType || "Unknown";
 
-  if (initial)
+  if (initial) {
     await prisma.media.update({
       where: { id },
       data: {
+        type,
         width: metadata.width,
         height: metadata.height,
         duration: metadata.duration,
@@ -24,16 +26,51 @@ export const updateMediaMetadataOfFile = async (
         createdDate: await getCreatedDate(id, metadata),
       },
     });
-  else
+
+    await prisma.job.create({
+      data: {
+        name: "createMediaThumbnail",
+        data: JSON.stringify({ id }),
+        priority: 10,
+      },
+    });
+
+    if (type.startsWith("video")) {
+      await prisma.job.create({
+        data: {
+          name: "createMediaSeekThumbnails",
+          data: JSON.stringify({ id }),
+        },
+      });
+      await prisma.job.create({
+        data: {
+          name: "gatherPerceivedLoudness",
+          data: JSON.stringify({ id }),
+        },
+      });
+    }
+
+    // if (type.startsWith("image")) {
+    //     await prisma.job.create({
+    //         data: {
+    //             name: "attemptManualTagging",
+    //             data: JSON.stringify({ id }),
+    //             waitFor: "updateMediaMetadataFromFile"
+    //         }
+    //     })
+    // }
+  } else {
     await prisma.media.update({
       where: { id },
       data: {
+        type,
         width: metadata.width,
         height: metadata.height,
-        duration: metadata.Duration,
+        duration: metadata.duration,
         sizeBytes: fileSize,
       },
     });
+  }
 };
 
 export const execute = async (job: Job) => {

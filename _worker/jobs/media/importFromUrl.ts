@@ -138,32 +138,6 @@ export const execute = async (job: Job) => {
       priority: 15,
     },
   });
-
-  await prisma.job.create({
-    data: {
-      name: "createMediaThumbnail",
-      data: JSON.stringify({ id }),
-      priority: 10,
-      waitFor: "updateMediaMetadataFromFile",
-    },
-  });
-
-  if (media.type.startsWith("video")) {
-    await prisma.job.create({
-      data: {
-        name: "createMediaSeekThumbnails",
-        data: JSON.stringify({ id }),
-        waitFor: "updateMediaMetadataFromFile",
-      },
-    });
-    await prisma.job.create({
-      data: {
-        name: "gatherPerceivedLoudness",
-        data: JSON.stringify({ id }),
-        waitFor: "updateMediaMetadataFromFile",
-      },
-    });
-  }
 };
 
 const parse = async (
