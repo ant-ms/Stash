@@ -88,8 +88,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            max-width: 900px;
+
             width: 100%;
+            max-width: 900px;
 
             .details {
                 display: grid;
@@ -109,8 +110,8 @@
             }
 
             .description {
-                text-align: center;
                 margin-bottom: 3rem;
+                text-align: center;
             }
 
             .sbom-section {

@@ -35,7 +35,7 @@
 
     let showDropdown = $state(false)
     let showMore = $state(false)
-    
+
     let [icon, iconOpacity] = $derived.by(() => {
         if (iconOverwrite) return [iconOverwrite, 1]
         if (tagsController.tagMap[tagId].icon)
@@ -159,20 +159,33 @@
 {#if tagsController.tagMap[tagId].children && !tagsController.tagMap[tagId].collapsed}
     {@const sortedChildren = tagsController.tagMap[tagId].children
         .map(t => t.id)
-        .sort( (a, b) => (page.params.cluster == "Camp Buddy" ? tagsController.tagMap[b].tag.localeCompare(tagsController.tagMap[a].tag) : tagsController.tagMap[b].count + tagsController.tagMap[b].indirectCount - (tagsController.tagMap[a].count + tagsController.tagMap[a].indirectCount)) )}
-    
-    {@const visibleChildren = sortedChildren.filter(c => !tagsController.tagMap[c].hidden)}
-    {@const hiddenChildren = sortedChildren.filter(c => tagsController.tagMap[c].hidden)}
+        .sort((a, b) =>
+            page.params.cluster == "Camp Buddy"
+                ? tagsController.tagMap[b].tag.localeCompare(
+                      tagsController.tagMap[a].tag
+                  )
+                : tagsController.tagMap[b].count +
+                  tagsController.tagMap[b].indirectCount -
+                  (tagsController.tagMap[a].count +
+                      tagsController.tagMap[a].indirectCount)
+        )}
+
+    {@const visibleChildren = sortedChildren.filter(
+        c => !tagsController.tagMap[c].hidden
+    )}
+    {@const hiddenChildren = sortedChildren.filter(
+        c => tagsController.tagMap[c].hidden
+    )}
 
     {#each showMore ? sortedChildren : visibleChildren as c}
         <SidebarHierarchyEntry indent={indent + 1} tagId={c} />
     {/each}
-    
+
     {#if hiddenChildren.length > 0}
         <Button
             styleOverride="margin-left: {0.75 + indent + 1}em;"
             icon={showMore ? "mdiChevronUp" : "mdiDotsHorizontal"}
-            onclick={() => showMore = !showMore}
+            onclick={() => (showMore = !showMore)}
         >
             {showMore ? "Less..." : `More... (${hiddenChildren.length})`}
         </Button>

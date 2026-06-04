@@ -94,9 +94,24 @@
 
     let cursor = $state("default")
 
+    let retryCount = $state(0)
+
+    $effect(() => {
+        mediaController.visibleMedium?.id
+        retryCount = 0
+    })
+
     let src = $derived(
-        `${page.data.serverURL}/file/${mediaController.visibleMedium?.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + "&" : "?"}session=${page.data.session}`
+        `${page.data.serverURL}/file/${mediaController.visibleMedium?.id}${vars.imageSuffixParameter ? vars.imageSuffixParameter + "&" : "?"}session=${page.data.session}${retryCount > 0 ? "&retry=" + retryCount : ""}`
     )
+
+    const handleError = () => {
+        if (retryCount < 20) {
+            setTimeout(() => {
+                retryCount++
+            }, 500)
+        }
+    }
 </script>
 
 <main bind:this={mainElement}>
@@ -105,6 +120,7 @@
         onmousedown={toggleZoom}
         oncontextmenu={e => e.preventDefault()}
         onmousemove={calculateCursor}
+        onerror={handleError}
         style:cursor
         {src}
         alt={mediaController.visibleMedium?.name}

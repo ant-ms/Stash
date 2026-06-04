@@ -95,7 +95,10 @@ export class TagsController {
             body: JSON.stringify({ hidden: !tag.hidden })
         }).then(async res => {
             if (!res.ok) {
-                console.error("Failed to toggle hidden state: ", await res.text())
+                console.error(
+                    "Failed to toggle hidden state: ",
+                    await res.text()
+                )
                 callback(tag.hidden)
             }
         })
