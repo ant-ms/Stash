@@ -69,6 +69,16 @@
     ].map(s => JSON.parse(s))
 
     run(() => {
+        const oldestIndex = data.duplicate_media.reduce((oldestIdx, currentMedia, currentIdx) => {
+            let oldestDate = new Date(data.duplicate_media[oldestIdx].createdDate || data.duplicate_media[oldestIdx].date);
+            let currentDate = new Date(currentMedia.createdDate || currentMedia.date);
+
+            if (oldestDate.getFullYear() < 1980) oldestDate = new Date("9999-12-31");
+            if (currentDate.getFullYear() < 1980) currentDate = new Date("9999-12-31");
+
+            return currentDate < oldestDate ? currentIdx : oldestIdx;
+        }, 0);
+
         attributesToTransfer.forEach((a, i) => {
             if (
                 (data.duplicate_media as ExtendedMedia[]).every(
@@ -78,6 +88,8 @@
                 )
             ) {
                 attributesToTransfer[i].selectedIndex = 0
+            } else {
+                attributesToTransfer[i].selectedIndex = oldestIndex
             }
         })
     })
@@ -111,6 +123,8 @@
         specialFilterAttribute: getValueToKeep("specialFilterAttribute"),
         tags: tags.map(t => t.id)
     })
+
+    let loading = $state(false)
 </script>
 
 <Popup title="Merge" onclose={() => goto("/settings/duplicates")}>
@@ -118,18 +132,28 @@
         <Button
             card
             icon="mdiDebugStepOver"
-            onclick={() => {
-                fetch(`${page.url.href}/ignore`, {
-                    method: "PUT"
-                })
-                    .then(async () => {
-                        await invalidateAll()
+            onclick={async () => {
+                if (loading) return
+                loading = true
+                try {
+                    await fetch(`${page.url.href}/ignore`, { method: "PUT" })
+                    
+                    const currentDuplicates = (page.data.duplicates as {content_hash: string}[]) || []
+                    const nextDuplicate = currentDuplicates.find(d => d.content_hash !== page.params.content_hash)
+                    
+                    await invalidateAll()
+                    
+                    if (nextDuplicate) {
+                        goto(`/settings/duplicates/${nextDuplicate.content_hash}`)
+                    } else {
                         goto("/settings/duplicates")
-                    })
-                    .catch(e => {
-                        console.error(e)
-                        window.alert("An error occurred!")
-                    })
+                    }
+                } catch (e) {
+                    console.error(e)
+                    window.alert("An error occurred!")
+                } finally {
+                    loading = false
+                }
             }}
         >
             Ignore
@@ -143,28 +167,36 @@
                 icon="mdiSourceMerge"
                 highlighted
                 onclick={async () => {
-                    await fetch(`${page.url.href}/merge`, {
-                        method: "PUT",
-                        body: JSON.stringify({
-                            idToKeep: getValueToKeep("id"),
-                            idsToRemove: data.duplicate_media
-                                .filter(
-                                    (_, i) =>
-                                        i !=
-                                        attributesToTransfer[0].selectedIndex
-                                )
-                                .map(m => m.id),
-                            attributesToKeep
-                        } satisfies DuplicatesMergeServerPutRequestData)
-                    })
-                        .then(async () => {
-                            await invalidateAll()
+                    if (loading) return
+                    loading = true
+                    try {
+                        await fetch(`${page.url.href}/merge`, {
+                            method: "PUT",
+                            body: JSON.stringify({
+                                idToKeep: getValueToKeep("id"),
+                                idsToRemove: data.duplicate_media
+                                    .filter((_, i) => i != attributesToTransfer[0].selectedIndex)
+                                    .map(m => m.id),
+                                attributesToKeep
+                            } satisfies DuplicatesMergeServerPutRequestData)
+                        })
+
+                        const currentDuplicates = (page.data.duplicates as {content_hash: string}[]) || []
+                        const nextDuplicate = currentDuplicates.find(d => d.content_hash !== page.params.content_hash)
+                        
+                        await invalidateAll()
+                        
+                        if (nextDuplicate) {
+                            goto(`/settings/duplicates/${nextDuplicate.content_hash}`)
+                        } else {
                             goto("/settings/duplicates")
-                        })
-                        .catch(e => {
-                            console.error(e)
-                            window.alert("An error occurred!")
-                        })
+                        }
+                    } catch (e) {
+                        console.error(e)
+                        window.alert("An error occurred!")
+                    } finally {
+                        loading = false
+                    }
                 }}
             >
                 Merge
@@ -190,12 +222,12 @@
                         {#if formatter}
                             <span>
                                 {formatter(
-                                    (attributesToKeep as ExtendedMedia)[attr]
+                                    attr === "id" ? getValueToKeep("id") : (attributesToKeep as ExtendedMedia)[attr]
                                 )}
                             </span>
                         {:else}
                             <span>
-                                {(attributesToKeep as ExtendedMedia)[attr] ||
+                                {(attr === "id" ? getValueToKeep("id") : (attributesToKeep as ExtendedMedia)[attr]) ||
                                     "False / TODO"}
                             </span>
                         {/if}
@@ -309,5 +341,11 @@
         width: 325px;
         margin-top: 0.25rem;
         padding: 0.25rem;
+    }
+
+    .left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 </style>
