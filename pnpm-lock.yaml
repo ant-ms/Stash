@@ -159,8 +159,8 @@ importers:
         specifier: ^17.11.1
         version: 17.11.1(typescript@6.0.3)
       stylelint-config-clean-order:
-        specifier: ^8.0.1
-        version: 8.0.1(stylelint-order@8.1.1(stylelint@17.11.1(typescript@6.0.3)))(stylelint@17.11.1(typescript@6.0.3))
+        specifier: ^10.0.0
+        version: 10.0.0(stylelint-order@8.1.1(stylelint@17.11.1(typescript@6.0.3)))(stylelint@17.11.1(typescript@6.0.3))
       stylelint-config-recommended-scss:
         specifier: ^17.0.0
         version: 17.0.1(postcss@8.5.14)(stylelint@17.11.1(typescript@6.0.3))
@@ -3341,8 +3341,8 @@ packages:
     resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
     engines: {node: '>=4'}
 
-  stylelint-config-clean-order@8.0.1:
-    resolution: {integrity: sha512-zKjp7BiINXRZOG9m0fE/6UKoM6clPekL+LoAiHMCiQU2hgirKL5G0mKc5Z0ygIhQXfb1+DTRDM0mu6Ecdv4q8g==}
+  stylelint-config-clean-order@10.0.0:
+    resolution: {integrity: sha512-FKV94g3B1EMSTt0++15jgtU4YwxyeNTAxTRfDW8nx+MvgIWjT9bHRB5SoaNKmVV/hl6CmSjvgtM98lc6Z68KYw==}
     peerDependencies:
       stylelint: '>=16'
       stylelint-order: '>=6'
@@ -6870,7 +6870,7 @@ snapshots:
 
   strip-bom@3.0.0: {}
 
-  stylelint-config-clean-order@8.0.1(stylelint-order@8.1.1(stylelint@17.11.1(typescript@6.0.3)))(stylelint@17.11.1(typescript@6.0.3)):
+  stylelint-config-clean-order@10.0.0(stylelint-order@8.1.1(stylelint@17.11.1(typescript@6.0.3)))(stylelint@17.11.1(typescript@6.0.3)):
     dependencies:
       stylelint: 17.11.1(typescript@6.0.3)
       stylelint-order: 8.1.1(stylelint@17.11.1(typescript@6.0.3))
