@@ -46,7 +46,7 @@
     },
     "type": "module",
     "dependencies": {
-        "@openrouter/ai-sdk-provider": "^2.9.0",
+        "@openrouter/ai-sdk-provider": "^3.0.0",
         "@prisma/client": "^7.4.2",
         "ai": "^6.0.184",
         "cookie": "^1.1.1",
