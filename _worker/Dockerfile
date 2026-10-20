@@ -5,7 +5,7 @@ RUN apt-get update && \
     wget -O /usr/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp && \
     chmod a+rx /usr/bin/yt-dlp && \
     rm -rf /var/lib/apt/lists/*
-COPY --from=node:20 /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:24 /usr/local/bin/node /usr/local/bin/node
 
 WORKDIR /app
 

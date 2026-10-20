@@ -1,4 +1,4 @@
-FROM node:22-alpine3.20 AS builder
+FROM node:24-alpine3.20 AS builder
 WORKDIR /app
 
 RUN npm install -g pnpm
@@ -24,7 +24,7 @@ RUN pnpm deploy --prod --offline --filter @stash/frontend /deploy
 
 RUN cp -r _frontend/node_modules/.prisma /deploy/node_modules/ || true
 
-FROM node:22-alpine3.20
+FROM node:24-alpine3.20
 
 WORKDIR /app
 
