@@ -16,7 +16,7 @@
         "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
         "@mdi/js": "^7.4.47",
         "@prisma/adapter-pg": "^7.4.2",
-        "@sveltejs/adapter-node": "^5.5.4",
+        "@sveltejs/adapter-node": "^6.0.0",
         "@sveltejs/kit": "^2.57.1",
         "@sveltejs/vite-plugin-svelte": "^7.1.2",
         "@types/fuzzy-search": "^2.1.5",
