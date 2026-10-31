@@ -17,7 +17,7 @@
         "@mdi/js": "^7.4.47",
         "@prisma/adapter-pg": "^7.4.2",
         "@sveltejs/adapter-node": "^5.5.4",
-        "@sveltejs/kit": "^2.57.1",
+        "@sveltejs/kit": "^3.0.0",
         "@sveltejs/vite-plugin-svelte": "^7.1.2",
         "@types/fuzzy-search": "^2.1.5",
         "@types/mime-types": "^3.0.1",
