@@ -23,6 +23,35 @@
       "description": "Do not automerge major updates",
       "matchUpdateTypes": ["major"],
       "automerge": false
+    },
+    {
+      "description": "Group Svelte ecosystem packages",
+      "matchPackageNames": [
+        "@sveltejs/*",
+        "svelte",
+        "svelte-*",
+        "eslint-plugin-svelte",
+        "prettier-plugin-svelte",
+        "vite"
+      ],
+      "groupName": "svelte ecosystem"
+    },
+    {
+      "description": "Group AI SDK packages",
+      "matchPackageNames": [
+        "ai",
+        "@ai-sdk/*",
+        "@openrouter/ai-sdk-provider"
+      ],
+      "groupName": "ai-sdk"
+    },
+    {
+      "description": "Group Electron packages",
+      "matchPackageNames": [
+        "electron",
+        "electron-builder"
+      ],
+      "groupName": "electron"
     }
   ]
 }
